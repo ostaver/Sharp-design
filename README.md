@@ -1,6 +1,6 @@
 # Sharp Design
 
-A collection of AI agent skills for building professional websites. Each skill is a self-contained design language — a set of convictions, proportions, and aesthetic rules that an AI agent follows to produce original, high-quality single-page sites. Drop a skill into your agent's context and it builds to spec.
+Welcome to Sharp Design, a collection of AI agent skills for building professional award-winning websites. Each skill is a self-contained design language — a set of convictions, proportions, and aesthetic rules that an AI agent follows to produce original, high-quality single-page sites. Drop a skill into your agent's context and it builds to spec.
 
 ---
 
@@ -8,7 +8,8 @@ A collection of AI agent skills for building professional websites. Each skill i
 
 A skill is a `SKILL.md` file that lives inside a design language folder. It defines everything the agent needs: layout grammar, component vocabulary, CSS design tokens, JavaScript runtime, and content guidelines. The agent writes all output files from scratch — no templates are copied, no binaries are bundled.
 
-Every build should feel like it belongs to the design language but never look like a clone of a previous build. Variation is intentional and built into each skill. *All the skills are reviewed by a frontend senior engineer*
+Every build should feel like it belongs to the design language but never look like a clone of a previous build. Variation is intentional and built into each skill. 
+> *All the skills are reviewed by a frontend senior engineer*
 
 ---
 
@@ -43,7 +44,7 @@ Boutique design language for studio portfolios and landing pages. Warm restraint
 ---
 
 ### Binary
-> *Dark, monochrome, pixel-perfect. Zero binary assets. Heavy*
+> *Dark, monochrome, pixel-perfect. Resource-Heavy*
 
 Fixed-frame technical reference site. Monospace throughout, live WebGL fragment shader hero, percentage loader, CSS glitch image effects, giant footer wordmark, custom cursor, scroll-reveal motion. Everything is fetched from CDNs or written inline — four plain text files, nothing else.
 
@@ -67,25 +68,29 @@ Fixed-frame technical reference site. Monospace throughout, live WebGL fragment 
 | Cursor | Custom | Custom | Custom |
 | Complexity | Medium | Low–Medium | High |
 | Token cost | ~5 k | ~4.2 k | ~18.6 k |
-| Zero binaries | ✓ | ✓ | ✓ |
+| Result | Single `.html` file | Single `.html` file | Folder (4 text files) |
+
+> **Zero binary assets** — all three skills produce sites with no local fonts, images, or prebuilt bundles stored on disk. Fonts come from Google Fonts, icons from Lucide CDN, images from Unsplash. The output is pure text (HTML, CSS, JS) that you can read, diff, and version control like any other code.
 
 ---
 
 ## Using a skill
 
-1. Open your AI agent (Claude, GPT-4, DeepSeek, Qwen, etc.)
+1. Open your AI agent (Claude, GPT-5, DeepSeek, Qwen, etc.)
 2. Paste the contents of the `SKILL.md` file into the system prompt or as a context file
 3. Tell the agent what you want to build — brand, copy, section ideas
 4. The agent produces all output files; you run them locally or deploy as-is
 
-> **Tip for Binary:** Because it includes raw WebGL GLSL, use a model with extended/deep thinking for best results. Smaller models can still produce good output — Binary is one of the most model-agnostic skills in this collection.
+> **Tip for Binary:** Because it includes a folder structure, it is advised to use an AI Agent, integrated into the local system.
+> **Example prompt for a skill:** Create a website about AI and machine learning. Use the skill "Argon", 6 sections. Unique and creative website.
+
 
 ### Recommended models
 
 Most skills work well with:
 - Claude (Sonnet / Opus)
 - DeepSeek
-- GPT-4o / o-series
+- GPT /Codex (superior tiers)
 - Qwen (superior tiers)
 - Kimi K2
 - GLM / Z.ai
@@ -130,7 +135,7 @@ Contributions are welcome — new design languages, improvements to existing ski
 2. Create a folder: `YourLanguage/your-language-skill/SKILL.md`
 3. Add an `About.md` in the top-level language folder following the existing format (model compatibility, token count, word count, character count, score, description)
 4. Include at least one preview image in the language folder if possible
-5. Open a pull request with a short description of the aesthetic and what makes it distinct from existing languages
+5. Open a pull request with a short description of the aesthetic and what makes it distinct from existing styles/skills
 
 **A new language must:**
 - Have a clear, named aesthetic conviction (not just "a clean site")
