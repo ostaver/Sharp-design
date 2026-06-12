@@ -23,6 +23,8 @@ This skill is **NOT** recommended to use with the following models:
 ## Additional Information
 >Because this skill uses WebGL - which is a more complex language, it is recommended to use models that have *deep* / *extended* thinking (reasoning).
 
+> Unique: Cursor, no scroll-sidebar, cinematic.
+
 - When the skill loads up it adds up about ~5000 tokens in the context window
 - Words: ~3,725
 - Characters: 27,274

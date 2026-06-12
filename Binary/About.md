@@ -26,6 +26,8 @@ This skill is **NOT** recommended to use with the following models:
 ## Additional Information
 >Because this skill uses raw WebGL shaders (GLSL) for the hero background, it is recommended to use models that have *deep* / *extended* thinking (reasoning).
 
+>Unique: No default scroll sidebar but a custom one.
+
 - When the skill loads up it adds up about ~18600 tokens in the context window
 - Words: 8,267
 - Characters: 63,760
