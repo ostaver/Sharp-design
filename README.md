@@ -48,6 +48,10 @@ Portfolio-first design language for artists, studios, and creative technologists
 - **Best for:** Artist portfolios, digital studios, creative technologists
 - **Result File Type:** .html 
 
+| OSTAVER Prompt | Alex Prompt |
+|---|---|
+| ![OSTAVER](Argon/OSTAVER-hero.png) | ![Alex](Argon/Alex-hero.png) |
+
 ---
 
 ### Atelier
