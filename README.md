@@ -78,7 +78,7 @@ Boutique design language for studio portfolios and landing pages. Warm restraint
 Fixed-frame technical reference site. Monospace throughout, live WebGL fragment shader hero, percentage loader, CSS glitch image effects, giant footer wordmark, custom cursor, scroll-reveal motion. Everything is fetched from CDNs or written inline — four plain text files, nothing else.
 
 - **Style:** Instrument panel, dark, programmer-grade
-- **Stack:** HTML · CSS · JavaScript · WebGL (GLSL) · Node.js
+- **Stack:** HTML · CSS · JavaScript · WebGL · Node.js
 - **External:** Google Fonts · Lucide Icons · Unsplash
 - **Tokens:** ~18,600 context tokens
 - **Score:** 9.6 / 10
@@ -87,13 +87,13 @@ Fixed-frame technical reference site. Monospace throughout, live WebGL fragment 
 
 ---
 
-### Comfort
-> *Raw, architectural, earthy.*
+### Comfort (Coming soon)
+> *Smooth, minimalistic, buttery.*
 
 A React-native design language for studios, product teams, and culture-forward brands. Builds a complete component-based React repository with TypeScript, CSS Modules, and Vite. Material voice: adobe, concrete, kiln. "Honest materials, honest code."
 
 - **Style:** Architectural, grounded, component-first
-- **Stack:** React · TypeScript · CSS Modules · Vite
+- **Stack:** Astro.js · JavaScript · CSS Modules · Vite 
 - **External:** Google Fonts (`Playfair Display`, `Inter`, `JetBrains Mono`) · Unsplash
 - **Tokens:** ~11,000 context tokens
 - **Score:** 9.2 / 10
