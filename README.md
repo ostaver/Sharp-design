@@ -1,13 +1,14 @@
 # Sharp Design
 
 Welcome to Sharp Design, a collection of AI agent skills for building professional award-winning websites. Each skill is a self-contained design language — a set of convictions, proportions, and aesthetic rules that an AI agent follows to produce original, high-quality single-page sites. Drop a skill into your agent's context and it builds to spec.
+SKILL Template in use - [SKILL CREATOR](SKILL CREATOR.md)
 
 ---
 
 ## Quick Start
 
 1. **Pick a design language** — start with [Argon](#argon) or [Atelier](#atelier) for a single-file site, or [Binary](#binary) for a multi-file technical reference site.
-2. **Copy the skill** — open your chosen language's `SKILL.md` file.
+2. **Copy the skill** — open your chosen language's `SKILL.md` file. Or just drag and drop.
 3. **Paste into your AI agent** — drop the full contents into the system prompt or context window of any supported model (Claude Sonnet/Opus, GPT-5, DeepSeek, Qwen, etc.).
 4. **Describe your site** — tell the agent what you want: *"Create a portfolio website for a ceramic artist. Use Argon, 6 sections."*
 5. **Run and deploy** — the agent will generate all files locally or give you a single `.html` file ready to open or deploy.
@@ -17,7 +18,7 @@ Welcome to Sharp Design, a collection of AI agent skills for building profession
 Use the Argon skill to build a single-page site for a generative art studio. Include: hero, about, gallery grid, manifest, process, contact. Make it dark and atmospheric.
 ```
 
-**First try?** Use Argon — it's the most forgiving of the three and produces a complete, self-contained `.html` file with no extra setup.
+**First try?** Use Atelier — it's the most famous among AI Agents, it's simple and will probably work with most of the models (without the shader).
 
 > **Note:** Skill token costs range from ~4,200 (Atelier) to ~18,600 (Binary). Make sure your model supports a long enough context window. We recommend models with at least 128k tokens of context.
 
