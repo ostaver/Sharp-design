@@ -22,7 +22,7 @@ The result is four hand-written text files plus a Node static server. Nothing is
 
 Binary is a *language*, not a template. Two sites built from it should share the grammar (fixed frame, mono type, glitch cases, wordmark) but never look like clones. Every time you build, vary these so the result feels bespoke:
 
-- **Shader**: pick a different preset / tint / `scale` / `warp` (see the shader section). This is the single biggest visual differentiator.
+- **Shader**: pick a different preset / tint / `scale` / `warp` (see the shader section), or swap the whole field *form* (default filament vs. the optional topographic-contour `main()`). This is the single biggest visual differentiator.
 - **Logo mark**: choose a different glyph from the mark set (or compose one in the same style) — don't default to the chevron every time.
 - **Accent color**: set `--up`/`--down` and the wordmark glow to match the shader tint.
 - **Type pairing**: swap the Google Fonts pair (keep one bold mono for the wordmark).
@@ -287,6 +287,9 @@ The default chevron (three sheared bars) appears in three places that must all u
 
 <!-- F. Diagonal slash field -->
 <svg class="mark" viewBox="0 0 24 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 20L14 0M11 20L21 0" stroke="white" stroke-width="2"/><path d="M0 20L4 12" stroke="white" stroke-width="2"/></svg>
+
+<!-- G. Hexagon node (mesh / full-stack node) -->
+<svg class="mark" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L21 7V17L12 22L3 17V7L12 2Z" stroke="white" stroke-width="1.5"/><circle cx="12" cy="12" r="2.4" fill="white"/></svg>
 ```
 
 To use a mark in the **favicon**, URL-encode the same SVG into the `<link rel="icon" href="data:image/svg+xml,...">` (encode `<`→`%3C`, `>`→`%3E`, `#`→`%23`, spaces→`%20`, `"`→`'`). The loader's larger glyph can be the same mark scaled up, or keep the default loader bars — but the favicon and hero `svg.mark` must match.
@@ -663,8 +666,62 @@ const SHADER = {
 | Ember | 1.1 | 2.1 | 1.3 | 7 | `[1.0,0.55,0.30]` | `[0.04,0.03,0.03]→[0.13,0.10,0.09]` |
 | Acid | 1.3 | 2.7 | 1.5 | 12 | `[0.70,0.95,0.35]` | `[0.03,0.04,0.03]→[0.09,0.12,0.09]` |
 | Mono (calm) | 0.7 | 2.0 | 0.7 | 0 | `[0.60,0.62,0.66]` | `[0.03,0.03,0.04]→[0.10,0.10,0.12]` |
+| Amber Contour† | 0.85 | 1.9 | 1.25 | 0 | `[1.0,0.64,0.30]` | `[0.045,0.035,0.028]→[0.13,0.10,0.075]` |
+
+† **Amber Contour** is tuned for the alternate *topographic contour* shader form (see "Alternate shader form" below), where `base` reads as `[valley, ridge]` rather than `[shadow, midtone]`. It also works with the default filament form, just with a warmer look.
 
 **Performance / mobile.** `resize()` caps `devicePixelRatio` at 2 on desktop but 1.3 on coarse-pointer devices, and the RAF loop pauses on `visibilitychange`, so the shader is cheap on phones and idle tabs.
+
+### Alternate shader form — topographic contour (optional)
+
+The biggest way to make a build feel bespoke is to change the *form* of the field, not just its color. Besides the default **domain-warped filament** field, the skill supports a drop-in **topographic contour** form: a drifting height field rendered as glowing isolines (ridge lines) over a dark terrain gradient. It reads like a living contour map and pairs naturally with the **Amber Contour** preset and the **hexagon-node** mark (G).
+
+To use it, keep everything in `initShader()` the same and swap **only the `void main(){ … }` body** of the fragment shader for the version below. The uniforms, helpers (`hash`/`noise`/`fbm`), JS plumbing, and knobs are unchanged — so `SHADER` still drives it. With this form, read `base` as `[valley, ridge]` and `grid` is best left at `0` (the contours already supply the texture). Set `tint` to your accent for glowing ridge lines.
+
+```glsl
+      void main(){
+        vec2 uv = (gl_FragCoord.xy - 0.5*u_res) / u_res.y;
+        float t = u_time;
+        vec2 m = (u_mouse - 0.5) * 0.5;
+        float s = u_scale;
+
+        // slowly drifting, domain-warped height field (the "terrain")
+        vec2 p = uv*s + m;
+        vec2 q = vec2(fbm(p + t), fbm(p + vec2(5.2,1.3) - t*0.7));
+        float field = fbm(p + q*u_warp + t*0.25);
+
+        // topographic contour lines: isolines of the height field
+        float bands = field * 7.0;
+        float edge = abs(fract(bands) - 0.5);
+        float contour = smoothstep(0.085, 0.0, edge);   // fixed width — WebGL1-safe (no fwidth)
+
+        // dark terrain gradient (valley -> ridge)
+        float h = pow(field, 1.4);
+        vec3 base = mix(u_base0, u_base1, h);
+
+        // glowing tinted ridge lines + faint haze pooling in the valleys
+        base += u_tint * contour * u_intensity;
+        base += u_tint * pow(1.0 - q.y, 3.0) * 0.18 * u_intensity;
+
+        // optional faint scanline grid (off by default for the contour look)
+        if (u_grid > 0.0) {
+          vec2 g = abs(fract(uv*u_grid) - 0.5);
+          float gl = smoothstep(0.0, 0.02, min(g.x, g.y));
+          base *= mix(0.94, 1.0, gl);
+        }
+
+        float vig = smoothstep(1.3, 0.2, length(uv));
+        base *= vig;
+        gl_FragColor = vec4(base, 1.0);
+      }
+```
+
+Notes:
+- **Stay WebGL1-safe.** This uses a fixed line width (`smoothstep(0.085, 0.0, edge)`) rather than `fwidth()`, which requires the `OES_standard_derivatives` extension and is not enabled here. Don't reintroduce `fwidth` without enabling the extension first.
+- **Contour density** is the `field * 7.0` multiplier — raise it for more, tighter rings; lower it for broad, calm bands.
+- **Line thickness** is the `0.085` threshold — smaller is thinner/crisper.
+- Keep the default filament form when you want soft, cloud-like depth; choose the contour form when you want a precise, cartographic, "instrument" feel.
+
 
 ```javascript
 /* =========================================================================
@@ -1056,6 +1113,7 @@ If a request truly doesn't fit (e.g. a full data table, a form, a carousel), bui
 | Hero background color | `app.js` → `SHADER.tint`, `SHADER.intensity`, `SHADER.base` |
 | Hero background texture | `app.js` → `SHADER.scale` (zoom), `SHADER.grid` (scanlines; 0 = off) |
 | Whole shader look | `app.js` → drop in a variation preset (see shader section) |
+| Shader field form | `app.js` → swap the fragment `main()` body (default filament ↔ topographic contour) |
 | Logo mark | `index.html` → favicon data-URI + hero `svg.mark` (+ loader); pick from the mark set |
 | Accent up/down colors | `styles.css` → `:root { --up; --down }` |
 | Wordmark glow hue | `styles.css` → `.vseText span` text-shadow + `@keyframes vseGlow` |
