@@ -1,7 +1,8 @@
 # Sharp Design
 
 Welcome to Sharp Design, a collection of AI agent skills for building professional award-winning websites. Each skill is a self-contained design language — a set of convictions, proportions, and aesthetic rules that an AI agent follows to produce original, high-quality single-page sites. Drop a skill into your agent's context and it builds to spec.
-SKILL Template in use - [SKILL CREATOR](/SKILL CREATOR.md)
+
+SKILL Template in use - [SKILL Creator](./SKILL CREATOR).
 
 ---
 
