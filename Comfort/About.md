@@ -22,7 +22,7 @@ This skill is **NOT** recommended to use with the following models:
 - **Alibaba / Qwen** models
 - Other weaker models
 ## Additional Information
->This skill does not use shaders, but does use frameworks. Make sure to use thinking mode.
+>This skill does not use shaders, but does use frameworks. Make sure to use thinking mode. If you use HTML only, you can use almost any model.
 
 >Unique: No default scroll sidebar but a custom one. Animate theme change.
 
@@ -30,7 +30,7 @@ This skill is **NOT** recommended to use with the following models:
 - Words: 8,267
 - Characters: 63,760
 ### Based on Tools / Frameworks 
-- **HTML** - **CSS** - **JavaScript** - **Astro.js** - **Anime.js**
+- **HTML** - **CSS** - **JavaScript** - **Astro.js** - **Anime.js** - **Vite**
 - **External CDN resources**: Google Fonts, Lucide Icons, Unsplash imagery (For template reasons)
 ---
 ## Description of the skill in words
