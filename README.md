@@ -30,7 +30,7 @@ Use the Argon skill to build a single-page site for a generative art studio. Inc
 A skill is a `SKILL.md` file that lives inside a design language folder. It defines everything the agent needs: layout grammar, component vocabulary, CSS design tokens, JavaScript runtime, and content guidelines. The agent writes all output files from scratch — no templates are copied, no binaries are bundled.
 
 Every build should feel like it belongs to the design language but never look like a clone of a previous build. Variation is intentional and built into each skill. 
-> *All the skills are reviewed by a senior frontend engineer*
+> *All the skills are reviewed by a senior frontend engineer.*
 
 ---
 
@@ -102,7 +102,11 @@ An Astro-native design language for studios, product teams, and culture-forward 
 - **Tokens:** ~11,000 context tokens
 - **Score:** 9.2 / 10
 - **Best for:** Studios, product teams, culture brands, editorial platforms
-- **Result File Type:** React Repository
+- **Result File Type:** Repository/Folder
+
+| Dark Theme | Light Theme |
+|---|---|
+| ![Comfort-Dark](Comfort/Bakery.png) | ![Comfort-Light](Comfort/Pastry.png) |
 
 ---
 
