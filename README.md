@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="banner.png" alt="Sharp Design" width="100%">
+  <img src="Banner.png" alt="Sharp Design" width="100%">
 </p>
 
 # Sharp Design
