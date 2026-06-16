@@ -110,7 +110,7 @@ An Astro-native design language for studios, product teams, and culture-forward 
 
 | Dark Theme | Light Theme |
 |---|---|
-| ![Comfort-Dark](Comfort/Bakery.png) | ![Comfort-Light](Comfort/Pastry.png) |
+| ![Comfort-Dark](Comfort/Dark.png) | ![Comfort-Light](Comfort/Light.png) |
 
 ---
 
