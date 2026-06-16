@@ -30,7 +30,7 @@ Use the Argon skill to build a single-page site for a generative art studio. Inc
 A skill is a `SKILL.md` file that lives inside a design language folder. It defines everything the agent needs: layout grammar, component vocabulary, CSS design tokens, JavaScript runtime, and content guidelines. The agent writes all output files from scratch — no templates are copied, no binaries are bundled.
 
 Every build should feel like it belongs to the design language but never look like a clone of a previous build. Variation is intentional and built into each skill. 
-> *All the skills are reviewed by a frontend senior engineer*
+> *All the skills are reviewed by a senior frontend engineer*
 
 ---
 
@@ -91,12 +91,12 @@ Fixed-frame technical reference site. Monospace throughout, live WebGL fragment 
 
 ---
 
-### Comfort (Coming soon)
+### Comfort
 > *Smooth, minimalistic, buttery.*
 
-A React-native design language for studios, product teams, and culture-forward brands. Builds a complete component-based React repository with TypeScript, CSS Modules, and Vite. Material voice: adobe, concrete, kiln. "Honest materials, honest code."
+An Astro-native design language for studios, product teams, and culture-forward brands. Builds a complete component-based Astro repository with TypeScript, CSS Modules, and Vite. Material voice: adobe, concrete, kiln. "Honest materials, honest code."
 
-- **Style:** Architectural, grounded, component-first
+- **Style:** Smooth, Zen, component-first
 - **Stack:** Astro.js · JavaScript · CSS Modules · Vite 
 - **External:** Google Fonts (`Playfair Display`, `Inter`, `JetBrains Mono`) · Unsplash
 - **Tokens:** ~11,000 context tokens
@@ -122,12 +122,12 @@ A React-native design language for studios, product teams, and culture-forward b
 
 ## Using a skill
 
-1. Open your AI agent (Claude, GPT-5, DeepSeek, Qwen, etc.)
+1. Two options: Either an Agent or a direct LLM (Claude, GPT-5, DeepSeek, Qwen, etc.)
 2. Paste the contents of the `SKILL.md` file into the system prompt or as a context file
 3. Tell the agent what you want to build — brand, copy, section ideas
 4. The agent produces all output files; you run them locally or deploy as-is
 
-> **Tip for Binary:** Because it includes a folder structure, it is advised to use an AI Agent, integrated into the local system.
+> **Tip:** Some skins output folder structures, it is advised to use an AI Agent for that purpose, integrated into the local system.
 > **Example prompt for a skill:** Create a website about AI and machine learning. Use the skill "Argon", 6 sections. Unique and creative website.
 
 
@@ -159,10 +159,7 @@ Sharp-design/
 │   ├── atelier-minimalist-skill/
 │   │   └── SKILL.md
 │   └── *.png
-├── Binary/
-│   ├── About.md
-│   └── binary-developer-skill/
-│       └── SKILL.md
+├── ...
 └── README.md
 ```
 
