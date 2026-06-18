@@ -11,14 +11,14 @@ This skill is **recommended** to use with the following models:
 - **Claude** models
 - **OpenAI** / **GPT** / **Codex** models
 - **Grok** models, superior models recommended
+- **Kimi K2.6** or higher models
+- **GLM / Z.ai** models
+- **MiniMax** models
+- **Xiaomi / MiMo** models
 
 This skill is **NOT** recommended to use with the following models:
 - **Mistral** models
 - **Meta** / **Llama** models
-- **Kimi K2.6** or lower models
-- **GLM / Z.ai** models
-- **MiniMax** models
-- **Xiaomi / MiMo** models
 - **Alibaba / Qwen** models
 - Other weaker models
 ## Additional Information
@@ -26,12 +26,12 @@ This skill is **NOT** recommended to use with the following models:
 
 >Unique: No default scroll sidebar but a custom one. Animate theme change.
 
-- When the skill loads up it adds up about ~18600 tokens in the context window
-- Words: 8,267
-- Characters: 63,760
+- When the skill loads up it adds up about ~13000 tokens in the context window
+- Words: 6,763
+- Characters: 48,411
 ### Based on Tools / Frameworks 
 - **HTML** - **CSS** - **JavaScript** - **Astro.js** - **Anime.js** - **Vite**
-- **External CDN resources**: Google Fonts, Lucide Icons, Unsplash imagery (For template reasons)
+- **External CDN resources**: Google Fonts, Lucide Icons.
 ---
 ## Description of the skill in words
 - White/Dark Theme
