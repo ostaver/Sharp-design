@@ -102,8 +102,8 @@ An Astro-native design language for studios, product teams, and culture-forward 
 
 - **Style:** Smooth, Zen, component-first
 - **Stack:** Astro.js · JavaScript · CSS Modules · Vite 
-- **External:** Google Fonts (`Playfair Display`, `Inter`, `JetBrains Mono`) · Unsplash
-- **Tokens:** ~11,000 context tokens
+- **External:** Google Fonts (`Playfair Display`, `Inter`, `JetBrains Mono`)
+- **Tokens:** ~13,000 context tokens
 - **Score:** 9.2 / 10
 - **Best for:** Studios, product teams, culture brands, editorial platforms
 - **Result File Type:** Repository/Folder
