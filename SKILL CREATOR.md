@@ -188,6 +188,7 @@ Motion in [Skill Name] is [ambient / responsive / snappy / minimal / non-existen
 
 - [Easing rule — which curves are allowed for what; what is banned.]
 - [Bounce/spring rule.]
+- Almost everything must have motion, every detail.
 - **Respect `prefers-reduced-motion: reduce` globally:** kill all animations, transitions, signature features, and cursor. Show scroll-observed elements immediately.
 
 ---
@@ -278,6 +279,7 @@ Every output must satisfy all of these before it is complete.
 - Semantic HTML5 landmarks (`nav`, `main`, `contentinfo`) with correct roles and `aria-label`s.
 - Sections linked to their headers via `aria-labelledby`.
 - Strict, unbroken heading hierarchy (h1 → h2 → h3, no skips).
+- If repository, list the structure and details.
 
 **Interactive elements:**
 
