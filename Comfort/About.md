@@ -22,7 +22,7 @@ This skill is **NOT** recommended to use with the following models:
 - **Alibaba / Qwen** models
 - Other weaker models
 ## Additional Information
->This skill does not use shaders, but does use frameworks. Make sure to use thinking mode. If you use HTML only, you can use almost any model.
+>This skill does not use shaders, but does use frameworks. Make sure to use **plan** mode. If you use HTML only, you can use almost any model.
 
 >Unique: Custom scroll sidebar, custom theme change animation.
 
