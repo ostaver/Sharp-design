@@ -1,4 +1,4 @@
-# Elegant Business Website — Skill
+# Elegant Business Website - Skill
 
 A reusable skill that lets an AI build a polished, multi‑page, optionally
 bilingual marketing website with a dark elegant aesthetic, a **unique generative
@@ -23,7 +23,7 @@ per concern, plus a detailed client README and Firebase hosting setup.
 - A **signature animated background** rendered to a full‑page canvas, with the
   motif chosen to match the brand (roots, steam, wheat, ripples, network graph…).
 - Firebase wiring: Firestore data model, `firestore.rules`, admin auth, and
-  `firebase.json` hosting config — all with **placeholder** credentials.
+  `firebase.json` hosting config - all with **placeholder** credentials.
 - Optional internationalization: English primary + a **user‑specified** second
   language (never assumed).
 - A thorough **client `README.md`** covering Firebase setup, EmailJS, content
@@ -35,7 +35,7 @@ per concern, plus a detailed client README and Firebase hosting setup.
 
 Use it when a user asks to build a brand / marketing / landing website for a
 business such as a restaurant, cafe, bakery, salon, studio, hotel, boutique, gym,
-clinic, or similar — especially when they want a refined, animated, dark, and/or
+clinic, or similar - especially when they want a refined, animated, dark, and/or
 content‑managed feel. Trigger keywords include: *website, landing page, marketing
 site, business website, restaurant/cafe/bakery site, firebase, firestore, admin
 panel, CMS, multilingual / i18n, reservation / booking, generative background,
@@ -46,8 +46,8 @@ dark theme.*
 ## Core philosophy: same skeleton, new skin
 
 The skill is derived from a real reference site (a Macedonian restaurant). The AI
-keeps the **patterns** — structure, motion, component system, backend,
-accessibility, hosting — but reinvents the **surface** for every client:
+keeps the **patterns** - structure, motion, component system, backend,
+accessibility, hosting - but reinvents the **surface** for every client:
 
 - New palette derived from the client's brand (not the reference's gold).
 - New font pairing suited to the industry.
@@ -119,7 +119,7 @@ sites don't inherit them:
 - No dead/unused files (the reference shipped an orphaned `shader.js`).
 - Image handling matches the Firebase plan (URL‑based on Spark; Storage only on
   Blaze).
-- The per‑page / per‑concern file split is preserved — no monolith files.
+- The per‑page / per‑concern file split is preserved - no monolith files.
 
 ---
 
@@ -130,4 +130,4 @@ sites don't inherit them:
 - An [EmailJS](https://www.emailjs.com) account if the contact/reservation form
   must send email.
 - The Firebase CLI (`npm install -g firebase-tools`) to deploy.
-- No framework or build tooling — the output is static files served as‑is.
+- No framework or build tooling - the output is static files served as‑is.
