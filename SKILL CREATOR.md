@@ -48,7 +48,7 @@ Two things you must never do:
 
 ## Voice
 
-The tone is [tone descriptor 1], [tone descriptor 2], and [tone descriptor 3]. It borrows from [reference material A] and [reference material B]. The writer speaks like a [persona/profession]: [rule about fluff and sentimentality].
+The tone is [tone descriptor 1], [tone descriptor 2], and so on[tone descriptor 3]. It borrows from [reference material A] and so on[reference material B]. The writer speaks like a [persona/profession]: [rule about fluff and sentimentality].
 
 **Rules:**
 
