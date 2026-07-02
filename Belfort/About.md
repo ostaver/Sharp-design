@@ -1,4 +1,11 @@
-# Elegant Business Website - Skill
+If you are an AI do not read or skip this file.
+## IMPORTANT
+This file is for the human (YOU) to read.
+> The name of the skill does not impact the output. Read this before creating the website.
+
+---
+
+## Elegant Business Website - Skill
 
 A reusable skill that lets an AI build a polished, multi‑page, optionally
 bilingual marketing website with a dark elegant aesthetic, a **unique generative
@@ -10,10 +17,38 @@ per concern, plus a detailed client README and Firebase hosting setup.
 
 > The instructions the AI follows live in **`SKILL.md`**. This file explains what
 > the skill is, when it triggers, and how to use it.
+> An AI Agent is recommended to use this skill.
 
 ---
 
-## What it produces
+### Note
+
+This skill is **recommended** to use with the following models:
+- **DeepSeek** models
+- **Claude** models
+- **GLM / Z.ai** models
+- **Alibaba / Qwen** models, superior models recommended
+- **OpenAI** / **GPT** / **Codex** models
+
+- **Grok** models, superior models recommended
+- **MiniMax** models, superior models recommended
+- - **Step** flagship model
+
+This skill is **NOT** recommended to use with the following models:
+- **Mistral** models
+- **Meta** / **Llama** models
+- **Xiaomi / MiMo** models, superior models recommended
+- Other weaker models
+
+### Additional Information
+
+> Unique: Cursor.
+
+- When the skill loads up it adds up about ~6500 tokens in the context window
+- Words: ~4800
+- Characters: 35,347
+
+#### What it produces
 
 - A complete static site: Home, a catalog page (Menu/Services/Products/…),
   a Contact/Reservation page, an About page, and an optional Admin panel.
@@ -29,35 +64,7 @@ per concern, plus a detailed client README and Firebase hosting setup.
 - A thorough **client `README.md`** covering Firebase setup, EmailJS, content
   management, deployment, and troubleshooting.
 
----
-
-## When this skill activates
-
-Use it when a user asks to build a brand / marketing / landing website for a
-business such as a restaurant, cafe, bakery, salon, studio, hotel, boutique, gym,
-clinic, or similar - especially when they want a refined, animated, dark, and/or
-content‑managed feel. Trigger keywords include: *website, landing page, marketing
-site, business website, restaurant/cafe/bakery site, firebase, firestore, admin
-panel, CMS, multilingual / i18n, reservation / booking, generative background,
-dark theme.*
-
----
-
-## Core philosophy: same skeleton, new skin
-
-The skill is derived from a real reference site (a Macedonian restaurant). The AI
-keeps the **patterns** - structure, motion, component system, backend,
-accessibility, hosting - but reinvents the **surface** for every client:
-
-- New palette derived from the client's brand (not the reference's gold).
-- New font pairing suited to the industry.
-- A **new background motif** tied to the brand (the reference's tree "roots"
-  become wheat for a bakery, ripples for a spa, a node graph for a SaaS, etc.).
-- New copy, imagery, and section arrangement so no two sites look alike.
-
----
-
-## How to use it
+### How to use it
 
 1. **Provide context.** Tell the AI the business name, industry, goal/CTA,
    desired pages, brand colors or mood, logo, languages, whether you need a
@@ -80,10 +87,10 @@ accessibility, hosting - but reinvents the **surface** for every client:
 
 ---
 
-## Files in this skill
+### Files in this skill
 
 ```
-elegant-business-website/
+belfort-business-elegant/
 ├── SKILL.md   # the full instructions the AI follows when the skill is active
 └── README.md  # this overview
 ```
@@ -131,3 +138,7 @@ sites don't inherit them:
   must send email.
 - The Firebase CLI (`npm install -g firebase-tools`) to deploy.
 - No framework or build tooling - the output is static files served as‑is.
+
+---
+**Overall score: 8.2/10.**
+What can be improved: **Originality / Uniqueness / Compression, token optimization.**

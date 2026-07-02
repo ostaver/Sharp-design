@@ -20,6 +20,7 @@ This skill is **NOT** recommended to use with the following models:
 - **Meta** / **Llama** models
 - **Xiaomi / MiMo** models, superior models recommended
 - Other weaker models
+
 ## Additional Information
 >Because this skill uses WebGL - which is a more complex language, it is recommended to use models that have *deep* / *extended* thinking (reasoning).
 
@@ -28,9 +29,12 @@ This skill is **NOT** recommended to use with the following models:
 - When the skill loads up it adds up about ~5000 tokens in the context window
 - Words: ~3,725
 - Characters: 27,274
+
 ### Based on Tools / Frameworks 
 - **HTML** - **CSS** - **JAVASCRIPT**
+
 ---
+
 ## Description of the skill in words
 - Portfolio style
 - Programmer style

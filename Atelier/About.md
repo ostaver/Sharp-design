@@ -23,7 +23,9 @@ This skill is **NOT** recommended to use with the following models:
 - **Step** models
 - **Meta** / **Llama** models
 - Other weaker models
+
 ## Additional Information
+
 >Because this skill also uses WebGL - which is a more complex language, it is recommended to use models that have *deep* / *extended* thinking (reasoning).
 
 >Unique: Nothing too unique, minimalsitic and smooth.
@@ -33,7 +35,9 @@ This skill is **NOT** recommended to use with the following models:
 - Characters: 16,196
 ### Based on Tools / Frameworks 
 - **HTML** - **CSS** - **JAVASCRIPT**
+
 ---
+
 ## Description of the skill in words
 - Minimalistic
 - Professional

@@ -1,5 +1,5 @@
 ---
-name: elegant-business-website
+name: design-business-elegant
 description: >
   Builds a polished, multi-page, bilingual-capable marketing website with a
   dark elegant aesthetic, a cinematic motion layer (Lenis smooth scroll,
