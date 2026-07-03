@@ -32,7 +32,7 @@ This skill is **recommended** to use with the following models:
 
 - **Grok** models, superior models recommended
 - **MiniMax** models, superior models recommended
-- - **Step** flagship model
+- **Step** flagship model
 
 This skill is **NOT** recommended to use with the following models:
 - **Mistral** models
@@ -42,7 +42,7 @@ This skill is **NOT** recommended to use with the following models:
 
 ### Additional Information
 
-> Unique: Cursor.
+> Unique: Custom Cursor.
 
 - When the skill loads up it adds up about ~8500 tokens in the context window
 - Words: ~4800
@@ -91,8 +91,13 @@ This skill is **NOT** recommended to use with the following models:
 
 ```
 belfort-business-elegant/
-├── SKILL.md   # the full instructions the AI follows when the skill is active
-└── README.md  # this overview
+├── belfort-skill (folder) 
+|   └── SKILL.md # the full instructions the AI follows when the skill is active
+├── Images.png
+├── Landing Page.png
+├── Menu.png
+├── Reseravtion.png
+└── About.md  # this overview
 ```
 
 `SKILL.md` is the source of truth. Key sections:
