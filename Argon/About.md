@@ -69,3 +69,6 @@ argon-skill/
 - Other weaker models
 
 > Because this skill uses WebGL, models with deep/extended reasoning tend to produce more reliable shader and cursor code.
+---
+**Overall score: 8.7/10.**
+What can be improved: **Originality / Uniqueness / Compression, token optimization.**

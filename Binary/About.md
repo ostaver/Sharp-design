@@ -75,3 +75,7 @@ binary-skill/
 - Other weaker models
 
 > Because this skill uses raw WebGL shaders (GLSL) for the hero background, models with deep/extended reasoning produce more reliable results.
+---
+**Overall score: 9.6/10.**
+What can be improved: **Context optimization / Compression - the skill is comprehensive but token-heavy due to complete file contents / Originality.**
+What is good: **Almost any model, even the smaller ones can give good results.**

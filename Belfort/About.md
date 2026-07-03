@@ -1,102 +1,75 @@
-If you are an AI do not read or skip this file.
-## IMPORTANT
-This file is for the human (YOU) to read.
-> The name of the skill does not impact the output. Read this before creating the website.
+# Belfort
+
+A reusable skill that lets an AI build a polished, multi-page, optionally bilingual marketing website with a dark elegant aesthetic, a unique generative canvas background themed to each client's brand, a Firebase backend (Firestore + Auth), an admin CMS panel, and an EmailJS contact/reservation form. It produces vanilla HTML/CSS/JS (no build step) with one file per page and per concern, plus a detailed client README and Firebase hosting setup.
+
+> The instructions the AI follows live in **`SKILL.md`**. This file explains what the skill is, when it triggers, and how to use it. An AI Agent is recommended to use this skill.
 
 ---
 
-## Elegant Business Website - Skill
+## What it produces
 
-A reusable skill that lets an AI build a polished, multi‑page, optionally
-bilingual marketing website with a dark elegant aesthetic, a **unique generative
-canvas background themed to each client's brand**, a Firebase backend
-(Firestore + Auth), an admin CMS panel, and an EmailJS contact/reservation form.
-
-It produces **vanilla HTML/CSS/JS** (no build step) with one file per page and
-per concern, plus a detailed client README and Firebase hosting setup.
-
-> The instructions the AI follows live in **`SKILL.md`**. This file explains what
-> the skill is, when it triggers, and how to use it.
-> An AI Agent is recommended to use this skill.
-
----
-
-### Note
-
-This skill is **recommended** to use with the following models:
-- **DeepSeek** models
-- **Claude** models
-- **GLM / Z.ai** models
-- **Alibaba / Qwen** models, superior models recommended
-- **OpenAI** / **GPT** / **Codex** models
-
-- **Grok** models, superior models recommended
-- **MiniMax** models, superior models recommended
-- **Step** flagship model
-
-This skill is **NOT** recommended to use with the following models:
-- **Mistral** models
-- **Meta** / **Llama** models
-- **Xiaomi / MiMo** models, superior models recommended
-- Other weaker models
-
-### Additional Information
-
-> Unique: Custom Cursor.
-
-- When the skill loads up it adds up about ~8500 tokens in the context window
-- Words: ~4800
-- Characters: 35,347
-
-#### What it produces
-
-- A complete static site: Home, a catalog page (Menu/Services/Products/…),
-  a Contact/Reservation page, an About page, and an optional Admin panel.
-- A **token‑driven design system** (colors, typography, spacing, shadows) that is
-  re‑themed per client by editing CSS custom properties, not components.
+- A complete static site: Home, a catalog page (Menu/Services/Products/…), a Contact/Reservation page, an About page, and an optional Admin panel.
+- A token-driven design system (colors, typography, spacing, shadows) that is re-themed per client by editing CSS custom properties, not components.
 - A unified `.content-card` component system reused across every page.
-- A **signature animated background** rendered to a full‑page canvas, with the
-  motif chosen to match the brand (roots, steam, wheat, ripples, network graph…).
-- Firebase wiring: Firestore data model, `firestore.rules`, admin auth, and
-  `firebase.json` hosting config - all with **placeholder** credentials.
-- Optional internationalization: English primary + a **user‑specified** second
-  language (never assumed).
-- A thorough **client `README.md`** covering Firebase setup, EmailJS, content
-  management, deployment, and troubleshooting.
+- A signature animated background rendered to a full-page canvas, with the motif chosen to match the brand (roots, steam, wheat, ripples, network graph…).
+- Firebase wiring: Firestore data model, `firestore.rules`, admin auth, and `firebase.json` hosting config — all with placeholder credentials.
+- Optional internationalization: English primary + a user-specified second language (never assumed).
+- A thorough client `README.md` covering Firebase setup, EmailJS, content management, deployment, and troubleshooting.
 
-### How to use it
+## How to use it
 
-1. **Provide context.** Tell the AI the business name, industry, goal/CTA,
-   desired pages, brand colors or mood, logo, languages, whether you need a
-   content‑managed backend + admin, and contact details. If anything's missing,
-   the skill instructs the AI to ask before building.
-2. **Confirm the creative choices.** The AI states the palette, font pairing, and
-   the proposed background motif up front.
-3. **Generate.** The AI builds the full file tree (see `SKILL.md` §2) following
-   the build order in §14, then verifies translations resolve, animations fire,
-   forms validate, and empty‑backend states render gracefully.
-4. **Configure & deploy.** Follow the generated client `README.md` to paste your
-   Firebase config and EmailJS keys, create the admin user, publish rules, and
-   `firebase deploy`.
+1. **Provide context.** Tell the AI the business name, industry, goal/CTA, desired pages, brand colors or mood, logo, languages, whether you need a content-managed backend + admin, and contact details. If anything's missing, the skill instructs the AI to ask before building.
+2. **Confirm the creative choices.** The AI states the palette, font pairing, and the proposed background motif up front.
+3. **Generate.** The AI builds the full file tree (see `SKILL.md` §2) following the build order in §14, then verifies translations resolve, animations fire, forms validate, and empty-backend states render gracefully.
+4. **Configure & deploy.** Follow the generated client `README.md` to paste your Firebase config and EmailJS keys, create the admin user, publish rules, and `firebase deploy`.
 
-### Delivery modes
+## Delivery modes
+
 - **In an agent/IDE:** files are created directly in the workspace.
-- **Chat‑only (no agent):** the AI packages all files into a single downloadable
-  **.zip** preserving the structure, or outputs each file in a clearly labeled
-  code block with its full path if zipping isn't possible.
+- **Chat-only (no agent):** the AI packages all files into a single downloadable **.zip** preserving the structure, or outputs each file in a clearly labeled code block with its full path if zipping isn't possible.
 
----
+## Requirements
 
-### Files in this skill
+- A Firebase project (free **Spark** plan is enough; **Blaze** only if you want Storage uploads).
+- An [EmailJS](https://www.emailjs.com) account if the contact/reservation form must send email.
+- The Firebase CLI (`npm install -g firebase-tools`) to deploy.
+- No framework or build tooling — the output is static files served as-is.
+
+## Tech stack
+
+- **HTML** — semantic, multi-page structure.
+- **CSS** — custom properties, token-driven theming, no frameworks.
+- **JavaScript** — standalone runtime: canvas background, animations, forms, internationalization, admin auth.
+- **Firebase** — Firestore + Auth (admin panel), hosting config.
+- **EmailJS** — contact/reservation form email delivery.
+- **External CDNs:** Google Fonts (optional).
+
+## Notable characteristics
+
+- **Dark elegant aesthetic.** Re-themed per client via CSS custom properties.
+- **Generative canvas background.** Signature animated motif chosen per brand (roots, steam, wheat, ripples, network graph, etc.).
+- **Token-driven design system.** Colors, typography, spacing, and shadows controlled at the token level.
+- **Unified card component.** `.content-card` reused across every page for visual consistency.
+- **Every build must vary:** palette, font pairing, background motif, page selection, and copy so no two Belfort sites look like clones.
+
+## Notable improvements over the reference
+
+- JS effects are bound to the classes the HTML actually renders (the reference's count-up and hover-tilt were wired to non-existent selectors and silently did nothing).
+- Firebase config ships as **placeholders**, never real keys.
+- No dead/unused files (the reference shipped an orphaned `shader.js`).
+- Image handling matches the Firebase plan (URL-based on Spark; Storage only on Blaze).
+- The per-page / per-concern file split is preserved — no monolith files.
+
+## Files in this skill
 
 ```
 belfort-business-elegant/
-├── belfort-skill (folder) 
-|   └── SKILL.md # the full instructions the AI follows when the skill is active
+├── belfort-skill/
+│   └── SKILL.md  # the full instructions the AI follows when the skill is active
 ├── Images.png
 ├── Landing Page.png
 ├── Menu.png
-├── Reseravtion.png
+├── Reservation.png
 └── About.md  # this overview
 ```
 
@@ -106,43 +79,34 @@ belfort-business-elegant/
 |---|---|
 | §0  | Clarifying questions to ask before building |
 | §1–2 | Tech stack, principles, and the exact file structure |
-| §3  | Themeable design‑token contract + palette derivation |
+| §3  | Themeable design-token contract + palette derivation |
 | §4  | The unified card component system |
-| §5  | Page‑by‑page layout patterns |
+| §5  | Page-by-page layout patterns |
 | §6  | The signature generative background (motif table + `bg.js` template) |
-| §7  | Internationalization (English + user‑specified second language) |
+| §7  | Internationalization (English + user-specified second language) |
 | §8  | Firebase: data model, rules, admin, EmailJS, Spark vs Blaze images |
 | §9–11 | JS conventions, accessibility/perf checklist, hosting config |
 | §12 | Required client README specification |
 | §13–14 | Delivery modes and recommended build order |
-| §15 | Anti‑patterns (real flaws found in the reference, fixed here) |
+| §15 | Anti-patterns (real flaws found in the reference, fixed here) |
 
----
+## Recommended models
 
-## Notable improvements over the reference
+**Recommended:**
+- DeepSeek models
+- Claude models
+- GLM / Z.ai models
+- Alibaba / Qwen models (superior models recommended)
+- OpenAI / GPT / Codex models
+- Grok models (superior models recommended)
+- MiniMax models (superior models recommended)
+- Step flagship model
 
-The skill bakes in fixes for issues discovered in the original site so generated
-sites don't inherit them:
-
-- JS effects are bound to the classes the HTML actually renders (the reference's
-  count‑up and hover‑tilt were wired to non‑existent selectors and silently did
-  nothing).
-- Firebase config ships as **placeholders**, never real keys.
-- No dead/unused files (the reference shipped an orphaned `shader.js`).
-- Image handling matches the Firebase plan (URL‑based on Spark; Storage only on
-  Blaze).
-- The per‑page / per‑concern file split is preserved - no monolith files.
-
----
-
-## Requirements for generated sites
-
-- A Firebase project (free **Spark** plan is enough; **Blaze** only if you want
-  Storage uploads).
-- An [EmailJS](https://www.emailjs.com) account if the contact/reservation form
-  must send email.
-- The Firebase CLI (`npm install -g firebase-tools`) to deploy.
-- No framework or build tooling - the output is static files served as‑is.
+**Not recommended:**
+- Mistral models
+- Meta / Llama models
+- Xiaomi / MiMo models (superior models recommended)
+- Other weaker models
 
 ---
 **Overall score: 7.6/10.**
