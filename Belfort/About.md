@@ -66,7 +66,7 @@ A reusable skill that lets an AI build a polished, multi-page, optionally biling
 belfort-business-elegant/
 ├── belfort-skill/
 │   └── SKILL.md  # the full instructions the AI follows when the skill is active
-├── Images.png
+├── About.png
 ├── Landing Page.png
 ├── Menu.png
 ├── Reservation.png

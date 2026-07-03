@@ -49,9 +49,12 @@ A precise, fixed-frame, dark design language for technical reference sites. It s
 ## Files in this skill
 
 ```
-binary-skill/
-├── SKILL.md   # the full instructions the AI follows
-└── README.md  # this overview
+binary/
+├── binary-skill/
+│   └── SKILL.md  # the full instructions the AI follows
+├── Filip Mladenovic.png
+├── Jason Bourne.png
+└── About.md  # this overview
 ```
 
 ## Recommended models

@@ -46,9 +46,12 @@ A boutique design language for studio portfolios and craft-driven landing pages.
 ## Files in this skill
 
 ```
-atelier-skill/
-├── SKILL.md   # the full instructions the AI follows
-└── README.md  # this overview
+atelier/
+├── atelier-skill/
+│   └── SKILL.md  # the full instructions the AI follows
+├── Atelier-dark.png
+├── Atelier-white.png
+└── About.md  # this overview
 ```
 
 ## Recommended models

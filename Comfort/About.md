@@ -45,9 +45,12 @@ A warm, tactile design language built on soft modernism with a buttery-smooth fe
 ## Files in this skill
 
 ```
-comfort-skill/
-├── SKILL.md   # the full instructions the AI follows
-└── About.md   # this overview
+comfort/
+├── comfort-skill/
+│   └── SKILL.md  # the full instructions the AI follows
+├── Dark.png
+├── Light.png
+└── About.md  # this overview
 ```
 
 ## Recommended models

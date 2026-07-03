@@ -45,9 +45,12 @@ A dark, technical design language for artist portfolios, digital studios, and cr
 ## Files in this skill
 
 ```
-argon-skill/
-├── SKILL.md   # the full instructions the AI follows
-└── README.md  # this overview
+argon/
+├── argon-skill/
+│   └── SKILL.md  # the full instructions the AI follows
+├── Alex-hero.png
+├── OSTAVER-hero.png
+└── About.md  # this overview
 ```
 
 ## Recommended models
