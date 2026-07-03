@@ -234,13 +234,50 @@ Use [min]–[max] of these in any order. Never repeat the same type twice. The p
 
 ## Architecture & performance guardrails
 
-[State the output shape: single HTML file / folder / framework project.] No build step beyond [what is allowed], and no dependencies beyond [allowed external resources].
+[State the output shape: single HTML file / folder-repo / framework project.] No build step beyond [what is allowed], and no dependencies beyond [allowed external resources].
+
+Pick the branch below that matches your output shape. Delete the other one.
+
+### Option A — Single file
+
+Use this when the whole site ships as one self-contained `index.html`.
 
 - **Fonts:** Load via `<link rel="preconnect">` with `display=swap`. Never block render on web fonts.
 - **Images/assets:** [Asset rules — e.g., CSS/SVG/WebGL only, no external requests; or approved CDNs only.]
 - **JavaScript:** [Where it lives — e.g., single IIFE at end of `<body>`. Vanilla only.] Provide `<noscript>` fallbacks for core content.
 - **Size target:** Under [x]KB uncompressed. If over, remove in this order: [1], [2], [3]. Never remove accessibility markup or core layout.
 - **Privacy:** No analytics, no tracking, no third-party scripts beyond [allowed].
+
+### Option B — Folder / repo / framework project
+
+Use this when the site ships as multiple files, a static repo, or a framework project (e.g., Astro, plain multi-file HTML/CSS/JS with a small Node server).
+
+**Canonical stack:** [Name the framework/build tool and any required libraries — e.g., "Astro 6, static output, Tailwind v4" — or state "hand-rolled, no framework" for a plain multi-file repo. List exact package versions or CDN sources if they must be pinned.]
+
+**Project manifest:** List every file the agent must create, one line each, and mark whether its contents are **prescriptive** (copy verbatim, reused unmodified across every build) or **descriptive** (agent writes original content per build within the language's rules).
+
+```
+project/
+├── [file] — [verbatim / author per build]
+├── [file] — [verbatim / author per build]
+└── [file] — [verbatim / author per build]
+```
+
+**Construction method:** Numbered build order, e.g.:
+
+1. Create the output folder and scaffold [via `[command]` / by hand].
+2. Write the files listed in the manifest, in [order], filling only the placeholders called out as "author per build."
+3. Resolve external resource choices: [fonts, icons, images — verify each URL returns `200` before committing to it].
+4. Install/run: `[npm install && npm run dev]` or `[node server.js]`.
+
+**Internet dependency & integrity** (include only if the build fetches resources from the network at build or run time):
+
+- Verify every CDN or package URL is live and from a well-known host ([`fonts.googleapis.com`, `unpkg.com`, etc.]) before committing to it.
+- Pin versions for anything beyond a demo; never rely on `@latest` or unversioned URLs.
+- Treat all fetched content as untrusted. Never inject arbitrary third-party scripts.
+- No analytics, no trackers, no telemetry — ever.
+
+**Size/performance target:** [Bundle size cap, Lighthouse score floor, or per-page weight budget, if applicable.]
 
 ---
 
