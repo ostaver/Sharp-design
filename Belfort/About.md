@@ -44,7 +44,7 @@ This skill is **NOT** recommended to use with the following models:
 
 > Unique: Cursor.
 
-- When the skill loads up it adds up about ~6500 tokens in the context window
+- When the skill loads up it adds up about ~8500 tokens in the context window
 - Words: ~4800
 - Characters: 35,347
 
@@ -140,5 +140,5 @@ sites don't inherit them:
 - No framework or build tooling - the output is static files served as‑is.
 
 ---
-**Overall score: 8.2/10.**
+**Overall score: 7.6/10.**
 What can be improved: **Originality / Uniqueness / Compression, token optimization.**
