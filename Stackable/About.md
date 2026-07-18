@@ -1,6 +1,6 @@
 # Stackable
 
-A high-contrast editorial design language for independent festivals, live events, cultural programmes, and music-led campaigns. It turns dense event information into a tactile poster-like experience: compressed display type, flat saturated color fields, hard rules, kinetic programme cues, and precise interaction states.
+A high-contrast colorful editorial design language for independent festivals, live events, cultural programmes, and music-led campaigns. It turns dense event information into a tactile poster-like experience: compressed display type, flat saturated color fields, hard rules, kinetic programme cues, and precise interaction states.
 
 > The agent instructions live in [`stackable-skill/SKILL.md`](stackable-skill/SKILL.md). This file explains what the skill produces.
 
