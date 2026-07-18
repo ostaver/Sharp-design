@@ -146,11 +146,11 @@ Most skills work well with:
 - DeepSeek
 - GPT /Codex (superior tiers)
 - Qwen (superior tiers)
-- Kimi K2
+- Kimi K
 - GLM / Z.ai
 - Grok
 
-Avoid for all skills: Mistral, Meta/Llama, and other smaller open-weight models.
+Avoid for all skills: Small models with a tiny amount of parameters - `Prefer 30B+`.
 
 ---
 
