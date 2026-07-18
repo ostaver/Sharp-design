@@ -23,6 +23,26 @@ Never:
 
 ---
 
+## Non-negotiable safety invariants
+
+These specific failures have shipped in real Stackable builds. Preventing every one of them is mandatory. A build that exhibits any of these is broken no matter how good it looks, so treat this list as a hard gate before delivery.
+
+1. **Content is never hidden by CSS alone.** Any `opacity: 0`, `visibility: hidden`, `clip`, or large offset used for a reveal must be applied only by JavaScript, and only after GSAP is confirmed loaded and `prefers-reduced-motion` is not set. The default document — no JavaScript, a failed CDN, reduced motion, or a thrown error — must render every heading, paragraph, hero line, programme tile, and control fully visible. Never ship a stylesheet where a reveal rule such as `.reveal { opacity: 0 }` applies unconditionally. This single mistake causes the "text/elements invisible" and "hero text invisible" failures.
+
+2. **Reveals fire once and never reverse.** Scroll-triggered reveals must use a one-way trigger (`once: true`, or `toggleActions: "play none none none"`). Never use `scrub`, `toggleClass` that can remove the visible state, or reverse toggle actions for a content reveal — those make text vanish while scrolling. Every element that starts hidden must have a guaranteed, one-way path to its final visible state.
+
+3. **Every reveal has a watchdog.** Add a load-time timeout that forces all reveal targets back to their visible state if motion setup has not completed. Content must never be able to get stuck hidden because a script errored, a CDN was slow, or a `ScrollTrigger` start never fired for an element already past the viewport.
+
+4. **Native scrollbar stays visible until the custom rail is proven working.** Never hide the native scrollbar in base CSS or inline defaults. Hide it only by adding a JavaScript class after the desktop rail has initialized successfully. If JavaScript fails, the viewport is below desktop, or the rail is torn down, the native scrollbar must return. On desktop, never show a custom rail and a native scrollbar at the same time, and never end up with neither.
+
+5. **The custom scroll rail is hidden by default and shown by JavaScript.** In base CSS the rail is `display: none`. It becomes visible only when desktop width, JavaScript, and a successful init are all true. A rail that renders before it works — or that shows alongside the native scrollbar — is the "both scrollbars visible" failure.
+
+5a. **Invariants 4 and 5 are one CSS rule block, not two separate features.** Showing the rail and hiding the native scrollbar must be gated by the exact same class on `<html>` (e.g. `rail-ready`) and written together in the same place in the stylesheet. A build that adds `html.rail-ready .scroll-rail { display: block; }` but forgets the paired `html.rail-ready { scrollbar-width: none; }` / `::-webkit-scrollbar { width: 0; height: 0; }` rule — or vice versa — ships the "both scrollbars visible" failure while looking finished, because the rail itself renders correctly. Before delivery, grep the stylesheet for `scrollbar-width` and `::-webkit-scrollbar` and confirm both exist, are gated on the same class as the rail's `display: block`, and are absent from base CSS.
+
+6. **Every control specifies its own text and background color at every state.** Never rely on inherited color for a button, link-button, or CTA on a colored surface. Each control sets both `background-color` and `color` explicitly for default, hover, focus-visible, and active. When a hover or active state swaps the background, it must restate the text color. Ink text on an ink background — or any same-token pair — is forbidden; it produces the "black button, black text" failure. Confirm the label is legible in every state.
+
+---
+
 ## Voice
 
 Write with direct, dry confidence. It should sound like a trusted local promoter or a sharp independent magazine, not a corporate campaign.
@@ -86,6 +106,7 @@ Rules:
 - Restrict each major section to one dominant surface plus ink/paper. A new surface marks a new act in the page.
 - Use color on numbers, underlines, status marks, active controls, and one featured option—not everywhere.
 - Hover states may invert a surface or add a crisp offset shadow; use `0.2s–0.25s ease` transitions.
+- Every button, link-button, and CTA must declare `background-color` and `color` together for its default, hover, focus-visible, and active states. A hover that changes the background must also restate the text color. Never let a control's text color equal its background (for example `--ink` on `--ink`, or a black CTA that inherits black text) — verify the label reads clearly on its own fill in every state.
 - Under `prefers-contrast: more`, remove low-opacity text, strengthen outlines, and preserve ink/paper contrast.
 
 ---
@@ -131,6 +152,44 @@ This is progressive enhancement:
 - If GSAP or `ScrollTrigger` cannot load, use a minimal `IntersectionObserver` fallback or show all content immediately.
 - Under `prefers-reduced-motion: reduce`, do not create GSAP timelines or `ScrollTrigger` instances. Cancel existing enhancement work if the preference changes at runtime and render all elements at their final state.
 - Never use GSAP merely to recreate the same identical fade on every section.
+
+### Reveal safety pattern (mandatory)
+
+Implement reveals so a hidden state can exist only while JavaScript is actively driving it. Prefer `gsap.from()` over a CSS-hidden class: with `gsap.from()` the element's authored state is its final visible state, so the DOM stays visible if the script never runs, the CDN fails, or reduced motion is set.
+
+- Do not write an unconditional CSS rule that hides reveal targets. If you must use a CSS hidden class, it may only be added by JavaScript after the GSAP guard passes, every target must have a one-way path (observer or immediate) that removes it, and a timeout must strip it as a fallback.
+- Guard the setup: if `window.gsap` or `window.ScrollTrigger` is absent, or `prefers-reduced-motion` is set, do not hide anything at all.
+- Use once-only, non-reversing scroll triggers. Never `scrub` a content reveal.
+- Tag every reveal target with a stable hook (e.g. `data-reveal`) so a single watchdog can force them all visible.
+- Add a load-time watchdog that clears inline hidden styles if init has not completed, so content can never stay hidden.
+
+Adapt the choreography and selectors to the real content; do not copy this shape verbatim:
+
+    (function () {
+      var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var targets = document.querySelectorAll('[data-reveal]');
+      function forceVisible() {
+        targets.forEach(function (el) { el.style.opacity = ''; el.style.transform = ''; });
+      }
+      var ready = false;
+      function init() {
+        if (reduce || !window.gsap || !window.ScrollTrigger) { forceVisible(); return; }
+        gsap.registerPlugin(ScrollTrigger);
+        // hero timeline + per-section gsap.from(..., { scrollTrigger: { once: true } })
+        ScrollTrigger.refresh();
+        ready = true;
+      }
+      window.addEventListener('load', init);
+      // watchdog: never let content stay hidden if init errored or stalled
+      setTimeout(function () { if (!ready) forceVisible(); }, 3000);
+      // if the preference flips at runtime, tear motion down and show everything
+      matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', function (e) {
+        if (e.matches && window.ScrollTrigger) {
+          ScrollTrigger.getAll().forEach(function (t) { t.kill(); });
+          forceVisible();
+        }
+      });
+    })();
 
 ### Allowed supporting interactions
 
@@ -181,6 +240,31 @@ The Stackable desktop baseline includes a fixed, right-edge scroll sidebar. It i
 - Update geometry from `scroll`, `resize`, completed font loading, and `ResizeObserver`/relevant layout changes, coalesced into one `requestAnimationFrame`. Never poll document dimensions in a permanent frame loop.
 - Make the thumb a real keyboard-operable control: `role="scrollbar"`, `tabindex="0"`, `aria-controls`, orientation, min/max/current values, and useful percentage text. Support Arrow keys, Page Up/Down, Home, and End. Pointer dragging and track clicking are enhancements, not the only controls.
 - Keep the hit target comfortably larger than the visual thumb, preserve a visible focus ring, and use instant scrolling under reduced-motion preferences.
+
+### Scrollbar visibility pattern (mandatory)
+
+On desktop exactly one scrollbar shows — the custom rail — and the page must never be left with no scroll affordance. Two failures recur: both scrollbars visible (native was never hidden), and no usable scrollbar (native was hidden but the rail failed). This pattern prevents both.
+
+Base CSS — no JavaScript state. Do not hide the native scrollbar here, and keep the rail hidden:
+
+    .scroll-rail { display: none; }        /* rail hidden until proven working */
+    /* never place scrollbar-hiding rules in base CSS */
+
+Applied only after successful desktop init, gated by a class on the root element. Write this as one rule block and never split the rail's `display: block` from the native-scrollbar-hiding declarations — they must be added, reviewed, and removed together:
+
+    html.rail-ready { scrollbar-width: none; }                 /* Firefox */
+    html.rail-ready::-webkit-scrollbar { width: 0; height: 0; } /* WebKit  */
+    html.rail-ready .scroll-rail { display: block; }
+
+JavaScript contract:
+
+- Add `rail-ready` to `<html>` only after all are true: the desktop media query matches, required APIs exist, and the rail has positioned itself once without throwing.
+- Remove `rail-ready` on teardown — viewport drops below desktop, or any init error — so the native scrollbar returns immediately.
+- Drive enable/disable from a `matchMedia('(min-width: 1024px)')` change listener. Never hide the native scrollbar at tablet or mobile widths.
+- Never hide the native scrollbar in base CSS, an inline default, or before init runs.
+- At the tablet/mobile breakpoint, explicitly restore native scrollbar behavior (`scrollbar-width: auto`, reset `::-webkit-scrollbar`) inside the same `max-width` media query that force-hides the rail. Do not rely solely on JS teardown timing to remove `rail-ready` before a resize-driven layout repaint.
+
+**Self-check before shipping this feature:** search the final stylesheet for `scrollbar-width` and `-webkit-scrollbar`. If either is missing, the rail was implemented without its required scrollbar-hiding half and the build has the "both scrollbars visible" defect regardless of how correct the rail's own positioning code is.
 
 ---
 
@@ -238,6 +322,11 @@ Before delivering, verify:
 - All interactive controls work with keyboard and have visible focus.
 - Mobile navigation has complete focus and Escape behavior.
 - Core content remains visible without JavaScript and readable under reduced motion.
+- No element is stuck hidden after load in any mode. Verify by scrolling top-to-bottom, by disabling JavaScript/blocking the GSAP CDN, and under reduced motion — every heading, hero line, paragraph, tile, and control is visible in all cases.
+- Reveals fire once and do not reverse or vanish when scrolling back up.
+- On desktop, exactly one scrollbar is visible (the custom rail); the native scrollbar returns whenever the rail is inactive, JavaScript fails, or the viewport is below desktop. The two are never visible together and never both absent.
+- The stylesheet contains both halves of the scrollbar-visibility pattern gated on the same class: the rail's `display: block` rule and the native-scrollbar-hiding rule (`scrollbar-width: none` plus `::-webkit-scrollbar`). Confirm this by searching the CSS for `scrollbar-width` — a missing match means the native scrollbar was never hidden and the rail is shipping alongside it.
+- Every control's label is legible against its own background in default, hover, focus-visible, and active states; no same-color text-on-fill controls (e.g. black text on a black button).
 - Palette combinations pass contrast checks for their text size.
 - The GSAP hero timeline, scroll-triggered content sequence, and closing beat are present, differentiated, and have a visible no-GSAP/reduced-motion final state.
 - The required desktop scroll sidebar is keyboard-operable, has accurate position semantics, reserves layout space, and remains visible over paper, saturated, and black surfaces without changing its palette.
@@ -351,6 +440,7 @@ Implement a clear non-JavaScript baseline first. Then add the required GSAP moti
 
 For each link, button, disclosure, menu, draggable element, filter, or custom control, implement its default, hover, focus-visible, active, disabled, and reduced-motion behavior where applicable.
 
+- Set both `background-color` and `color` on every control at each state; a state that changes the fill must restate the text color so the label never collapses into its background.
 - Keep pointer flair secondary to a reliable click, tap, and keyboard action.
 - Use native controls whenever their semantics match the task.
 - If a custom component imitates a platform control, implement its expected keyboard operation and ARIA state fully; otherwise simplify it into a decorative element.
