@@ -117,6 +117,24 @@ An Astro-native design language for studios, product teams, and culture-forward 
 
 ---
 
+### Mirage
+
+> *Achromatic op-art. A built website, not a skill.*
+
+A working studio site where the content itself is the illusion: pure black & white, kinetic variable-width typography, a cursor-reactive moiré hero, and four live optical illusions on canvas — each with a press-and-hold "reveal the trick" interaction. Animated entirely with anime.js v4. Lives on branch [`Mirage`](https://github.com/ostaver/Sharp-Design/tree/Mirage).
+
+- **Style:** Op-art, achromatic, kinetic type
+- **Stack:** HTML · CSS · JavaScript · anime.js v4 (CDN)
+- **External:** Google Fonts (`Archivo` variable)
+- **Best for:** Portfolios, studios, anyone who trusts their eyes
+- **Result File Type:** .html (single file)
+
+| Hero                                       | Works                                       |
+|---                                         |---                                          |
+| ![Mirage Hero](Mirage/preview-hero.png)    | ![Mirage Works](Mirage/preview-works.png)   |
+
+---
+
 ## Comparison
 
 | | Argon | Atelier | Binary | Comfort |
