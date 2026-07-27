@@ -146,13 +146,14 @@ Most skills work well with:
 
 - Claude
 - DeepSeek
-- GPT /Codex
+- GPT /Codex (superior tiers)
+- Qwen (superior tiers)
 - Kimi K
 - GLM / Z.ai
 - Grok
 - or *Other models with 200B+ parameters*
 
-Avoid for all skills: Mistral, Meta/Llama, or other smaller open-weight models.
+Avoid for all skills: Small models with a tiny amount of parameters - `Prefer 30B+`.
 
 ---
 
