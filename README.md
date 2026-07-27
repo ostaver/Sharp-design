@@ -146,14 +146,14 @@ Most skills work well with:
 
 - Claude
 - DeepSeek
-- GPT /Codex (superior tiers)
-- Qwen (superior tiers)
+- GPT / Codex
+- Qwen
 - Kimi K
 - GLM / Z.ai
 - Grok
 - or *Other models with 200B+ parameters*
 
-Avoid for all skills: Small models with a tiny amount of parameters - `Prefer 30B+`.
+Avoid for all skills: Small models with a tiny amount of parameters - `Prefer a minimum of 30B+`.
 
 ---
 
