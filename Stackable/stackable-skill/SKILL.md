@@ -75,6 +75,22 @@ These are tendencies, not a fixed page recipe.
 - A rainbow of unrelated accents.
 - Thin, low-contrast rules and timid typography.
 - Decorative imagery that competes with the programme or primary action.
+- Misaligned edges between adjacent sections, or padding drift that breaks the shared grid outside a deliberately named "posted" exception.
+
+---
+
+## Grid and alignment
+
+Stackable reads as a printed poster, and posters are set on a grid. Loud type and saturated color are allowed to feel physical; structural edges are never allowed to feel accidental. Everything that is not a deliberate "posted" exception must line up.
+
+- Define one shared edge system—the outer padding token (`--pad`), a column count, or a `minmax()` grid—and reuse it for the header, hero, every section, and the footer. Never introduce a second ad hoc left/right inset.
+- Keep a single hard-rule thickness token (`--rule`) and align horizontal rules across adjacent sections so a rule closing one section meets the rule opening the next at the same line.
+- Within a section, align the kicker, headline, body copy, and CTA to one consistent edge unless the grid defines a deliberate asymmetric column split. An offset must come from the grid, never from inconsistent padding or nested containers.
+- Build repeating collections (programme tiles, format rows, footer columns) on real `grid`/`flexbox` tracks with one consistent `gap` value per axis, not visually-approximated wrapping with mismatched widths.
+- Name and limit intentional misalignment—card rotation, a tilted stamp, a torn-edge mark—to specific "posted" elements. Every surrounding structural line (headers, section rules, grid tracks, the scroll rail) stays true even when a posted element inside it tilts.
+- Drive section vertical padding from the shared spacing token (`--section-y`) rather than bespoke per-section values, so the vertical cadence between sections stays consistent.
+- Recheck edge alignment at every breakpoint. A column split that lines up on desktop must not leave orphaned padding or a drifted edge once content reflows to one column.
+- Before delivery, sight down each shared edge (kicker vs. headline vs. paragraph vs. CTA vs. rule, section to section) and correct any pixel-level drift you find.
 
 ---
 
@@ -142,6 +158,17 @@ Build a composed choreography that fits the actual content. At minimum, it must 
 2. **Section orientation:** section titles and category markers enter with a compact, directional treatment that supports the page’s reading flow.
 3. **One content-specific sequence:** programme tiles, schedule entries, venue rows, access choices, or another actual content collection gets a deliberate stagger with a defined final resting state.
 4. **Closing beat:** the footer statement or final action receives a distinct one-time entrance rather than reusing the standard reveal.
+
+### Hero impact contract
+
+The hero must feel like a poster being put up, not a standard landing-page fade. Treat its first `0.8–1.4s` as a composed four-beat sequence. Build from the visual hierarchy and choose directional properties that suit the real layout:
+
+1. **Set the field:** make the compact stamp or metadata hit first with a quick `y`/rotation move, rather than a slow fade.
+2. **Land the proposition:** bring the display headline in with the strongest movement—an asymmetric `x`, `yPercent`, or scale entrance. If the headline spans multiple visual lines, animate those lines as two unequal beats. Keep the semantic heading intact; do not split ordinary paragraphs into characters.
+3. **Commit the action:** introduce the primary CTA with a short scale, offset, or hard lateral movement. Its final position must remain obvious and usable without motion.
+4. **Counter the type:** move one decorative shape or color field in an opposing direction, scale, or rotation. It must reinforce the headline, never obscure it or compete with the CTA.
+
+Do not use the same `opacity + translateY` treatment for all four beats. Favor firm easing such as `power3.out`, `power4.out`, or a restrained `back.out`; avoid bouncy novelty motion, slow drifting, or a hero timeline that takes more than about `1.4s` to settle. The final layout must be fully visible in authored CSS, and every starting value must be applied through guarded JavaScript (`gsap.from()` preferred) so a blocked CDN, failed script, or reduced-motion preference renders the complete poster immediately.
 
 Use `transform`, `opacity`, and compositor-friendly properties. Character-level animation is allowed for short display text only; preserve the semantic source text and do not wrap entire paragraphs character by character. Keep animations brief, once-only by default, and use `ScrollTrigger` start positions that do not require pinning or trap focus.
 
@@ -331,6 +358,7 @@ Before delivering, verify:
 - The GSAP hero timeline, scroll-triggered content sequence, and closing beat are present, differentiated, and have a visible no-GSAP/reduced-motion final state.
 - The required desktop scroll sidebar is keyboard-operable, has accurate position semantics, reserves layout space, and remains visible over paper, saturated, and black surfaces without changing its palette.
 - No standalone generic ticker or section named "Signal", "Live Signal", or equivalent filler has been added. Any announcement rail is backed by real time-sensitive content and accessible static information.
+- Every section shares one edge/grid system: kickers, headlines, body copy, CTAs, and rules align to the same lines section-to-section, with rotation or offset confined to named "posted" elements.
 - Desktop, tablet, narrow mobile, JavaScript-disabled, no-GSAP, reduced-motion, and `prefers-contrast: more` layouts have been checked.
 
 ---
@@ -412,6 +440,7 @@ Define tokens for all surfaces, text, accents, borders, typography, spacing, z-i
 - Establish the hard border thickness once and reuse it across sections, cards, controls, and information rows.
 - Choose where the strongest color field appears. Reserve one inversion or featured treatment for the primary action or genuinely featured content.
 - Use real CSS layout primitives—grid, flexbox, `minmax`, `gap`, logical properties, and container-aware sizing—rather than absolute positioning for ordinary content.
+- Define the shared edge/grid tokens described in Grid and alignment before writing section-specific CSS, and reuse them everywhere instead of hand-tuning each section's padding.
 
 ### 4. Implement responsive composition deliberately
 
@@ -422,6 +451,7 @@ Do not treat mobile as a compressed desktop layout.
 - Turn multi-column programme, venue, and access layouts into readable one-column sequences when the content requires it.
 - Hide only nonessential decoration at small widths; never hide a content-bearing control, key fact, date, location, price, access detail, or path to the primary action. Reflow secondary metadata beneath its title instead of using `display: none`.
 - Ensure fixed headers, overlays, custom rails, and decorative depth effects do not cover or trap content.
+- Recheck shared edge alignment at each breakpoint: reflowed columns must keep the same grid edge, not drift from leftover padding or a nested container.
 - Test the smallest supported viewport for horizontal overflow, clipped focus rings, overlap, and unreachable controls.
 
 ### 5. Add enhancement in layers
