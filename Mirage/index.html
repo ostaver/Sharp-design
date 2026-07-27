@@ -61,6 +61,8 @@ img,svg{display:block;max-width:100%}
 
 /* no-js / no-anime safety: everything visible */
 html.no-js [data-reveal],html.no-js .k-inner,html.no-js .hero-fade,html.no-js .h-char,html.no-js .hero-rule{opacity:1!important;transform:none!important}
+html.no-js .w-visual{clip-path:none!important}
+html.no-js .cm-i,html.no-js .wmm-i,html.no-js .c-char{opacity:1!important;transform:none!important}
 html.no-js .loader{display:none!important}
 
 /* ============ LOADER ============ */
@@ -114,14 +116,20 @@ html.no-js .loader{display:none!important}
 section{padding-inline:var(--pad)}
 .sec-pad{padding-block:clamp(96px,15vh,168px)}
 .eyebrow{display:flex;align-items:center;gap:18px;margin-bottom:clamp(36px,6vh,64px)}
-.eyebrow::after{content:'';flex:1;height:1px;background:var(--ink-14)}
+.eyebrow::after{content:'';flex:1;height:1px;background:var(--ink-14);transform:scaleX(0);transform-origin:left center;transition:transform 1.2s var(--ease-out) .18s}
+.eyebrow.on::after{transform:scaleX(1)}
+@media (prefers-reduced-motion:reduce){.eyebrow::after{transition:none;transform:scaleX(1)}}
 .eyebrow .idx{margin-left:auto;color:var(--ink-55)}
 html.js [data-reveal]{opacity:0}
+html.js .nav{transform:translateY(-102%)}
+html.js .w-visual{clip-path:inset(0 100% 0 0)}
+html.js .cm-i,html.js .wmm-i{transform:translateY(112%)}
+html.js .c-char{opacity:0}
 
 /* ============ MANIFESTO ============ */
 .k{font-weight:640;font-stretch:108%;font-size:clamp(2.1rem,5.4vw,4.8rem);line-height:1.06;letter-spacing:-.015em;text-transform:uppercase;max-width:20ch}
 .k-line{display:block;overflow:hidden;padding-block:.05em}
-.k-inner{display:inline-block;will-change:transform;transition:text-shadow .25s ease}
+.k-inner{display:inline-block;transform-origin:0 100%;will-change:transform;transition:text-shadow .25s ease}
 html.js .k-inner{transform:translateY(112%)}
 .k-inner em{font-style:italic;font-weight:380}
 .k-line:nth-child(2) .k-inner{color:var(--ink)}
@@ -180,13 +188,17 @@ html.js .k-inner{transform:translateY(112%)}
   .p-progress{display:none}
 }
 
-/* ============ STATS ============ */
-.stats{border-block:1px solid var(--ink);display:grid;grid-template-columns:repeat(4,1fr);margin-top:clamp(90px,14vh,150px)}
-.stat{padding:clamp(26px,4vw,46px) clamp(16px,2.4vw,38px);border-right:1px solid var(--ink-14)}
-.stat:last-child{border-right:0}
-.stat b{display:block;font-weight:840;font-stretch:118%;font-size:clamp(2.2rem,4.6vw,4.2rem);line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
-.stat .cap{display:block;margin-top:12px;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-55)}
-@media (max-width:900px){.stats{grid-template-columns:1fr 1fr}.stat:nth-child(2){border-right:0}.stat:nth-child(-n+2){border-bottom:1px solid var(--ink-14)}}
+/* ============ EYE CHART ============ */
+.chart{border:1px solid var(--ink);margin-top:clamp(90px,14vh,150px);padding:clamp(22px,4vw,54px)}
+.chart-head{display:flex;justify-content:space-between;gap:16px;padding-bottom:clamp(14px,2.4vh,24px);border-bottom:1px solid var(--ink-14);color:var(--ink-55)}
+.chart-rows{padding-block:clamp(20px,4.5vh,48px);display:flex;flex-direction:column;gap:clamp(12px,2.6vh,28px);will-change:transform}
+.c-row{display:grid;grid-template-columns:1fr auto 1fr;align-items:baseline;will-change:filter,transform}
+.c-row b{justify-self:center;font-weight:840;font-stretch:122%;line-height:1;text-transform:uppercase;white-space:nowrap}
+.c-row i{justify-self:end;font-style:normal;font-size:.72rem;letter-spacing:.14em;color:var(--ink-35);padding-right:clamp(10px,3vw,44px);font-variant-numeric:tabular-nums}
+.c-row span{justify-self:start;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-55);padding-left:clamp(10px,3vw,44px)}
+.c-tiny b{font-weight:700;font-stretch:110%}
+.chart-foot{text-align:center;color:var(--ink-35);border-top:1px solid var(--ink-14);padding-top:clamp(12px,2.2vh,20px)}
+@media (max-width:700px){.c-row i,.c-row span{font-size:.56rem;padding-inline:8px}.c-tiny span{display:none}}
 
 /* ============ CONTACT / FOOTER ============ */
 .contact{padding-top:clamp(110px,17vh,190px)}
@@ -194,6 +206,10 @@ html.js .k-inner{transform:translateY(112%)}
 .c-link{display:inline-block;margin-top:clamp(20px,3.5vh,34px);font-weight:850;font-stretch:122%;font-size:clamp(2.2rem,8.6vw,7.6rem);line-height:1;letter-spacing:-.02em;text-transform:uppercase;transition:text-shadow .25s ease}
 .c-link:hover{text-shadow:-3px 0 var(--red),3px 0 var(--cyan)}
 .c-char{display:inline-block;white-space:pre;will-change:transform}
+.cm{display:inline-block;overflow:hidden;vertical-align:top}
+.cm-i{display:inline-block;white-space:pre;transform-origin:0 100%;will-change:transform}
+.wmm{display:inline-block;overflow:hidden;vertical-align:top}
+.wmm-i{display:inline-block;transform-origin:50% 100%;will-change:transform}
 .contact .fine{margin-top:clamp(30px,5vh,48px);color:var(--ink-70);max-width:46ch}
 footer{margin-top:clamp(90px,14vh,160px);padding-inline:var(--pad);padding-bottom:26px}
 .wordmark{font-weight:900;font-stretch:125%;font-size:clamp(3.4rem,18.4vw,19rem);line-height:.78;letter-spacing:-.035em;text-align:center;user-select:none;transition:text-shadow .3s ease;cursor:default}
@@ -305,13 +321,13 @@ footer{margin-top:clamp(90px,14vh,160px);padding-inline:var(--pad);padding-botto
     </div>
 
     <div class="w-grid">
-      <article class="work" data-reveal>
-        <div class="w-top"><span class="no">01</span><h3 class="name split">Phantom Spiral</h3><span class="meta">Canvas — Live</span></div>
+      <article class="work">
+        <div class="w-top" data-reveal><span class="no">01</span><h3 class="name split">Phantom Spiral</h3><span class="meta">Canvas — Live</span></div>
         <div class="w-visual" id="vis-spiral" role="button" tabindex="0" aria-pressed="false" aria-label="Phantom Spiral, a Fraser illusion. Tilted dashes arranged on concentric circles read as a spiral. Press and hold to reveal the trick.">
           <span class="w-hint">Hold</span>
           <canvas aria-hidden="true"></canvas>
         </div>
-        <div class="w-foot">
+        <div class="w-foot" data-reveal data-delay="140">
           <div class="w-swap"><div class="lines">
             <span>Hold to reveal the trick</span>
             <span>Ten concentric circles. The spiral was yours.</span>
@@ -320,13 +336,13 @@ footer{margin-top:clamp(90px,14vh,160px);padding-inline:var(--pad);padding-botto
         </div>
       </article>
 
-      <article class="work" data-reveal data-delay="90">
-        <div class="w-top"><span class="no">02</span><h3 class="name split">Tilted Streets</h3><span class="meta">Canvas — Live</span></div>
+      <article class="work">
+        <div class="w-top" data-reveal><span class="no">02</span><h3 class="name split">Tilted Streets</h3><span class="meta">Canvas — Live</span></div>
         <div class="w-visual" id="vis-cafe" role="button" tabindex="0" aria-pressed="false" aria-label="Tilted Streets, a café wall illusion. The horizontal mortar lines look sloped but are perfectly parallel. Press and hold to reveal the trick.">
           <span class="w-hint">Hold</span>
           <canvas aria-hidden="true"></canvas>
         </div>
-        <div class="w-foot">
+        <div class="w-foot" data-reveal data-delay="140">
           <div class="w-swap"><div class="lines">
             <span>Hold to reveal the trick</span>
             <span>Mortar removed. Everything is parallel.</span>
@@ -335,13 +351,13 @@ footer{margin-top:clamp(90px,14vh,160px);padding-inline:var(--pad);padding-botto
         </div>
       </article>
 
-      <article class="work" data-reveal>
-        <div class="w-top"><span class="no">03</span><h3 class="name split">Still Water</h3><span class="meta">Canvas — Live</span></div>
+      <article class="work">
+        <div class="w-top" data-reveal><span class="no">03</span><h3 class="name split">Still Water</h3><span class="meta">Canvas — Live</span></div>
         <div class="w-visual" id="vis-drift" role="button" tabindex="0" aria-pressed="false" aria-label="Still Water, a peripheral drift illusion. Static discs appear to rotate in your peripheral vision. Press and hold to reveal the trick.">
           <span class="w-hint">Hold</span>
           <canvas aria-hidden="true"></canvas>
         </div>
-        <div class="w-foot">
+        <div class="w-foot" data-reveal data-delay="140">
           <div class="w-swap"><div class="lines">
             <span>Hold to reveal the trick</span>
             <span>Mirrored palette. The water freezes.</span>
@@ -350,13 +366,13 @@ footer{margin-top:clamp(90px,14vh,160px);padding-inline:var(--pad);padding-botto
         </div>
       </article>
 
-      <article class="work" data-reveal data-delay="90">
-        <div class="w-top"><span class="no">04</span><h3 class="name split">Both At Once</h3><span class="meta">Canvas — Live</span></div>
+      <article class="work">
+        <div class="w-top" data-reveal><span class="no">04</span><h3 class="name split">Both At Once</h3><span class="meta">Canvas — Live</span></div>
         <div class="w-visual" id="vis-necker" role="button" tabindex="0" aria-pressed="false" aria-label="Both At Once, a Necker cube. The wireframe cube flips between two depths. Press and hold to lock one interpretation.">
           <span class="w-hint">Hold</span>
           <canvas aria-hidden="true"></canvas>
         </div>
-        <div class="w-foot">
+        <div class="w-foot" data-reveal data-delay="140">
           <div class="w-swap"><div class="lines">
             <span>Hold to reveal the trick</span>
             <span>Shading picks a side. One cube evicted.</span>
@@ -366,12 +382,20 @@ footer{margin-top:clamp(90px,14vh,160px);padding-inline:var(--pad);padding-botto
       </article>
     </div>
 
-    <!-- STATS -->
-    <div class="stats" data-reveal>
-      <div class="stat"><b><span class="n" data-to="12" data-dec="0">0</span></b><span class="cap">Years of deception</span></div>
-      <div class="stat"><b><span class="n" data-to="47" data-dec="0">0</span></b><span class="cap">Illusions shipped</span></div>
-      <div class="stat"><b><span class="n" data-to="19" data-dec="0">0</span></b><span class="cap">Awards &amp; mentions</span></div>
-      <div class="stat"><b><span class="n" data-to="3.2" data-dec="1" data-suf="M">0</span></b><span class="cap">Retinas deceived</span></div>
+    <!-- EYE CHART -->
+    <div class="chart" id="chart" data-reveal>
+      <div class="chart-head label">
+        <span>Visual acuity — studio numbers</span>
+        <span>Chart Nº 07</span>
+      </div>
+      <div class="chart-rows" id="chart-rows">
+        <div class="c-row"><i>20/200</i><b style="font-size:clamp(3.6rem,10vw,8.6rem)">12</b><span>years of deception</span></div>
+        <div class="c-row"><i>20/100</i><b style="font-size:clamp(2.8rem,7.4vw,6.2rem)">47</b><span>illusions shipped</span></div>
+        <div class="c-row"><i>20/70</i><b style="font-size:clamp(2.1rem,5.4vw,4.4rem)">19</b><span>awards &amp; mentions</span></div>
+        <div class="c-row"><i>20/40</i><b style="font-size:clamp(1.5rem,3.6vw,3rem)">3.2M</b><span>retinas deceived</span></div>
+        <div class="c-row c-tiny"><i>20/20</i><b style="font-size:clamp(.78rem,1.4vw,1.05rem)">If you can read this, the trick worked</b><span>perfect vision, allegedly</span></div>
+      </div>
+      <p class="chart-foot label">Focus returns as you scroll — hold at arm's length</p>
     </div>
   </section>
 
@@ -415,8 +439,8 @@ footer{margin-top:clamp(90px,14vh,160px);padding-inline:var(--pad);padding-botto
     <div class="eyebrow label" data-reveal>
       <span>Contact</span><span class="idx">04 / 04</span>
     </div>
-    <h2 class="big-ask" id="c-title" data-reveal>Don't believe us?</h2>
-    <div data-reveal data-delay="100">
+    <h2 class="big-ask" id="c-title">Don't believe us?</h2>
+    <div>
       <a class="c-link" id="c-link" href="mailto:hello@mirage.studio" aria-label="Email Mirage studio">TALK TO US</a>
     </div>
     <p class="fine" data-reveal data-delay="180">
