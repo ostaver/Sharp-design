@@ -2,7 +2,7 @@
   <img src="Banner.png" alt="Sharp Design" width="100%">
 </p>
 
-# Sharp Design
+# Sharp Design v0.9
 
 Welcome to Sharp Design, a collection of AI agent skills for building professional award-winning websites. Each skill is a self-contained design language — a set of convictions, proportions, and aesthetic rules that an AI agent follows to produce original, high-quality single-page sites. Drop a skill into your agent's context and it builds to spec.
 
@@ -12,20 +12,19 @@ SKILL Template in use - [SKILL Creator](https://github.com/ostaver/Sharp-Design/
 
 ## Quick Start
 
-1. **Pick a design language** — start with [Argon](#argon) or [Atelier](#atelier) for a single-file site, or [Binary](#binary) for a multi-file technical reference site.
+1. **Pick a design language** — start with [Atelier](#atelier) for a single-file site.
 2. **Copy the skill** — open your chosen language's `SKILL.md` file. Or just drag and drop.
-3. **Paste into your AI agent** — drop the full contents into the system prompt or context window of any supported model (Claude Sonnet/Opus, GPT-5, DeepSeek, Qwen, etc.).
-4. **Describe your site** — tell the agent what you want: *"Create a portfolio website for a ceramic artist. Use Argon, 6 sections."*
+3. **Paste into your AI agent** — drop file or copied content into the system prompt or context window of any supported model.
+4. **Prompt your AI with description** — tell the agent what you want: *"Create a portfolio website for a ceramic artist. Use the skill **Argon**, 6 sections."*
 5. **Run and deploy** — the agent will generate all files locally or give you a single `.html` file ready to open or deploy.
 
-**Example prompt for Argon:**
-```
-Use the Argon skill to build a single-page site for a generative art studio. Include: hero, about, gallery grid, manifest, process, contact. Make it dark and atmospheric.
+**Simple example prompt for Atelier:**
+
+```md
+Use the Atelier skill to build a single-page site for a generative art studio. Include: hero, about, gallery grid, manifest, process, contact. Be unique and original.
 ```
 
-**First try?** Use Atelier — it's the most famous among AI Agents, it's simple and will probably work with most of the models (without the shader).
-
-> **Note:** Skill token costs range from ~4,200 (Atelier) to ~18,600 (Binary). Make sure your model supports a long enough context window. We recommend models with at least 128k tokens of context.
+> **Note:** Skill token costs range from ~3000 to ~20000. Make sure your model supports a long enough context window. We recommend models with at least 128k tokens of context.
 
 ---
 
@@ -33,14 +32,15 @@ Use the Argon skill to build a single-page site for a generative art studio. Inc
 
 A skill is a `SKILL.md` file that lives inside a design language folder. It defines everything the agent needs: layout grammar, component vocabulary, CSS design tokens, JavaScript runtime, and content guidelines. The agent writes all output files from scratch — no templates are copied, no binaries are bundled.
 
-Every build should feel like it belongs to the design language but never look like a clone of a previous build. Variation is intentional and built into each skill. 
+Every build should feel like it belongs to the design language but never look like a clone of a previous build. Variation is intentional and built into each skill.
 > *All the skills are reviewed by a senior frontend engineer.*
 
 ---
 
-## Design languages
+## Some Design styles
 
 ### Argon
+
 > *Dark, technical, gallery-grade.*
 
 Portfolio-first design language for artists, studios, and creative technologists. Lives at the intersection of a gallery opening and a terminal window. Serif voice, monospace structure, WebGL atmosphere, custom cursor.
@@ -50,33 +50,35 @@ Portfolio-first design language for artists, studios, and creative technologists
 - **Tokens:** ~5,000 context tokens
 - **Score:** 8.7 / 10
 - **Best for:** Artist portfolios, digital studios, creative technologists
-- **Result File Type:** .html 
+- **Result File Type:** .html
 
-| OSTAVER Prompt | Alex Prompt |
-|---|---|
+| OSTAVER Prompt                     | Alex Prompt                  |
+|---                                 |---                           |
 | ![OSTAVER](Argon/OSTAVER-hero.png) | ![Alex](Argon/Alex-hero.png) |
 
 ---
 
 ### Atelier
+
 > *Minimalist, typographic, craft-obsessed.*
 
-Boutique design language for studio portfolios and landing pages. Warm restraint, serif headlines, ambient motion. Every element earns its place. "We don't decorate; we clarify."
+Boutique design language for studio portfolios and landing pages. Warm restraint, serif headlines, ambient motion. Every element earns its place. Simplicity is key.
 
 - **Style:** Editorial, elegant, enterprise-ready
 - **Stack:** HTML · CSS · JavaScript · WebGL
 - **Tokens:** ~4,200 context tokens
 - **Score:** 9 / 10
-- **Best for:** Studios, agencies, independent makers, craft-driven brands
+- **Best for:** Studios, agencies, boutiques, craft-driven brands
 - **Result File Type:** .html
 
-| White Theme | Dark Theme |
-|---|---|
+| White Theme                                       | Dark Theme                                      |
+|---                                                |---                                              |
 | ![Atelier White-Theme](Atelier/Atelier-white.png) | ![Atelier Dark-Theme](Atelier/Atelier-dark.png) |
 
 ---
 
 ### Binary
+
 > *Dark, monochrome, pixel-perfect. Resource-Heavy*
 
 Fixed-frame technical reference site. Monospace throughout, live WebGL fragment shader hero, percentage loader, CSS glitch image effects, giant footer wordmark, custom cursor, scroll-reveal motion. Everything is fetched from CDNs or written inline — four plain text files, nothing else.
@@ -89,16 +91,17 @@ Fixed-frame technical reference site. Monospace throughout, live WebGL fragment 
 - **Best for:** Technical products, developer tools, SaaS, reference sites
 - **Result File Type:** Repository/Folder 
 
-| Filip Prompt | Jason Prompt |
-|---|---|
+| Filip Prompt                                       | Jason Prompt                               |
+|---                                                 |---                                         |
 | ![Filip Mladenovic](Binary/Filip%20Mladenovic.png) | ![Jason Bourne](Binary/Jason%20Bourne.png) |
 
 ---
 
 ### Comfort
+
 > *Smooth, minimalistic, buttery.*
 
-An Astro-native design language for studios, product teams, and culture-forward brands. Builds a complete component-based Astro repository with TypeScript, CSS Modules, and Vite. Material voice: adobe, concrete, kiln. "Honest materials, honest code."
+An Astro-native design language for studios, product teams, and culture-forward brands. Builds a complete component-based Astro repository with TypeScript, CSS Modules, and Vite. Material voice: adobe, concrete, kiln. Honest materials, honest code.
 
 - **Style:** Smooth, Zen, component-first
 - **Stack:** Astro.js · JavaScript · CSS Modules · Vite 
@@ -108,8 +111,8 @@ An Astro-native design language for studios, product teams, and culture-forward 
 - **Best for:** Studios, product teams, culture brands, editorial platforms
 - **Result File Type:** Repository/Folder
 
-| Dark Theme | Light Theme |
-|---|---|
+| Dark Theme                        | Light Theme                         |
+|---                                |---                                  |
 | ![Comfort-Dark](Comfort/Dark.png) | ![Comfort-Light](Comfort/Light.png) |
 
 ---
@@ -130,32 +133,33 @@ An Astro-native design language for studios, product teams, and culture-forward 
 
 ## Using a skill
 
-1. Two options: Either an Agent or a direct LLM (Claude, GPT-5, DeepSeek, Qwen, etc.)
-2. Paste the contents of the `SKILL.md` file into the system prompt or as a context file
+1. Two options: Either an Agent or a direct LLM (Chat).
+2. Paste the contents or drag the skill of the `SKILL.md` file into the system prompt or as a context file
 3. Tell the agent what you want to build — brand, copy, section ideas
 4. The agent produces all output files; you run them locally or deploy as-is
 
-> **Tip:** Some skins output folder structures, it is advised to use an AI Agent for that purpose, integrated into the local system.
-> **Example prompt for a skill:** Create a website about AI and machine learning. Use the skill "Argon", 6 sections. Unique and creative website.
-
+> **Tip:** Some skills output folder structures, it is advised to use an AI Agent for that purpose, integrated into the local system.
 
 ### Recommended models
 
 Most skills work well with:
-- Claude (Sonnet / Opus)
+
+- Claude
 - DeepSeek
 - GPT /Codex (superior tiers)
 - Qwen (superior tiers)
 - Kimi K
 - GLM / Z.ai
 - Grok
+- or *Other models with 200B+ parameters*
 
 Avoid for all skills: Small models with a tiny amount of parameters - `Prefer 30B+`.
 
 ---
 
 ## Repo structure
-```
+
+```md
 Sharp-design/
 ├── Argon/
 │   ├── About.md                        ← human-readable skill notes
@@ -171,7 +175,7 @@ Sharp-design/
 └── README.md
 ```
 
-Each design language lives in its own folder. `About.md` is for humans — model compatibility, token cost, score, notes. `SKILL.md` is for the agent.
+`About.md` is for humans — model compatibility, token cost, score, notes. `SKILL.md` is for the agent.
 
 ---
 
@@ -179,19 +183,21 @@ Each design language lives in its own folder. `About.md` is for humans — model
 
 Contributions are welcome — new design languages, improvements to existing skills, fixes, and documentation.
 
-### Adding a new design language
+### Adding a new design language/style
 
-1. **Fork** the repository and create a branch: `git checkout -b language/your-language-name`
-2. Create a folder: `YourLanguage/your-language-skill/SKILL.md`
-3. Add an `About.md` in the top-level language folder following the existing format (model compatibility, token count, word count, character count, score, description)
-4. Include at least one preview image in the language folder if possible
+1. **Fork** the repository and create a branch: `git checkout -b skill/design-style-name`
+2. Create a folder: `YourSkill/your-style-skill/SKILL.md`
+3. Add an `About.md` in the style folder following the existing format or include your own ideas. General information is advised
+4. Include at least one preview image in the style folder if possible
 5. Open a pull request with a short description of the aesthetic and what makes it distinct from existing styles/skills
 
-**A new language must:**
+**A new style must:**
+
 - Have a clear, named aesthetic conviction (not just "a clean site")
 - Produce original output on every run — not a fixed template
-- Be fully standalone (no local binaries, no private CDNs)
-- Include a complete `SKILL.md` with layout grammar, component spec, and a runtime implementation
+- Be fully standalone, no external images
+- Include a complete `SKILL.md` with layout grammar, component style, and a runtime implementation
+- Read *Style guidelines*
 
 ### Improving an existing skill
 
@@ -212,11 +218,12 @@ Contributions are welcome — new design languages, improvements to existing ski
 - [ ] `About.md` is filled in (token count, word count, character count, model compatibility, score)
 - [ ] No binary assets committed (`.woff2`, `.png` previews are the only exception)
 - [ ] CDN URLs in examples have been verified as live
-- [ ] Branch name follows `language/name` or `fix/description` or `improve/language-name`
+- [ ] Branch name follows `style/name` or `fix/description` or `improve/style-name`
 
 ### Opening issues
 
 Use issues for:
+
 - Reporting a broken skill (model, prompt used, and observed output help a lot)
 - Proposing a new design language concept
 - Discussing significant changes to an existing language's grammar
