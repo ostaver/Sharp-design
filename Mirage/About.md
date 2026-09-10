@@ -1,6 +1,6 @@
 # Mirage
 
-A strictly achromatic op-art design language for perception studios, experimental portfolios, and exhibition sites. It ships as a **single self-contained `index.html`** — markup, styles, and runtime in one file — with zero local assets. The only external resources are Google Fonts (one variable family) and anime.js v4 from jsDelivr.
+A strictly achromatic op-art design language for perception studios, experimental portfolios, and exhibition sites. It ships as a **single self-contained `index.html`** — markup, styles, and runtime in one file — with zero local assets. The only external resources are Google Fonts (one variable family) and anime.js v4.
 
 > The instructions the AI follows live in **`mirage-skill/SKILL.md`**. This file explains what the skill is, when it triggers, and how to use it.
 
@@ -21,8 +21,7 @@ A strictly achromatic op-art design language for perception studios, experimenta
 1. **Provide context:** brand/project name, a one-line proposition, three to four manifesto lines, two to four illusions you want (or let the AI pick), method steps, chart figures, and a contact email.
 2. **Confirm creative choices:** the AI will state the chosen variable font, the ink value, the aberration pair, the illusion set, and the section order.
 3. **Generate:** the AI writes one `index.html` containing everything.
-4. **Verify CDN URLs:** confirm the Google Fonts and jsDelivr URLs return `200` before sharing or deploying.
-5. **Run:** open `index.html` directly, or serve the folder with `npx serve .` / `python -m http.server`.
+4. **Run:** open `index.html` directly, or serve the folder with `npx serve .` / `python -m http.server`.
 
 ## Requirements
 
