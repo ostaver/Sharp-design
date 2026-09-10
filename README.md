@@ -89,7 +89,7 @@ Fixed-frame technical reference site. Monospace throughout, live WebGL fragment 
 - **Tokens:** ~18,600 context tokens
 - **Score:** 9.6 / 10
 - **Best for:** Technical products, developer tools, SaaS, reference sites
-- **Result File Type:** Repository/Folder 
+- **Result File Type:** Repository/Folder
 
 | Filip Prompt                                       | Jason Prompt                               |
 |---                                                 |---                                         |
@@ -104,7 +104,7 @@ Fixed-frame technical reference site. Monospace throughout, live WebGL fragment 
 An Astro-native design language for studios, product teams, and culture-forward brands. Builds a complete component-based Astro repository with TypeScript, CSS Modules, and Vite. Material voice: adobe, concrete, kiln. Honest materials, honest code.
 
 - **Style:** Smooth, Zen, component-first
-- **Stack:** Astro.js · JavaScript · CSS Modules · Vite 
+- **Stack:** Astro.js · JavaScript · CSS Modules · Vite
 - **External:** Google Fonts (`Playfair Display`, `Inter`, `JetBrains Mono`)
 - **Tokens:** ~13,000 context tokens
 - **Score:** 9.2 / 10
@@ -119,14 +119,16 @@ An Astro-native design language for studios, product teams, and culture-forward 
 
 ### Mirage
 
-> *Achromatic op-art. A built website, not a skill.*
+> *Achromatic op-art. The content itself is the illusion.*
 
-A working studio site where the content itself is the illusion: pure black & white, kinetic variable-width typography, a cursor-reactive moiré hero, and four live optical illusions on canvas — each with a press-and-hold "reveal the trick" interaction. Animated entirely with anime.js v4. Lives on branch [`Mirage`](https://github.com/ostaver/Sharp-Design/tree/Mirage).
+Strictly black & white design language for perception studios and exhibition sites: kinetic variable-width typography, a cursor-reactive moiré hero, and live optical illusions on canvas — each with a press-and-hold "reveal the trick" interaction. One variable font, no accent color, no dark mode. Animated entirely with anime.js v4. Lives on branch [`Mirage`](https://github.com/ostaver/Sharp-Design/tree/Mirage).
 
 - **Style:** Op-art, achromatic, kinetic type
-- **Stack:** HTML · CSS · JavaScript · anime.js v4 (CDN)
-- **External:** Google Fonts (`Archivo` variable)
-- **Best for:** Portfolios, studios, anyone who trusts their eyes
+- **Stack:** HTML · CSS · JavaScript · Canvas 2D · anime.js v4 (CDN)
+- **External:** Google Fonts (variable `wdth` family, e.g. `Archivo`)
+- **Tokens:** ~7,500 context tokens
+- **Score:** 9.4 / 10
+- **Best for:** Studios, exhibitions, experimental portfolios, anyone who trusts their eyes
 - **Result File Type:** .html (single file)
 
 | Hero                                       | Works                                       |
@@ -138,7 +140,7 @@ A working studio site where the content itself is the illusion: pure black & whi
 ## Comparison
 
 | | Argon | Atelier | Binary | Comfort |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | Aesthetic | Gallery / terminal | Editorial / warm | Instrument / cold | Warm / editorial |
 | Type voice | Serif + mono | Serif + sans | Sans + mono | Serif + sans |
 | Hero | WebGL backdrop | Ambient motion | WebGL GLSL shader | Textured gradient / SVG noise |
