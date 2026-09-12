@@ -2,7 +2,7 @@
   <img src="Banner.png" alt="Sharp Design" width="100%">
 </p>
 
-# Sharp Design v0.9
+# Sharp Design v0.94
 
 Welcome to Sharp Design, a collection of AI agent skills for building professional award-winning websites. Each skill is a self-contained design language — a set of convictions, proportions, and aesthetic rules that an AI agent follows to produce original, high-quality single-page sites. Drop a skill into your agent's context and it builds to spec.
 
