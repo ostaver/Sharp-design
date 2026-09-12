@@ -1,5 +1,4 @@
 ---
-name: stackable-skill
 title: design-stackable-live-event
 description: A high-contrast editorial design language for live events, independent festivals, cultural programmes, and music-led campaigns. Use it for loud typographic compositions, poster-like color blocking, live schedule motion, and tactile interactions without copying a reference site's branding or layout.
 ---

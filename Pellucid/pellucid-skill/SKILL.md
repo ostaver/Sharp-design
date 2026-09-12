@@ -1,10 +1,9 @@
 ---
-name: pellucid-skill
 title: design-pellucid-optical-objects
 description: A light, optical, chromatic design language for object makers, material brands, and studios whose product is how something looks through, around, or inside it. Builds a small static site (HTML/CSS/JS folder) around a live WebGL liquid-glass raymarcher that refracts real typography, driven by GSAP ScrollTrigger, SplitText, and Lenis.
 ---
 
-# Pellucid
+# Pellucid (CANDIDATE)
 
 You are designing in the Pellucid language. This is not a page to copy. It is a set of convictions, proportions, and optical rules that produce luminous, precise, lab-calm pages. Every output should feel unmistakably Pellucid, and never identical to a prior run.
 
