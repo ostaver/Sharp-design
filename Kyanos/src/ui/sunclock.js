@@ -1,6 +1,6 @@
-// The studio keeps time by the sun: a line in the nav, a sentence in the footer and a small
-// chart of today's solar altitude over Hydra (single series, so no legend; hover and arrow
-// keys read any time of day; an off-screen table carries the same values).
+// The studio keeps time by the sun: a line and a tiny arc of the day in the nav, a sentence in
+// the footer and a small chart of today's solar altitude over Hydra (single series, so no
+// legend; hover and arrow keys read any time of day; an off-screen table carries the values).
 import { STUDIO, formatDay, nextSeason, sunAltitude, sunReport } from '../lib/sun.js';
 import { clamp } from '../lib/rng.js';
 
@@ -35,11 +35,30 @@ function studioMidnight(now) {
   return new Date(now.getTime() - ((get('hour') * 60 + get('minute')) * 60 + get('second')) * 1000 - now.getMilliseconds());
 }
 
-function renderChart(svg, table, now) {
+// Today on Hydra, sampled every ten minutes.
+function today(now) {
   const midnight = studioMidnight(now);
   const at = (minute) => new Date(midnight.getTime() + minute * 60000);
   const samples = [];
   for (let m = 0; m <= 1440; m += 10) samples.push({ m, alt: sunAltitude(at(m)) });
+  return { at, samples, nowMinute: (now - midnight) / 60000, nowAlt: sunAltitude(now) };
+}
+
+// The nav's version: today's arc above the horizon, and the sun where it stands now.
+function renderGlyph(svg, day) {
+  const gx = (m) => 1 + (m / 1440) * 26;
+  const gy = (alt) => 12 - (Math.max(alt, 0) / 80) * 11;
+  svg.replaceChildren();
+  node('line', { class: 'sun-path__horizon', x1: 0, x2: 28, y1: 12.5, y2: 12.5 }, svg);
+  const up = day.samples.filter((s) => s.alt > 0);
+  if (up.length > 1) {
+    node('path', { class: 'sun-path__arc', d: up.map((s, i) => `${i ? 'L' : 'M'}${gx(s.m).toFixed(1)} ${gy(s.alt).toFixed(1)}`).join(' ') }, svg);
+  }
+  node('circle', { class: 'sun-path__sun', cx: gx(day.nowMinute).toFixed(1), cy: (day.nowAlt > 0 ? gy(day.nowAlt) : 12.5).toFixed(1), r: 1.9 }, svg);
+}
+
+function renderChart(svg, table, day) {
+  const { at, samples, nowMinute, nowAlt } = day;
   const d = samples.map((s, i) => `${i ? 'L' : 'M'}${X(s.m).toFixed(1)} ${Y(s.alt).toFixed(1)}`).join(' ');
 
   svg.replaceChildren();
@@ -52,11 +71,10 @@ function renderChart(svg, table, now) {
     const anchor = h === 0 ? 'start' : h === 24 ? 'end' : 'middle';
     node('text', { class: 'sunchart__tick', x: X(h * 60), y: H - 2, 'text-anchor': anchor }, svg).textContent = String(h).padStart(2, '0');
   }
-  const horizon = node('text', { class: 'sunchart__tick', x: W, y: Y(0) - 6, 'text-anchor': 'end' }, svg);
+  // under the line at noon, where neither the night curve nor the NOW label can reach it
+  const horizon = node('text', { class: 'sunchart__tick', x: W / 2, y: Y(0) + 14, 'text-anchor': 'middle' }, svg);
   horizon.textContent = 'HORIZON';
 
-  const nowMinute = (now - midnight) / 60000;
-  const nowAlt = sunAltitude(now);
   node('circle', { class: 'sunchart__now', cx: X(nowMinute), cy: Y(nowAlt), r: 4.5 }, svg);
   const nowLabel = node('text', { class: 'sunchart__time', x: X(nowMinute), y: Y(nowAlt) - 11, 'text-anchor': 'middle' }, svg);
   nowLabel.textContent = 'NOW';
@@ -129,7 +147,7 @@ function renderChart(svg, table, now) {
 
 export function initSunclock() {
   const shorts = document.querySelectorAll('[data-sun-short]');
-  const dots = document.querySelectorAll('.sun-dot');
+  const glyphs = document.querySelectorAll('.sun-path');
   const sentence = document.querySelector('[data-sunclock]');
   const svg = document.querySelector('[data-sunchart]');
   const season = document.querySelector('[data-season]');
@@ -146,8 +164,12 @@ export function initSunclock() {
     const now = new Date();
     const r = sunReport(now);
     const alt = Math.round(r.alt);
+    const day = today(now);
     shorts.forEach((el) => (el.textContent = r.up ? `${alt}° over Hydra` : 'Night on Hydra'));
-    dots.forEach((el) => el.classList.toggle('is-down', !r.up));
+    glyphs.forEach((el) => {
+      renderGlyph(el, day);
+      el.classList.toggle('is-down', !r.up);
+    });
     if (sentence) {
       if (r.up && r.minutes) {
         sentence.textContent = `It is ${r.time} on Hydra. The sun stands ${alt}° above the harbour — a sheet laid out now would need about ${r.minutes} minutes.`;
@@ -157,7 +179,7 @@ export function initSunclock() {
         sentence.textContent = `It is ${r.time} on Hydra. The sun is down and the paper rests. First light at ${r.next}.`;
       }
     }
-    if (svg) renderChart(svg, table, now);
+    if (svg) renderChart(svg, table, day);
   };
 
   update();

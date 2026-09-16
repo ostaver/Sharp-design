@@ -2,9 +2,9 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "cyanotype",
+      "name": "kyanos",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--prefix", "Cyanotype"],
+      "runtimeArgs": ["run", "dev", "--prefix", "Kyanos"],
       "port": 5173
     }
   ]

@@ -13,7 +13,7 @@
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,300..500&amp;family=Host+Grotesk:wght@300..700&amp;display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cardo:ital@1&amp;family=La+Belle+Aurore&amp;family=Ysabeau:wght@300..900&amp;display=swap">
   <script>document.documentElement.classList.replace('no-js', 'js');</script>
 </head>
 <body>
@@ -23,7 +23,6 @@
     <canvas class="preloader__coat"></canvas>
     <p class="preloader__brand">KYANOS</p>
     <p class="preloader__label">Sensitising the sheet</p>
-    <p class="preloader__count"><span data-count>00</span>%</p>
     <p class="preloader__formula">Ferric ammonium citrate 25&thinsp;% + K₃[Fe(CN)₆] 10&thinsp;% · 1&thinsp;:&thinsp;1</p>
   </div>
 
@@ -39,12 +38,12 @@
         <li><a href="#visit">Visit</a></li>
       </ul>
     </nav>
-    <p class="nav__sun"><span class="sun-dot" aria-hidden="true"></span><span data-sun-short>Hydra</span></p>
-    <button class="nav__menu" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+    <p class="nav__sun"><svg class="sun-path" viewBox="0 0 28 14" aria-hidden="true"></svg><span data-sun-short>Hydra</span></p>
+    <button class="nav__menu" type="button" aria-expanded="false" aria-controls="menu">Contents</button>
   </header>
 
   <div class="menu" id="menu" hidden>
-    <nav aria-label="Menu">
+    <nav aria-label="Contents">
       <ol class="menu__list">
         <li><a href="#process"><span class="menu__no">II</span>Process</a></li>
         <li><a href="#herbarium"><span class="menu__no">III</span>Herbarium</a></li>
@@ -56,7 +55,7 @@
   </div>
 
   <main id="main">
-    <!-- Hero: a sheet of sensitised paper. The visitor's pointer is the sun. -->
+    <!-- Hero: a sheet of sensitised paper. The visitor's pointer is the sun; the tray water waits at its foot. -->
     <section class="hero" id="top" aria-labelledby="hero-title" data-theme="sheet">
       <div class="hero__sticky">
         <h1 id="hero-title" class="sr-only">Kyanos — a sun-printing studio and living herbarium on the island of Hydra</h1>
@@ -82,8 +81,6 @@
               <button class="text-button" type="button" data-recoat hidden>Coat a new sheet</button>
             </div>
           </div>
-
-          <p class="hero__cue"><span>Scroll to wash the print</span><span class="cue-line" aria-hidden="true"></span></p>
         </div>
         </div>
 
@@ -99,8 +96,8 @@
       <p class="folio"><span>Folio I</span><span>Light</span></p>
       <h2 id="manifesto-title" class="manifesto__title" data-develop>Everything the light touched turned blue. Everything that stood in its way, we kept.</h2>
       <div class="manifesto__body">
-        <p data-reveal>Kyanos is a sun-printing studio above the harbour on Hydra. We make cyanotypes the way they were first made in 1842 — iron salts, cotton paper, a quarter of an hour of Aegean sun — and we keep every plate we have ever exposed.</p>
-        <p data-reveal>There is no lens and no retouching. A leaf lies on the paper, the sun does the rest, and water decides what stays.</p>
+        <p>Kyanos takes its name from <em lang="el">κυανός</em>, the Greek for a deep blue. We are a sun-printing studio above the harbour on Hydra, making cyanotypes the way they were first made in 1842 — iron salts, cotton paper, a quarter of an hour of Aegean sun — and we keep every plate we have ever exposed.</p>
+        <p>There is no lens and no retouching. A leaf lies on the paper, the sun does the rest, and water decides what stays.</p>
       </div>
       <ol class="footnotes">
         <li>
@@ -189,7 +186,14 @@
           </li>
         </ol>
 
-        <div class="process__rail" aria-hidden="true"><span data-rail></span></div>
+        <!-- A test strip: one patch per step, in the colour the print has reached -->
+        <div class="wedge" aria-hidden="true">
+          <span class="wedge__patch"></span>
+          <span class="wedge__patch"></span>
+          <span class="wedge__patch"></span>
+          <span class="wedge__patch"></span>
+          <span class="wedge__patch"></span>
+        </div>
       </div>
     </section>
 
@@ -200,7 +204,7 @@
           <p class="folio"><span>Folio III</span><span>Herbarium</span></p>
           <h2 id="herbarium-title" data-develop>The drying line.</h2>
           <p class="herbarium__intro">Every plate we expose is kept. These are the latest, still pegged where they dried. The first one is yours.</p>
-          <p class="herbarium__count"><span data-count-to="1204">1204</span> plates since 2014</p>
+          <p class="herbarium__count">1204 plates since 2014</p>
         </header>
 
         <div class="line">
@@ -213,8 +217,8 @@
                 <figcaption>
                   <span class="plate__no">Pl. 000</span>
                   <span class="plate__latin">Your exposure</span>
-                  <span class="plate__common">Exposed by you, just now</span>
                   <span class="plate__meta">Today · Hydra</span>
+                  <button class="plate__keep text-button" type="button" data-keep>Take it off the line <span>as a PNG</span></button>
                 </figcaption>
               </figure>
             </li>
@@ -301,7 +305,7 @@
                 <figcaption>
                   <span class="plate__no">Pl. 1195</span>
                   <span class="plate__latin">Centaurea cyanus</span>
-                  <span class="plate__common">Cornflower — named for <em>kyanos</em></span>
+                  <span class="plate__common">Cornflower — named for <em lang="el">κυανός</em></span>
                   <span class="plate__meta">11′ 00″ · 24·VII·2026</span>
                 </figcaption>
               </figure>
@@ -320,7 +324,7 @@
           </ul>
           </div>
         </div>
-        <p class="line__hint" aria-hidden="true">Keep scrolling — the line moves, the prints swing.</p>
+        <p class="line__weather">Meltemi from the north, force 4 · everything on the line is dry by evening</p>
       </div>
     </section>
 
@@ -329,7 +333,7 @@
       <header class="sessions__head">
         <p class="folio"><span>Folio IV</span><span>Sessions</span></p>
         <h2 id="sessions-title" data-develop>Sun sessions, on Sundays.</h2>
-        <p class="sessions__intro" data-reveal>Eight people at one long table, a morning of sun, and prints you carry home still damp. Paper, chemistry, glass and coffee are on us.</p>
+        <p class="sessions__intro">Eight people at one long table, a morning of sun, and prints you carry home still damp. Paper, chemistry, glass and coffee are on us.</p>
       </header>
       <ol class="sessions__list">
         <li class="session" data-specimen="fern" data-seed="4">
@@ -338,7 +342,7 @@
             <span class="session__title">First light</span>
             <span class="session__desc">Coating, composing and a morning of exposures, for anyone who has never printed.</span>
             <span class="session__len">3 h</span>
-            <span class="session__seats">6 of 8 seats</span>
+            <span class="session__seats" data-free="6">6 of 8 free</span>
             <span class="session__cta">Reserve</span>
           </a>
         </li>
@@ -348,7 +352,7 @@
             <span class="session__title">Tea, wine &amp; soda</span>
             <span class="session__desc">Toning prints warm and dark in black tea, red wine and washing soda.</span>
             <span class="session__len">4 h</span>
-            <span class="session__seats">2 of 8 seats</span>
+            <span class="session__seats" data-free="2">2 of 8 free</span>
             <span class="session__cta">Reserve</span>
           </a>
         </li>
@@ -358,7 +362,7 @@
             <span class="session__title">Digital negatives</span>
             <span class="session__desc">From a photograph on your phone to a film negative to a print in the sun.</span>
             <span class="session__len">5 h</span>
-            <span class="session__seats">Waiting list</span>
+            <span class="session__seats" data-free="0">Waiting list</span>
             <span class="session__cta">Join list</span>
           </a>
         </li>
@@ -368,7 +372,7 @@
             <span class="session__title">Printing the island</span>
             <span class="session__desc">A day on the coast path with a portable press, seawater for the wash.</span>
             <span class="session__len">Full day</span>
-            <span class="session__seats">4 of 8 seats</span>
+            <span class="session__seats" data-free="4">4 of 8 free</span>
             <span class="session__cta">Reserve</span>
           </a>
         </li>
@@ -401,12 +405,16 @@
       </div>
     </div>
 
-    <p class="visit__wordmark" aria-hidden="true">KYANOS</p>
+    <!-- The page ends where every print begins: a stroke of raw sensitiser. -->
+    <a class="coat" href="#top" data-coat-fresh>
+      <canvas class="coat__stroke" aria-hidden="true"></canvas>
+      <span class="coat__title">Coat a fresh sheet</span>
+      <span class="coat__note">and start again from the top</span>
+    </a>
 
     <div class="visit__colophon">
-      <p>Set in Host Grotesk and Fraunces. There are no photographs on this page: every plate is drawn by code and exposed in your browser.</p>
+      <p>Set in Ysabeau and Cardo; the hand on the plates is La Belle Aurore. There are no photographs on this page: every plate is drawn by code and exposed in your browser.</p>
       <p>© 2026 Kyanos · Hydra</p>
-      <a class="link" href="#top">Back to the sheet</a>
     </div>
   </footer>
 

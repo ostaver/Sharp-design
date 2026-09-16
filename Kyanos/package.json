@@ -1,9 +1,9 @@
 {
-  "name": "cyanotype",
+  "name": "kyanos",
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Kyanos — a sun-printing studio site in the Cyanotype design language: Prussian blue, a live photogram in WebGL (OGL), GSAP choreography.",
+  "description": "Kyanos — a sun-printing studio site: Prussian blue, a live photogram in WebGL (OGL), GSAP choreography.",
   "scripts": {
     "dev": "vite --port 5173 --strictPort",
     "build": "vite build",

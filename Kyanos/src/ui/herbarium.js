@@ -1,15 +1,20 @@
 // Folio III: the sticky drying line. Vertical scroll becomes sideways travel along the wire.
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { sheetAspect } from '../gl/plate.js';
+
+// Pinning needs a screen tall enough for the head, a print and its caption. Shorter screens
+// get the line as a sideways scroller instead (main.css holds the complementary query).
+const PINNED = '(width >= 900px) and (height >= 700px), (height >= 760px)';
 
 export function initHerbarium({ reduced }) {
   const section = document.querySelector('.herbarium');
   const rail = section.querySelector('[data-track]');
   const wire = rail.querySelector('.line__wire');
   const path = wire.querySelector('path');
-  const hint = section.querySelector('.line__hint');
-  const count = section.querySelector('[data-count-to]');
   const medias = [...rail.querySelectorAll('.plate__media')];
+  const yours = rail.querySelector('.plate--yours');
+  const hero = document.querySelector('.hero__sticky');
 
   // A wire that sags a little between pegs and runs through each peg's jaws.
   const drawWire = () => {
@@ -33,45 +38,26 @@ export function initHerbarium({ reduced }) {
 
   const travel = () => Math.max(0, rail.scrollWidth - window.innerWidth);
   const measure = () => {
+    // plate 000's sheet is cut to the proportions of the print made in the hero
+    if (yours && hero) yours.style.setProperty('--sheet', sheetAspect(hero.offsetWidth / Math.max(1, hero.offsetHeight)).toFixed(3));
     section.style.setProperty('--travel', `${travel()}px`);
     drawWire();
   };
   measure();
+  ScrollTrigger.addEventListener('refreshInit', measure);
+  if (reduced) return;
 
-  if (count && !reduced) {
-    const total = Number(count.dataset.countTo);
-    const tally = { n: 0 };
-    count.textContent = '0';
-    ScrollTrigger.create({
-      trigger: section,
-      start: 'top 70%',
-      once: true,
-      onEnter: () =>
-        gsap.to(tally, {
-          n: total,
-          duration: 1.8,
-          ease: 'power2.out',
-          onUpdate: () => (count.textContent = String(Math.round(tally.n))),
-        }),
+  gsap.matchMedia().add(PINNED, () => {
+    gsap.to(rail, {
+      x: () => -travel(),
+      ease: 'none',
+      scrollTrigger: {
+        trigger: section,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: true,
+        invalidateOnRefresh: true,
+      },
     });
-  }
-
-  if (reduced) {
-    window.addEventListener('resize', measure);
-    return;
-  }
-
-  gsap.to(rail, {
-    x: () => -travel(),
-    ease: 'none',
-    scrollTrigger: {
-      trigger: section,
-      start: 'top top',
-      end: 'bottom bottom',
-      scrub: true,
-      invalidateOnRefresh: true,
-      onRefreshInit: measure,
-      onUpdate: (self) => (hint.style.opacity = String(1 - Math.min(1, self.progress * 6))),
-    },
   });
 }

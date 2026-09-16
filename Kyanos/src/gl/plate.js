@@ -1,8 +1,31 @@
-// One program for every print that lies or hangs: the plate on the process table, the prints
-// on the drying line and the preview that follows the pointer through the sessions.
+// One program for every print that lies or hangs: the plate on the process table and the
+// prints on the drying line.
 // Each PlateMesh keeps its own values and pushes them into the shared program as it draws.
 import { Mesh, Plane, Program, Texture } from 'ogl';
 import { hash, palette } from './glsl.js';
+import { clamp } from '../lib/rng.js';
+
+// Plate 000 hangs as a sheet of its own: an even margin round the print (as a fraction of the
+// sheet's height) and a deeper foot where the printer pencils in what the sheet went through.
+export const MARGIN = 0.075;
+export const FOOT = 0.2;
+
+// Width over height of a sheet cut to hold a print of this aspect, within the line's range.
+export const sheetAspect = (print) => clamp((1 - MARGIN - FOOT) * print + 2 * MARGIN, 0.75, 1.65);
+
+// Where the print sits on a sheet of this aspect, as [left, bottom, right, top] in 0–1, y up.
+export function printBox(aspect, print) {
+  const bw = 1 - (2 * MARGIN) / aspect;
+  const bh = 1 - MARGIN - FOOT;
+  let iw = bw;
+  let ih = (iw * aspect) / print;
+  if (ih > bh) {
+    ih = bh;
+    iw = (ih * print) / aspect;
+  }
+  const cy = FOOT + bh / 2;
+  return [0.5 - iw / 2, cy - ih / 2, 0.5 + iw / 2, cy + ih / 2];
+}
 
 const vertex = /* glsl */ `#version 300 es
 in vec3 position;
@@ -44,7 +67,8 @@ uniform sampler2D uNoise;
 uniform vec2 uSize;           // paper size in px
 uniform vec2 uPad;            // shadow margin per side, as a fraction of the paper
 uniform float uMode;
-uniform float uImgAspect;
+uniform vec4 uPrint;          // mode 1: where the print sits on the sheet (left, bottom, right, top)
+uniform sampler2D uNote;      // a label pencilled on the bare paper (alpha)
 uniform float uCoat;          // the brush crossing the sheet
 uniform float uPlace;         // specimens laid down under glass
 uniform float uExpose;
@@ -80,15 +104,8 @@ void main() {
   vec2 lo = vec2(0.075, 0.07);
   vec2 hi = vec2(0.925, 0.93);
   if (uMode > 0.5) {
-    // fit the finished print inside the sheet, landscape or portrait
-    float iw = 0.86;
-    float ih = iw * aspect / uImgAspect;
-    if (ih > 0.84) {
-      ih = 0.84;
-      iw = ih * uImgAspect / aspect;
-    }
-    lo = vec2(0.5 - iw * 0.5, 0.52 - ih * 0.5);
-    hi = vec2(0.5 + iw * 0.5, 0.52 + ih * 0.5);
+    lo = uPrint.xy;
+    hi = uPrint.zw;
   }
   float streak = texture(uNoise, vec2(q.x * 0.55 + uSeed, q.y * 7.0)).b;
   float ex = texture(uNoise, vec2(q.y * 1.7 + uSeed, 0.5)).r - 0.5;
@@ -103,8 +120,8 @@ void main() {
   float n1 = texture(uNoise, q * asp * 0.8 + uSeed).r;
   float fibre = texture(uNoise, px / 520.0 + uSeed).a;
 
-  // Water running down the sheet.
-  float s = mix(-0.3, 1.3, uWash) - (1.0 - q.y) + (texture(uNoise, vec2(q.x + uSeed, 0.4)).r - 0.5) * 0.2;
+  // Water rising up the sheet as it is lowered into the tray.
+  float s = mix(-0.3, 1.3, uWash) - q.y + (texture(uNoise, vec2(q.x + uSeed, 0.4)).r - 0.5) * 0.2;
   float wet = smoothstep(-0.015, 0.05, s);
   float ripple = smoothstep(0.0, 0.03, s) * exp(-max(s, 0.0) * 3.0) * (1.0 - smoothstep(0.85, 1.0, uWash));
   vec2 w = q * asp;
@@ -127,6 +144,10 @@ void main() {
     col = mix(PAPER, img, coat);
   }
   col *= 0.975 + (fibre - 0.5) * 0.06;
+
+  // Graphite on the margin, never over the coat.
+  float pencil = texture(uNote, q).a * (1.0 - coat);
+  col = mix(col, vec3(0.24, 0.27, 0.34), pencil * 0.82);
 
   // Specimens lying on the sheet under glass (only the process plate places them).
   vec2 luv = (q - 0.5) / (1.0 + (1.0 - uPlace) * 0.08 + uLift * 0.05) + 0.5;
@@ -185,7 +206,8 @@ export function createPlateProgram(stage) {
       uSize: { value: [1, 1] },
       uPad: { value: [0, 0] },
       uMode: { value: 0 },
-      uImgAspect: { value: 1 },
+      uPrint: { value: [0.1, 0.2, 0.9, 0.93] },
+      uNote: { value: blank },
       uCoat: { value: 1 },
       uPlace: { value: 0 },
       uExpose: { value: 1 },
@@ -218,7 +240,8 @@ export class PlateMesh {
     this.u = {
       tex: null,
       mode: 0,
-      imgAspect: 1,
+      print: [0.1, 0.2, 0.9, 0.93], // mode 1, from printBox()
+      note: null,
       coat: 1,
       place: 0,
       expose: 1,
@@ -255,7 +278,8 @@ export class PlateMesh {
     const u = this.u;
     U.uTex.value = u.tex || this.program.blank;
     U.uMode.value = u.mode;
-    U.uImgAspect.value = u.imgAspect;
+    U.uPrint.value = u.print;
+    U.uNote.value = u.note || this.program.blank;
     U.uCoat.value = u.coat;
     U.uPlace.value = u.place;
     U.uExpose.value = u.expose;

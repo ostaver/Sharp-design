@@ -11,7 +11,7 @@ const SHEETS = [
       [60, 78, 485, 16], // sheet label
       [60, 795, 270, 80], // tagline
       [555, 770, 330, 95], // instrument
-      [1155, 830, 225, 40], // cue
+      [0, 876, 1440, 24], // tray water at rest
     ],
   },
   {
@@ -39,7 +39,7 @@ function tint(src, color) {
   return c;
 }
 
-await document.fonts.load('700 100px "Host Grotesk"');
+await document.fonts.load('820 100px "Ysabeau"');
 const wrap = document.getElementById('wrap');
 for (const { w, h, view, zones } of SHEETS) {
   const { plants, negative } = composeSheet(w, h, { scale: 1 });

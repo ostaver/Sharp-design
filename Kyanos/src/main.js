@@ -10,14 +10,14 @@ import { Texture } from 'ogl';
 
 import { env } from './lib/env.js';
 import './lib/pointer.js';
-import { PROCESS, composeSheet, drawPlate } from './specimens/compose.js';
+import { STUDIO } from './lib/sun.js';
+import { HAND, PROCESS, composeSheet, drawPlate } from './specimens/compose.js';
 import { Stage } from './gl/Stage.js';
 import { Ground } from './gl/Ground.js';
 import { Photogram } from './gl/Photogram.js';
 import { createPlateProgram } from './gl/plate.js';
 import { ProcessPlate } from './gl/ProcessPlate.js';
 import { DryingLine } from './gl/DryingLine.js';
-import { Preview } from './gl/Preview.js';
 import { Preloader } from './ui/preloader.js';
 import { initNav } from './ui/nav.js';
 import { initReveals } from './ui/reveals.js';
@@ -25,12 +25,14 @@ import { initHero } from './ui/hero.js';
 import { initProcess } from './ui/process.js';
 import { initHerbarium } from './ui/herbarium.js';
 import { initSunclock } from './ui/sunclock.js';
+import { initSessions } from './ui/sessions.js';
+import { initCoat } from './ui/coat.js';
 
 gsap.registerPlugin(ScrollTrigger, SplitText, CustomEase);
 // Slow to start, then resolving: the way a print comes up in the wash.
 CustomEase.create('develop', 'M0,0 C0.2,0 0.26,0.46 0.44,0.76 0.62,1 0.82,1 1,1');
 
-const FONT = 'Host Grotesk';
+const FONT = 'Ysabeau';
 const html = document.documentElement;
 const reduced = env.reducedMotion;
 html.classList.toggle('motion', !reduced);
@@ -42,7 +44,7 @@ const nextFrame = () => new Promise((resolve) => requestAnimationFrame(() => res
 
 async function loadFonts() {
   if (!document.fonts) return;
-  const faces = [`700 100px "${FONT}"`, `500 16px "${FONT}"`, `300 16px "${FONT}"`, 'italic 350 16px "Fraunces"'];
+  const faces = [`820 100px "${FONT}"`, `560 16px "${FONT}"`, `380 16px "${FONT}"`, 'italic 400 16px "Cardo"', `400 32px "${HAND}"`];
   await Promise.race([Promise.allSettled(faces.map((face) => document.fonts.load(face))), new Promise((r) => setTimeout(r, 3500))]);
 }
 
@@ -88,7 +90,6 @@ function createGL(processCanvas) {
   stage.add(
     new DryingLine(stage, program, { section: herbarium, medias: [...herbarium.querySelectorAll('.plate__media')], textureFor, photogram, reduced }),
   );
-  if (env.finePointer) stage.add(new Preview(stage, program, { list: document.querySelector('.sessions__list'), textureFor }));
   specimenJobs().forEach(({ type, seed }) => textureFor(type, seed));
 
   html.classList.add('gl-on');
@@ -139,7 +140,9 @@ function start(gl, processCanvas) {
   initProcess({ plate: gl?.process, reduced });
   initHerbarium({ reduced });
   initReveals({ reduced });
+  initSessions();
   initSunclock();
+  initCoat({ lenis, hero, reduced });
 
   if (gl) {
     gsap.ticker.add((time, deltaMs) => {
@@ -175,7 +178,9 @@ async function boot() {
     preloader.set(0.2 + 0.5 * ((i + 1) / jobs.length));
     await nextFrame();
   }
-  const processCanvas = drawPlate('process', 1205, PROCESS);
+  // the plate on the table is dated today, in the printer's hand
+  const day = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', timeZone: STUDIO.tz }).format(new Date());
+  const processCanvas = drawPlate('process', 1205, { ...PROCESS, caption: `Hydra, ${day}` });
   await nextFrame();
 
   let gl = null;

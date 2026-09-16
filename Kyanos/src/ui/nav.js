@@ -73,7 +73,7 @@ export function initNav({ lenis }) {
     if (menu.hidden) return;
     menu.hidden = true;
     button.setAttribute('aria-expanded', 'false');
-    button.textContent = 'Menu';
+    button.textContent = 'Contents';
     delete html.dataset.menu;
     outside.forEach((el) => (el.inert = false));
     lenis?.start();

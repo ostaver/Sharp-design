@@ -4,6 +4,7 @@ import { place } from './draw.js';
 
 export const PLATE = { w: 540, h: 720 }; // 3 : 4 prints on the drying line
 export const PROCESS = { w: 560, h: 700 }; // 4 : 5 print on the process table
+export const HAND = 'La Belle Aurore'; // the printer's handwriting on the plates
 
 // [specimen, x, y, angle, size as a fraction of sheet height, options]
 const LAYOUTS = {
@@ -36,6 +37,19 @@ const LAYOUTS = {
   ],
 };
 
+// Names written on each plate, as Anna Atkins wrote hers under every specimen.
+const NAMES = {
+  maidenhair: 'Adiantum capillus-veneris',
+  umbel: 'Daucus carota',
+  ginkgo: 'Ginkgo biloba',
+  dandelion: 'Taraxacum officinale',
+  seaweed: 'Dictyota dichotoma',
+  grass: 'Briza maxima',
+  fern: 'Dryopteris filix-mas',
+  cornflower: 'Centaurea cyanus',
+  feather: 'Larus michahellis',
+};
+
 function sheet(w, h) {
   const c = document.createElement('canvas');
   c.width = Math.round(w);
@@ -43,12 +57,68 @@ function sheet(w, h) {
   return c;
 }
 
-export function drawPlate(layout, seed = 1, { w = PLATE.w, h = PLATE.h } = {}) {
+// The name in ink on a slip of tissue laid on the glass: it blocks the sun, so it prints white.
+function inscribe(ctx, text, w, h) {
+  const font = `${Math.round(h * 0.046)}px "${HAND}"`;
+  if (document.fonts && !document.fonts.check(font)) return; // no hand, no forgery in Comic Sans
+  ctx.save();
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.94)';
+  ctx.font = font;
+  ctx.textAlign = 'right';
+  ctx.translate(w * 0.885, h * 0.9);
+  ctx.rotate(-0.035);
+  ctx.fillText(text, 0, 0);
+  ctx.restore();
+}
+
+// Plate 000's label, pencilled in the foot of the sheet, centred under the print. Drawn as
+// coverage only; the plate shader lays it down in graphite.
+export function drawNote(w, h, lines, { foot, margin }, scale = 1) {
+  let size = Math.min(26, Math.max(13, h * 0.052));
+  const font = (px) => `${px.toFixed(1)}px "${HAND}"`;
+  if (document.fonts && !document.fonts.check(font(size))) return null;
+  const c = sheet(w * scale, h * scale);
+  const ctx = c.getContext('2d');
+  ctx.scale(scale, scale);
+  ctx.font = font(size);
+  size *= Math.min(1, (w - 2 * margin) / Math.max(...lines.map((text) => ctx.measureText(text).width)));
+  ctx.font = font(size);
+  ctx.fillStyle = '#fff';
+  ctx.textAlign = 'center';
+  lines.forEach((text, i) => {
+    ctx.save();
+    ctx.translate(w / 2, h - foot * 0.62 + i * size * 1.25);
+    ctx.rotate(-0.012);
+    ctx.fillText(text, 0, 0);
+    ctx.restore();
+  });
+  return c;
+}
+
+export function drawPlate(layout, seed = 1, { w = PLATE.w, h = PLATE.h, caption = NAMES[layout] } = {}) {
   const c = sheet(w, h);
   const ctx = c.getContext('2d');
   const rng = mulberry32(seed * 7919 + 101);
   for (const [type, x, y, angle, size, opts] of LAYOUTS[layout] ?? LAYOUTS.fern) {
     place(ctx, rng, type, x * w, y * h, angle, { ...opts, len: size * h });
+  }
+  if (caption) inscribe(ctx, caption, w, h);
+  return c;
+}
+
+// A sessions row as a strip of exposed paper: the session's plant laid along it head to tail,
+// cropped by the edges the way a contact print crops whatever overhangs the sheet.
+export function drawStrip(type, seed, w, h) {
+  const c = sheet(w, h);
+  const ctx = c.getContext('2d');
+  const rng = mulberry32(seed * 104729 + 7);
+  const count = Math.max(2, Math.round(w / (h * 3)));
+  for (let i = 0; i < count; i++) {
+    const right = i % 2 === 0;
+    const x = ((i + (right ? 0.08 : 0.92)) / count) * w;
+    const y = h * (0.3 + rng() * 0.4);
+    const angle = (right ? 1 : -1) * (Math.PI / 2 + (rng() - 0.5) * 0.5);
+    place(ctx, rng, type, x, y, angle, { len: h * (2 + rng() * 0.9) });
   }
   return c;
 }
@@ -58,7 +128,7 @@ export function drawPlate(layout, seed = 1, { w = PLATE.w, h = PLATE.h } = {}) {
  * the print is washed) and a film negative carrying the wordmark, which stays latent
  * until light develops the paper around it.
  */
-export function composeSheet(width, height, { scale = 1, font = 'Host Grotesk', seed = 1842 } = {}) {
+export function composeSheet(width, height, { scale = 1, font = 'Ysabeau', seed = 1842 } = {}) {
   const W = Math.round(width * scale);
   const H = Math.round(height * scale);
   const plants = sheet(W, H);
@@ -116,14 +186,14 @@ export function composeSheet(width, height, { scale = 1, font = 'Host Grotesk', 
   };
 
   const word = 'KYANOS';
-  setType(700, 100, -0.045);
-  const size = (100 * W * (land ? 0.74 : 0.9)) / widthOf(word, 100, -0.045);
+  setType(820, 100, -0.02);
+  const size = (100 * W * (land ? 0.74 : 0.9)) / widthOf(word, 100, -0.02);
   const baseline = H * (land ? 0.5 : 0.49) + size * 0.36;
-  draw(word, 700, size, -0.045, baseline);
+  draw(word, 820, size, -0.02, baseline);
 
-  const caption = 'SUN-PRINTED ON HYDRA · SINCE 2014';
+  const caption = 'SUN-PRINTED ON HYDRA · SINCE MMXIV'; // Roman, like every date on the plates
   const cs = Math.max(11 * scale, size * 0.052);
-  draw(caption, 500, cs, 0.3, baseline + size * 0.2 + cs);
+  draw(caption, 600, cs, 0.28, baseline + size * 0.2 + cs);
 
   return { plants, negative };
 }

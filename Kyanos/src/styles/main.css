@@ -1,7 +1,9 @@
 /* ==========================================================================
-   Kyanos — the Cyanotype design language
+   Kyanos — the design language
    Prussian blue, cotton paper and the yellow-green of the iron coat.
    Nothing else is allowed on the page.
+   Type: Ysabeau, a humanist sans on Garamond's bones, for the voice, with every
+   label in its small capitals; Cardo italic for Latin names, years and numerals.
    ========================================================================== */
 
 :root {
@@ -11,8 +13,8 @@
   --prussian-deep: #0b1d4a;
   --sens: #e4e1a6;
 
-  --font-sans: 'Host Grotesk', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-serif: 'Fraunces', ui-serif, Georgia, 'Times New Roman', serif;
+  --font-sans: 'Ysabeau', Optima, Candara, 'Gill Sans', 'Segoe UI', ui-sans-serif, sans-serif;
+  --font-serif: 'Cardo', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
 
   --px: clamp(1.25rem, 4.2vw, 4.5rem);
   --gap: clamp(1rem, 2vw, 2rem);
@@ -28,6 +30,7 @@
   --fg-3: rgb(242 239 230 / 0.6);
   --rule: rgb(242 239 230 / 0.22);
   --accent: var(--sens);
+  --latent: rgb(228 225 166 / 0.92); /* the unwashed coat a heading waits in */
 }
 
 [data-theme='sheet'],
@@ -37,6 +40,7 @@
   --fg-3: rgb(14 35 86 / 0.66);
   --rule: rgb(14 35 86 / 0.2);
   --accent: var(--prussian);
+  --latent: rgb(186 182 112 / 0.75);
 }
 
 /* ---------------------------------------------------------------- base -- */
@@ -60,9 +64,9 @@ body {
   background: var(--prussian);
   color: var(--fg);
   font-family: var(--font-sans);
-  font-size: 1.0625rem;
+  font-size: 1.125rem;
   font-weight: 400;
-  line-height: 1.55;
+  line-height: 1.5;
   font-kerning: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -152,26 +156,26 @@ button {
 
 h2 {
   font-size: clamp(2.5rem, 5.8vw, 6.4rem);
-  font-weight: 300;
-  line-height: 0.98;
-  letter-spacing: -0.035em;
+  font-weight: 380;
+  line-height: 1;
+  letter-spacing: -0.018em;
   text-wrap: balance;
 }
 
 h3 {
-  font-size: clamp(1.3rem, 1.8vw, 1.7rem);
-  font-weight: 450;
+  font-size: clamp(1.35rem, 1.8vw, 1.75rem);
+  font-weight: 540;
   line-height: 1.1;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.006em;
 }
 
 em {
   font-family: var(--font-serif);
   font-style: italic;
-  font-weight: 350;
+  font-weight: 400;
 }
 
-/* The specimen-label voice: small, spaced capitals. */
+/* The herbarium-label voice: small capitals, lightly spaced, with lining figures. */
 .folio,
 .label,
 .preloader__label,
@@ -184,22 +188,22 @@ em {
 .hero__hint,
 .meter__value,
 .text-button,
-.hero__cue,
 .process__plate figcaption,
 .step__data,
 .herbarium__count,
 .plate__no,
 .plate__meta,
-.line__hint,
+.line__weather,
 .session__len,
 .session__seats,
-.session__cta {
-  font-size: 0.75rem;
-  font-weight: 500;
-  line-height: 1.4;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  font-variant-numeric: tabular-nums;
+.session__cta,
+.coat__note {
+  font-size: 1rem;
+  font-weight: 560;
+  line-height: 1.35;
+  letter-spacing: 0.075em;
+  font-variant-caps: all-small-caps;
+  font-variant-numeric: lining-nums tabular-nums;
 }
 
 .folio {
@@ -224,16 +228,17 @@ em {
   opacity: 0.55;
 }
 
-.link {
-  text-decoration: none;
-  background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat;
-  padding-bottom: 0.15em;
-  transition: background-size 0.5s var(--ease-out);
+/* Links are underlined as in print; under the pointer the line ripples like the water line. */
+.link,
+.text-button {
+  text-decoration: underline 1px color-mix(in srgb, currentColor 45%, transparent);
+  text-underline-offset: 0.3em;
 }
 
-.link:hover {
-  background-size: 0 1px;
-  background-position: 100% 100%;
+.link:hover,
+.text-button:hover {
+  text-decoration-style: wavy;
+  text-decoration-color: currentColor;
 }
 
 /* -------------------------------------------------------------- canvas -- */
@@ -268,6 +273,12 @@ html.no-gl .gl {
   color: var(--ink);
 }
 
+/* The fresh-sheet veil brushes straight over whatever is on screen. */
+.preloader--again {
+  z-index: 110;
+  background: transparent;
+}
+
 .preloader__coat {
   position: absolute;
   inset: 0;
@@ -282,9 +293,9 @@ html.no-gl .gl {
 .preloader__brand {
   top: 1.55rem;
   left: var(--px);
-  font-size: 0.82rem;
-  font-weight: 650;
-  letter-spacing: 0.24em;
+  font-size: 0.9rem;
+  font-weight: 760;
+  letter-spacing: 0.22em;
 }
 
 .preloader__formula {
@@ -296,16 +307,6 @@ html.no-gl .gl {
 .preloader__label {
   bottom: 1.9rem;
   left: var(--px);
-}
-
-.preloader__count {
-  right: var(--px);
-  bottom: 0.6rem;
-  font-size: clamp(4rem, 12vw, 11rem);
-  font-weight: 300;
-  line-height: 0.9;
-  letter-spacing: -0.05em;
-  font-variant-numeric: tabular-nums;
 }
 
 html.no-js .preloader {
@@ -352,9 +353,9 @@ html[data-menu='open'] .nav {
 .nav__brand {
   justify-self: start;
   padding: 0.8rem 0;
-  font-size: 0.82rem;
-  font-weight: 650;
-  letter-spacing: 0.24em;
+  font-size: 0.9rem;
+  font-weight: 760;
+  letter-spacing: 0.22em;
   text-decoration: none;
 }
 
@@ -364,49 +365,59 @@ html[data-menu='open'] .nav {
 }
 
 .nav__links a {
-  position: relative;
   display: inline-block;
   padding: 0.9rem 0;
   text-decoration: none;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.4em;
 }
 
-.nav__links a::after {
-  content: '';
-  position: absolute;
-  right: 0;
-  bottom: 0.62rem;
-  left: 0;
-  height: 1px;
-  background: currentColor;
-  transform: scaleX(0);
-  transform-origin: right;
-  transition: transform 0.5s var(--ease-out);
+.nav__links a[aria-current='true'] {
+  text-decoration-line: underline;
 }
 
-.nav__links a:hover::after,
-.nav__links a[aria-current='true']::after {
-  transform: scaleX(1);
-  transform-origin: left;
+.nav__links a:hover {
+  text-decoration-line: underline;
+  text-decoration-style: wavy;
 }
 
 .nav__sun {
   justify-self: end;
   display: inline-flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.7rem;
 }
 
-.sun-dot {
-  width: 0.55rem;
-  height: 0.55rem;
-  border-radius: 50%;
-  background: currentColor;
-  box-shadow: 0 0 0 0.22rem color-mix(in srgb, currentColor 22%, transparent);
+/* Today's arc of the sun over Hydra, and the sun where it stands now. */
+.sun-path {
+  width: 1.75rem;
+  height: 0.875rem;
+  overflow: visible;
 }
 
-.sun-dot.is-down {
-  background: transparent;
-  box-shadow: inset 0 0 0 1px currentColor;
+.sun-path__horizon {
+  stroke: currentColor;
+  stroke-width: 1;
+  opacity: 0.4;
+}
+
+.sun-path__arc {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.75;
+}
+
+.sun-path__sun {
+  fill: currentColor;
+}
+
+.sun-path.is-down .sun-path__sun {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
 }
 
 .nav__menu {
@@ -442,16 +453,16 @@ html[data-menu='open'] .nav {
   padding: 0.45rem 0;
   border-bottom: 1px solid rgb(242 239 230 / 0.2);
   font-size: clamp(2.6rem, 12vw, 4.5rem);
-  font-weight: 300;
+  font-weight: 360;
   line-height: 1.1;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.02em;
   text-decoration: none;
 }
 
 .menu__no {
   width: 2.5rem;
   font-family: var(--font-serif);
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-style: italic;
   letter-spacing: 0;
   color: var(--sens);
@@ -461,8 +472,8 @@ html[data-menu='open'] .nav {
   display: flex;
   justify-content: space-between;
   gap: 1rem;
-  text-transform: none;
-  letter-spacing: 0.04em;
+  font-variant-caps: normal;
+  letter-spacing: 0.02em;
 }
 
 @media (max-width: 899px) {
@@ -498,47 +509,13 @@ html[data-menu='open'] .nav {
   overflow: hidden;
 }
 
+/* While the sheet is in the sun, the pointer is a burning glass drawn in WebGL. */
 html.gl-on.fine.exposing .hero__sticky {
   cursor: none;
 }
 
 .hero__sticky button {
   cursor: pointer;
-}
-
-.lamp {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 2;
-  width: 3rem;
-  height: 3rem;
-  margin: -1.5rem 0 0 -1.5rem;
-  border: 1px solid rgb(14 35 86 / 0.4);
-  border-radius: 50%;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.4s var(--ease-out);
-}
-
-.lamp::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 4px;
-  height: 4px;
-  margin: -2px 0 0 -2px;
-  border-radius: 50%;
-  background: var(--ink);
-}
-
-html.gl-on.fine.exposing .hero__sticky:hover .lamp {
-  opacity: 1;
-}
-
-.hero__sticky:has(button:hover) .lamp {
-  opacity: 0 !important;
 }
 
 .hero__ui {
@@ -566,10 +543,11 @@ html.gl-on.motion .hero__ui {
   color: var(--fg-2);
 }
 
+/* The foot of the sheet sits clear of the tray water lapping at its bottom edge. */
 .hero__foot {
   position: absolute;
   right: var(--px);
-  bottom: calc(var(--chrome) + clamp(1.25rem, 3.2vh, 2.5rem));
+  bottom: calc(var(--chrome) + clamp(2.1rem, 5vh, 3.25rem));
   left: var(--px);
   display: grid;
   grid-template-columns: 1fr auto 1fr;
@@ -579,9 +557,9 @@ html.gl-on.motion .hero__ui {
 
 .hero__tagline {
   max-width: 21ch;
-  font-size: clamp(1.05rem, 1.4vw, 1.35rem);
+  font-size: clamp(1.1rem, 1.45vw, 1.4rem);
   line-height: 1.28;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.005em;
 }
 
 .hero__instrument {
@@ -647,47 +625,8 @@ html.gl-on.motion .hero__ui {
   min-height: 44px;
   padding: 0;
   border: 0;
-  background: linear-gradient(currentColor, currentColor) 0 calc(50% + 0.8em) / 100% 1px no-repeat;
+  background: none;
   cursor: pointer;
-  transition: background-size 0.5s var(--ease-out);
-}
-
-.text-button:hover {
-  background-size: 0 1px;
-  background-position: 100% calc(50% + 0.8em);
-}
-
-.hero__cue {
-  justify-self: end;
-  display: inline-flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.cue-line {
-  width: 1px;
-  height: 2.75rem;
-  background: currentColor;
-  animation: cue 2.6s var(--ease-in-out) infinite;
-}
-
-@keyframes cue {
-  0% {
-    transform: scaleY(0);
-    transform-origin: top;
-  }
-  45% {
-    transform: scaleY(1);
-    transform-origin: top;
-  }
-  55% {
-    transform: scaleY(1);
-    transform-origin: bottom;
-  }
-  100% {
-    transform: scaleY(0);
-    transform-origin: bottom;
-  }
 }
 
 .hero__note {
@@ -702,7 +641,7 @@ html.gl-on.motion .hero__ui {
   gap: 0.4rem;
   width: min(88vw, 40rem);
   color: var(--paper);
-  font-size: clamp(1rem, 1.3vw, 1.2rem);
+  font-size: clamp(1.05rem, 1.35vw, 1.25rem);
   line-height: 1.4;
   text-align: center;
   opacity: 0;
@@ -713,7 +652,7 @@ html.gl-on.motion .hero__ui {
   font-family: var(--font-serif);
   font-size: 1.45em;
   font-style: italic;
-  font-weight: 350;
+  font-weight: 400;
   color: var(--sens);
 }
 
@@ -727,10 +666,6 @@ html.gl-on.motion .hero__ui {
   .hero__instrument {
     justify-items: start;
     text-align: left;
-  }
-
-  .hero__cue {
-    display: none;
   }
 }
 
@@ -751,9 +686,9 @@ html.no-gl .hero__fallback {
   display: grid;
   place-items: center;
   font-size: clamp(4.5rem, 19vw, 20rem);
-  font-weight: 700;
+  font-weight: 800;
   line-height: 1;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.02em;
   color: var(--paper);
 }
 
@@ -766,9 +701,7 @@ html.no-gl .hero__art {
 }
 
 html.no-js .hero__instrument,
-html.no-gl .hero__instrument,
-html.no-js .hero__cue,
-html.no-gl .hero__cue {
+html.no-gl .hero__instrument {
   display: none;
 }
 
@@ -788,7 +721,7 @@ html.no-gl .hero__cue {
 .manifesto__title {
   grid-column: 1 / span 11;
   font-size: clamp(2.3rem, 5.4vw, 6.4rem);
-  line-height: 1.02;
+  line-height: 1.04;
 }
 
 .manifesto__body {
@@ -796,7 +729,7 @@ html.no-gl .hero__cue {
   display: grid;
   gap: 1.2rem;
   margin-top: clamp(3rem, 7vw, 6.5rem);
-  font-size: clamp(1.08rem, 1.3vw, 1.28rem);
+  font-size: clamp(1.12rem, 1.35vw, 1.32rem);
   line-height: 1.5;
   color: var(--fg-2);
 }
@@ -819,16 +752,16 @@ html.no-gl .hero__cue {
 
 .footnotes__year {
   font-family: var(--font-serif);
-  font-size: clamp(2.4rem, 4vw, 4rem);
+  font-size: clamp(2.6rem, 4.2vw, 4.3rem);
   font-style: italic;
-  font-weight: 300;
+  font-weight: 400;
   line-height: 1;
   color: var(--accent);
 }
 
 .footnotes p {
   max-width: 30ch;
-  font-size: 1rem;
+  font-size: 1.05rem;
   color: var(--fg-2);
 }
 
@@ -947,9 +880,9 @@ html.no-gl .plate-fallback {
 
 .step__no {
   font-family: var(--font-serif);
-  font-size: 1.15rem;
+  font-size: 1.25rem;
   font-style: italic;
-  line-height: 1.4;
+  line-height: 1.3;
   color: var(--accent);
 }
 
@@ -970,7 +903,7 @@ html.no-gl .plate-fallback {
 .step__body p:not(.step__data) {
   max-width: 46ch;
   margin-top: 0.6rem;
-  font-size: 1rem;
+  font-size: 1.05rem;
   color: var(--fg-2);
 }
 
@@ -979,19 +912,44 @@ html.no-gl .plate-fallback {
   color: var(--fg-3);
 }
 
-.process__rail {
+/* A test strip on a scrap of the same paper: one patch per step, filled as the steps pass,
+   each in the colour the print has reached by then. */
+.wedge {
   grid-row: 3;
   grid-column: 7 / span 6;
-  height: 1px;
-  background: var(--rule);
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 3px;
+  width: min(100%, 22rem);
+  height: 1.1rem;
+  padding: 3px;
+  background: var(--paper);
+  box-shadow: 0 10px 22px -12px rgb(4 12 34 / 0.55);
 }
 
-.process__rail span {
-  display: block;
-  height: 100%;
-  background: var(--accent);
-  transform: scaleX(0);
-  transform-origin: left;
+.wedge__patch {
+  --fill: 0;
+  background: linear-gradient(90deg, var(--c) calc(var(--fill) * 100%), rgb(14 35 86 / 0.07) calc(var(--fill) * 100%));
+}
+
+.wedge__patch:nth-child(1) {
+  --c: #e4e1a6; /* coated */
+}
+
+.wedge__patch:nth-child(2) {
+  --c: #c7c592; /* under glass */
+}
+
+.wedge__patch:nth-child(3) {
+  --c: #62706e; /* greyed in the sun */
+}
+
+.wedge__patch:nth-child(4) {
+  --c: #2d56a8; /* washed */
+}
+
+.wedge__patch:nth-child(5) {
+  --c: #0e2356; /* oxidised */
 }
 
 @media (max-width: 899px) {
@@ -1030,7 +988,7 @@ html.no-gl .plate-fallback {
     display: none;
   }
 
-  .process__rail {
+  .wedge {
     grid-row: 4;
     grid-column: 1 / -1;
   }
@@ -1052,6 +1010,10 @@ html.no-js .step {
 
 html.no-js .step__body {
   grid-template-rows: 1fr;
+}
+
+html.no-js .wedge {
+  display: none;
 }
 
 /* ----------------------------------------------------------- herbarium -- */
@@ -1094,7 +1056,7 @@ html.no-js .step__body {
 .herbarium__intro {
   grid-column: 7 / span 4;
   max-width: 36ch;
-  font-size: 1rem;
+  font-size: 1.05rem;
   color: var(--fg-2);
 }
 
@@ -1107,7 +1069,10 @@ html.no-js .step__body {
 
 .line {
   position: relative;
-  align-self: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  container-type: size; /* the prints are sized to the height this row leaves them */
 }
 
 .line__rail {
@@ -1138,13 +1103,24 @@ html.no-js .step__body {
 }
 
 .plate {
+  /* 3 : 4 sheets, no taller than the line's row allows once the tallest caption is in */
+  --plate-w: min(clamp(14rem, 21vw, 20rem), calc((100cqh - 11.5rem) * 0.75));
   flex: none;
-  width: var(--plate-w, clamp(14rem, 21vw, 20rem));
+  width: var(--plate-w);
 }
 
 .plate__media {
   position: relative;
   aspect-ratio: 3 / 4;
+}
+
+/* Plate 000 is cut to fit the visitor's print: as tall as the others, as wide as it needs. */
+.plate--yours {
+  width: calc(var(--plate-w) * 4 / 3 * var(--sheet, 0.75));
+}
+
+.plate--yours .plate__media {
+  aspect-ratio: var(--sheet, 0.75);
 }
 
 .plate__media > canvas {
@@ -1190,14 +1166,14 @@ html.no-js .step__body {
 
 .plate__latin {
   font-family: var(--font-serif);
-  font-size: 1.35rem;
+  font-size: 1.45rem;
   font-style: italic;
-  font-weight: 350;
+  font-weight: 400;
   line-height: 1.15;
 }
 
 .plate__common {
-  font-size: 0.92rem;
+  font-size: 1rem;
   color: var(--fg-2);
 }
 
@@ -1206,7 +1182,22 @@ html.no-js .step__body {
   color: var(--fg-3);
 }
 
-.line__hint {
+.plate__keep {
+  justify-self: start;
+  gap: 0.45em; /* the flex box drops the space before the span */
+  margin-top: 0.3rem;
+}
+
+.plate__keep span {
+  color: var(--fg-3);
+}
+
+.plate__keep:disabled {
+  cursor: progress;
+  opacity: 0.6;
+}
+
+.line__weather {
   padding: 0 var(--px);
   color: var(--fg-3);
 }
@@ -1227,6 +1218,8 @@ html.no-js .herbarium__sticky {
 }
 
 html.no-js .line {
+  display: block;
+  container-type: normal;
   overflow-x: auto;
 }
 
@@ -1250,7 +1243,33 @@ html.no-gl .plate--yours {
   }
 
   .plate {
-    --plate-w: min(62vw, calc((100svh - 22rem) * 0.75));
+    --plate-w: min(62vw, calc((100cqh - 12.5rem) * 0.75));
+  }
+}
+
+/* Too short a screen to pin the line (landscape phones, small phones, squat windows): the
+   folio scrolls like any other and the line becomes a sideways scroller. herbarium.js
+   pins only under the complementary query. */
+@media (height < 700px), (width < 900px) and (height < 760px) {
+  .herbarium {
+    height: auto;
+  }
+
+  .herbarium__sticky {
+    position: static;
+    height: auto;
+    gap: 2rem;
+  }
+
+  .line {
+    display: block;
+    container-type: normal;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+  }
+
+  .plate {
+    --plate-w: min(62vw, 15rem, calc((100svh - 5rem) * 0.75));
   }
 }
 
@@ -1278,7 +1297,7 @@ html.no-gl .plate--yours {
 
 .sessions__intro {
   grid-column: 9 / span 4;
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   color: var(--fg-2);
 }
 
@@ -1290,7 +1309,7 @@ html.no-gl .plate--yours {
   position: relative;
   isolation: isolate;
   display: grid;
-  grid-template-columns: 7.5rem minmax(0, 1.1fr) minmax(0, 1.6fr) 5.5rem 8rem 6.5rem;
+  grid-template-columns: 7.5rem minmax(0, 1.1fr) minmax(0, 1.6fr) 5.5rem 9.5rem 6.5rem;
   align-items: baseline;
   gap: var(--gap);
   padding: clamp(1.4rem, 2.6vw, 2.25rem) 0.25rem;
@@ -1298,20 +1317,47 @@ html.no-gl .plate--yours {
   text-decoration: none;
 }
 
+/* A hovered row takes on a breath of the coat's colour. */
 .session a::before {
   content: '';
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: rgb(242 239 230 / 0.06);
-  transform: scaleY(0);
-  transform-origin: bottom;
-  transition: transform 0.6s var(--ease-out);
+  background: rgb(228 225 166 / 0.07);
+  opacity: 0;
+  transition: opacity 0.5s var(--ease-out);
 }
 
 .session a:hover::before,
 .session a:focus-visible::before {
-  transform: scaleY(1);
+  opacity: 1;
+}
+
+/* Hovering or focusing a row exposes it like a strip of paper with the session's plant on it:
+   the light runs along the row and the silhouette comes up white behind the text. */
+@property --expose {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: -25%;
+}
+
+.session__strip {
+  --expose: -25%;
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  opacity: 0.18;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(90deg, #000 var(--expose), transparent calc(var(--expose) + 20%));
+  mask-image: linear-gradient(90deg, #000 var(--expose), transparent calc(var(--expose) + 20%));
+  transition: --expose 1.3s var(--ease-out);
+}
+
+.session a:hover .session__strip,
+.session a:focus-visible .session__strip {
+  --expose: 100%;
 }
 
 .session__date {
@@ -1322,33 +1368,28 @@ html.no-gl .plate--yours {
 
 .session__date span:first-child {
   font-size: clamp(2.1rem, 3.4vw, 3.3rem);
-  font-weight: 300;
+  font-weight: 320;
   line-height: 1;
-  letter-spacing: -0.04em;
-  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  font-variant-numeric: lining-nums tabular-nums;
 }
 
 .session__date span:last-child {
   font-family: var(--font-serif);
-  font-size: 1.05rem;
+  font-size: 1.15rem;
   font-style: italic;
   color: var(--accent);
 }
 
 .session__title {
-  font-size: clamp(1.3rem, 1.9vw, 1.8rem);
+  font-size: clamp(1.35rem, 1.95vw, 1.85rem);
   line-height: 1.15;
-  letter-spacing: -0.015em;
-  transition: transform 0.6s var(--ease-out);
-}
-
-.session a:hover .session__title {
-  transform: translateX(0.5rem);
+  letter-spacing: -0.01em;
 }
 
 .session__desc {
   max-width: 40ch;
-  font-size: 0.98rem;
+  font-size: 1.02rem;
   color: var(--fg-2);
 }
 
@@ -1359,29 +1400,48 @@ html.no-gl .plate--yours {
 
 .session__cta {
   justify-self: end;
+}
+
+/* The long table: four chairs a side, filled where a seat is already taken. */
+.session__seats {
   display: inline-flex;
-  gap: 0.6rem;
+  align-items: center;
+  gap: 0.75rem;
 }
 
-.session__cta::after {
-  content: '→';
-  transition: transform 0.5s var(--ease-out);
+.seats {
+  display: inline-grid;
+  flex: none;
+  grid-template-columns: repeat(4, 6px);
+  grid-template-rows: 6px 1px 6px;
+  gap: 3px 4px;
 }
 
-.session a:hover .session__cta::after {
-  transform: translateX(0.35rem);
+.seats i {
+  border: 1px solid currentColor;
+  border-radius: 1px;
+}
+
+.seats i.is-taken {
+  background: currentColor;
+}
+
+.seats b {
+  grid-column: 1 / -1;
+  background: currentColor;
+  opacity: 0.6;
 }
 
 .sessions__note {
   max-width: 52ch;
   margin-top: 2.5rem;
-  font-size: 0.98rem;
+  font-size: 1.02rem;
   color: var(--fg-3);
 }
 
 @media (max-width: 1100px) {
   .session a {
-    grid-template-columns: 6rem minmax(0, 1fr) minmax(0, 1.4fr) 6.5rem;
+    grid-template-columns: 6rem minmax(0, 1fr) minmax(0, 1.4fr) 9.5rem;
   }
 
   .session__len,
@@ -1446,7 +1506,7 @@ html.no-gl .plate--yours {
 
 .sunclock__line {
   max-width: 32ch;
-  font-size: clamp(1.15rem, 1.55vw, 1.45rem);
+  font-size: clamp(1.2rem, 1.6vw, 1.5rem);
   line-height: 1.38;
 }
 
@@ -1457,6 +1517,7 @@ html.no-gl .plate--yours {
   margin-top: 1.75rem;
   overflow: visible;
   touch-action: pan-y;
+  font-variant-numeric: lining-nums tabular-nums;
 }
 
 .sunchart__axis {
@@ -1500,7 +1561,7 @@ html.no-gl .plate--yours {
 
 .sunchart__value {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 650;
   fill: var(--paper);
 }
 
@@ -1515,7 +1576,7 @@ html.no-gl .plate--yours {
 }
 
 address {
-  font-size: 1.08rem;
+  font-size: 1.12rem;
   font-style: normal;
   line-height: 1.5;
 }
@@ -1524,7 +1585,7 @@ address {
 .visit__letter {
   max-width: 34ch;
   margin-top: 1rem;
-  font-size: 0.98rem;
+  font-size: 1.02rem;
   color: var(--fg-2);
 }
 
@@ -1532,45 +1593,98 @@ address {
   margin-top: 1rem;
 }
 
-.visit__wordmark {
-  margin: clamp(4rem, 9vw, 8rem) calc(var(--px) * -1) 1.25rem;
-  font-size: 24.2vw;
-  font-weight: 700;
-  line-height: 0.76;
-  letter-spacing: -0.06em;
-  text-align: center;
-  white-space: nowrap;
-  color: var(--paper);
-  user-select: none;
+/* The last thing on the page is the first step of the process: a stroke of raw sensitiser,
+   brushed on as it scrolls into view. Pressing it coats a fresh sheet at the top. */
+.coat {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.55rem;
+  min-height: clamp(10rem, 20vw, 18rem);
+  margin: clamp(4.5rem, 9vw, 8rem) calc(var(--px) * -1) 1.75rem;
+  padding: 0 calc(var(--px) * 1.35);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.coat__stroke {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  transition: filter 0.6s var(--ease-out);
+}
+
+.coat__title {
+  font-size: clamp(2.3rem, 6.2vw, 6.4rem);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.coat__note {
+  padding-left: 0.2em;
+  color: rgb(14 35 86 / 0.78);
+}
+
+.coat:hover .coat__stroke {
+  filter: saturate(1.25) brightness(1.03);
+}
+
+.coat:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: -12px;
+}
+
+html.no-js .coat {
+  background: var(--sens);
 }
 
 .visit__colophon {
-  display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto;
+  display: flex;
   align-items: end;
+  justify-content: space-between;
   gap: var(--gap);
   padding-top: 1.25rem;
   border-top: 1px solid var(--rule);
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   color: var(--fg-3);
 }
 
+.visit__colophon p:first-child {
+  max-width: 70ch;
+}
+
 @media (max-width: 899px) {
-  .visit__grid,
-  .visit__colophon {
+  .visit__grid {
     grid-template-columns: 1fr;
+  }
+
+  .visit__colophon {
+    flex-direction: column;
+    align-items: start;
   }
 }
 
 /* ----------------------------------------------------- develop reveals -- */
 
-/* Words wait, blurred and pale, until the scroll exposes them. */
-html.js [data-develop] {
-  font-kerning: normal;
-}
-
+/* Headings wait in the coat's yellow-green until the tide of the reveal rises through them.
+   Each line is painted with a gradient whose edge is the water line. */
 html.js.motion [data-develop]:not(.is-split) {
   opacity: 0;
+}
+
+html.js.motion [data-develop]:not(.is-developed) .tide {
+  background-image: linear-gradient(0deg, var(--fg) calc(var(--tide, -25%) - 7%), var(--latent) calc(var(--tide, -25%) + 7%));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  padding-block: 0.16em;
+  margin-block: -0.16em;
 }
 
 /* --------------------------------------------------------- preferences -- */
@@ -1593,7 +1707,6 @@ html.js.motion [data-develop]:not(.is-split) {
   }
 
   .hero__instrument,
-  .hero__cue,
   .plate--yours {
     display: none;
   }
@@ -1614,6 +1727,8 @@ html.js.motion [data-develop]:not(.is-split) {
   }
 
   .line {
+    display: block;
+    container-type: normal;
     overflow-x: auto;
   }
 
@@ -1653,8 +1768,8 @@ html.js.motion [data-develop]:not(.is-split) {
   .menu,
   .skip,
   .hero__instrument,
-  .hero__cue,
-  .line__hint,
+  .wedge,
+  .coat__stroke,
   .peg {
     display: none !important;
   }
@@ -1685,6 +1800,11 @@ html.js.motion [data-develop]:not(.is-split) {
     position: static !important;
     height: auto !important;
     overflow: visible !important;
+  }
+
+  .line {
+    display: block;
+    container-type: normal;
   }
 
   .hero__fallback {

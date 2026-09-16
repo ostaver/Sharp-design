@@ -1,6 +1,8 @@
 // Hero controller: the exposure meter and buttons, and the scroll that washes the print.
 import gsap from 'gsap';
 
+const PROMPT = 'Enough sun. Lower the sheet into the water below';
+
 export function initHero({ photogram, setNav, reduced }) {
   const section = document.querySelector('.hero');
   const ui = section.querySelector('.hero__ui');
@@ -18,20 +20,7 @@ export function initHero({ photogram, setNav, reduced }) {
   stamp.dateTime = now.toISOString();
   stamp.textContent = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }).format(now);
 
-  if (!photogram) return { intro() {} };
-
-  // While the sheet is in the sun the system cursor gives way to a small lamp ring.
-  const lamp = document.createElement('div');
-  lamp.className = 'lamp';
-  lamp.setAttribute('aria-hidden', 'true');
-  section.querySelector('.hero__sticky').append(lamp);
-  window.addEventListener(
-    'pointermove',
-    (e) => {
-      if (e.pointerType === 'mouse') lamp.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
-    },
-    { passive: true },
-  );
+  if (!photogram) return { intro() {}, recoat() {} };
 
   const hints = { fine: hintFine.textContent, touch: hintTouch.textContent };
   let shown = 0;
@@ -44,14 +33,19 @@ export function initHero({ photogram, setNav, reduced }) {
     button.addEventListener('pointerleave', () => (photogram.hold = false));
   }
 
-  sun.addEventListener('click', () => photogram.sunSweep());
-  recoat.addEventListener('click', () => {
+  // A fresh coat, asked for here or from the brushstroke at the foot of the page.
+  const fresh = () => {
     photogram.hold = false;
     photogram.recoat();
     prompted = false;
     recoat.hidden = true;
     hintFine.textContent = hints.fine;
     hintTouch.textContent = hints.touch;
+  };
+
+  sun.addEventListener('click', () => photogram.sunSweep());
+  recoat.addEventListener('click', () => {
+    fresh();
     sun.focus();
   });
 
@@ -70,11 +64,11 @@ export function initHero({ photogram, setNav, reduced }) {
     if (!prompted && photogram.coverage > 0.55) {
       prompted = true;
       recoat.hidden = false;
-      hintFine.textContent = hintTouch.textContent = 'Now scroll down to wash the print';
+      hintFine.textContent = hintTouch.textContent = PROMPT;
     }
   });
 
-  if (reduced) return { intro() {} };
+  if (reduced) return { intro() {}, recoat() {} };
 
   gsap
     .timeline({
@@ -86,7 +80,8 @@ export function initHero({ photogram, setNav, reduced }) {
         scrub: true,
         onUpdate: (self) => {
           photogram.setProgress(self.progress);
-          setNav(self.progress > 0.3 ? 'blue' : 'sheet');
+          // only while the sheet is under the nav, or a jump past it would paint over the section it lands on
+          if (self.isActive) setNav(self.progress > 0.3 ? 'blue' : 'sheet');
         },
       },
     })
@@ -99,5 +94,6 @@ export function initHero({ photogram, setNav, reduced }) {
       photogram.intro();
       gsap.to(entrance, { autoAlpha: 1, y: 0, startAt: { y: 14 }, duration: 1.2, stagger: 0.1, ease: 'power3.out', delay: 1.1 });
     },
+    recoat: fresh,
   };
 }
