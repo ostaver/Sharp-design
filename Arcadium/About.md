@@ -19,7 +19,7 @@ A dark coin-op arcade design language for arcades, game studios, retro events, e
 
 ## How to use it
 
-1. **Give the agent the whole `arcadium-skill/` folder**, not just `SKILL.md`. The two required effects and four runtime helpers live next to it and are copied into each build unchanged. No other source is needed, and the repo does not include the reference build.
+1. **Give the agent the whole `arcadium-skill/` folder**, not just `SKILL.md`. The two required effects live next to it as markdown files, each holding one code block the agent writes out unchanged, and four runtime helpers are copied as-is. No other source is needed, and the repo does not include the reference build.
 2. **Provide context:** the brand or venue, a one-line proposition, what the "cabinets" are (games, products, venues, projects), which game should be playable, the pricing tiers, and a contact email or booking URL.
 3. **Confirm creative choices:** the agent will state the phosphor/signal/token color triad, the three fonts, the section list and order, the cabinet genres, and the playable game.
 4. **Generate:** the agent writes the project folder.
@@ -63,9 +63,9 @@ Arcadium/
 ├── arcadium-skill/
 │   ├── SKILL.md              # the full instructions the AI follows
 │   ├── effects/
-│   │   ├── AsciiWave.tsx     # main effect: WebGL ASCII ring wave (verbatim, with context-loss handling)
-│   │   ├── ascii-flame.js    # side effect: <ascii-flame> fluid-fire web component (verbatim)
-│   │   └── AsciiFlame.tsx    # React wrapper exposing ignite()/gust()
+│   │   ├── AsciiWave.md      # main effect: WebGL ASCII ring wave → src/effects/AsciiWave.tsx
+│   │   ├── ascii-flame.md    # side effect: <ascii-flame> fluid-fire web component → src/effects/ascii-flame.js
+│   │   └── AsciiFlame.md     # React wrapper exposing ignite()/gust() → src/effects/AsciiFlame.tsx
 │   └── lib/
 │       ├── scramble.ts       # character-decode text reveals
 │       ├── reveals.ts        # crt / feed / wipe / type entrances

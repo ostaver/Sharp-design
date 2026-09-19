@@ -1,3 +1,11 @@
+# Main effect (required) — WebGL ASCII ring wave
+
+**Write to:** `src/effects/AsciiWave.tsx`
+**Rule:** copy the code block below into that file **exactly as written** — no edits, no reformatting, no "improvements". Do not rewrite it from memory.
+
+A Three.js full-screen quad whose fragment shader tiles the canvas into cells and picks one of 11 hand-drawn 4×6 bitmap glyphs per cell from an expanding sine ring wave. The pointer swells and whites out the glyphs nearby. Exposes `setPower(0..1)` (the `uPower` uniform) so the coin timeline can bring the field up from dark. Includes DPR capping, silent init failure, `ResizeObserver` sizing, WebGL context-loss/restore handling, and full disposal.
+
+````tsx
 // Ascii Wave — Originkit (ported from Arcadium/Effect.md)
 
 import * as React from "react";
@@ -410,3 +418,4 @@ const AsciiWave = React.forwardRef<AsciiWaveHandle, AsciiWaveProps>(function Asc
 });
 
 export default AsciiWave;
+````

@@ -1,3 +1,11 @@
+# React wrapper for `<ascii-flame>`
+
+**Write to:** `src/effects/AsciiFlame.tsx`
+**Rule:** copy the code block below into that file **exactly as written** — no edits, no reformatting, no "improvements". Do not rewrite it from memory.
+
+Imports `./ascii-flame.js` for its side effect (registering the element), forwards props as string attributes, and exposes an imperative handle: `ignite(x, y, power)`, `gust(strength)`, `reset()`, `play()`, `pause()`.
+
+````tsx
 import * as React from "react";
 import { useEffect, useRef } from "react";
 import "./ascii-flame.js";
@@ -75,3 +83,4 @@ function useImperativeHandleSetup(
 }
 
 export default AsciiFlame;
+````

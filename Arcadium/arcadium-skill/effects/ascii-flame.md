@@ -1,3 +1,11 @@
+# Side effect (required) — `<ascii-flame>` web component
+
+**Write to:** `src/effects/ascii-flame.js`
+**Rule:** copy the code block below into that file **exactly as written** — no edits, no reformatting, no "improvements". Do not rewrite it from memory.
+
+A dependency-free custom element: a 2D stable-fluids fire (buoyancy, curl-noise turbulence, vorticity confinement, SOR pressure projection, RK2 advection, noise-modulated combustion) rendered as a glyph ramp with a sprite atlas, embers, smoke, and two-pass bloom. It caps itself at 24fps and slows to 0.4× under reduced motion. Attributes and methods are documented in the header comment.
+
+````js
 /*!
 
  * ascii-flame.js — <ascii-flame> Web Component  v1.0.0
@@ -1811,6 +1819,4 @@
   customElements.define('ascii-flame', AsciiFlame);
 
 })();
-
-
-
+````

@@ -217,7 +217,7 @@ The first screen is a dead machine: a dim brand line (pixel, `letter-spacing: .4
 
 ### Signature feature 2: the ASCII wave field (required main effect)
 
-Use `effects/AsciiWave.tsx` from this skill folder **verbatim**. It is a Three.js full-screen quad whose fragment shader tiles the canvas into cells, picks one of 11 hand-drawn 4×6 bitmap glyphs per cell from an expanding sine ring wave centred on the screen, and swells/whites-out the glyphs around the pointer.
+Use `effects/AsciiWave.md` from this skill folder: write its code block to `src/effects/AsciiWave.tsx` **verbatim**. It is a Three.js full-screen quad whose fragment shader tiles the canvas into cells, picks one of 11 hand-drawn 4×6 bitmap glyphs per cell from an expanding sine ring wave centred on the screen, and swells/whites-out the glyphs around the pointer.
 
 - Props: `ink`, `lit`, `cell` (8–60), `rings` (1–20), `speed` (0–20), `swell`, `warp`, `radius` (40–400), `weight`. Reference tuning: `cell={26} rings={14} speed={6}`, `ink` = phosphor, `lit` = `#ffffff`.
 - Handle: `setPower(0..1)` drives the `uPower` uniform. It starts at `0` (dark), is ramped by the coin timeline, and is flickered `1 → .15 → 1` (`0.18s`, yoyo) on "continue".
@@ -268,7 +268,7 @@ Exactly one section holds a genuinely playable game, rendered as text on canvas:
 
 ### Signature feature 6: the furnace (required side effect)
 
-Use `effects/ascii-flame.js` (a dependency-free `<ascii-flame>` web component: 2D stable-fluids fire with buoyancy, curl-noise turbulence, vorticity confinement, SOR pressure projection, RK2 advection, glyph-ramp rendering, embers, smoke, and two-pass bloom) and its React wrapper `effects/AsciiFlame.tsx`, both **verbatim**.
+Use `effects/ascii-flame.md` (a dependency-free `<ascii-flame>` web component: 2D stable-fluids fire with buoyancy, curl-noise turbulence, vorticity confinement, SOR pressure projection, RK2 advection, glyph-ramp rendering, embers, smoke, and two-pass bloom) and its React wrapper `effects/AsciiFlame.md`. Write their code blocks to `src/effects/ascii-flame.js` and `src/effects/AsciiFlame.tsx` **verbatim**.
 
 - Mount it inside a furnace door: dark riveted frame (rivets via a masked radial-gradient border), a dashed token-color inner rule, a louvered vent strip below, and a hint line: `POINTER STIRS THE AIR · CLICK TO IGNITE · DRAG TO PAINT FIRE`.
 - Reference props: `preset="campfire" palette="fire" glyphs="flame" intensity={1.15} glow={0.75} embers={1.4} quality="medium" interactive`. Font comes from CSS: `ascii-flame { width:100%; height:100%; font-family: var(--font-term); font-size: 13px }`. The view is `height: clamp(340px, 52vh, 520px)`.
@@ -415,9 +415,9 @@ project/
     ├── App.tsx                   — author per build: boot state, credits, session, Lenis, cursor, CRT layers, heading decode, reboot
     ├── styles.css                — author per build within the tokens and rules of this skill
     ├── effects/
-    │   ├── AsciiWave.tsx         — VERBATIM from this skill's effects/
-    │   ├── ascii-flame.js        — VERBATIM from this skill's effects/
-    │   └── AsciiFlame.tsx        — VERBATIM from this skill's effects/
+    │   ├── AsciiWave.tsx         — VERBATIM code block from this skill's effects/AsciiWave.md
+    │   ├── ascii-flame.js        — VERBATIM code block from this skill's effects/ascii-flame.md
+    │   └── AsciiFlame.tsx        — VERBATIM code block from this skill's effects/AsciiFlame.md
     ├── lib/
     │   ├── scramble.ts           — VERBATIM from this skill's lib/ (glyph string may vary)
     │   ├── reveals.ts            — VERBATIM from this skill's lib/
@@ -435,7 +435,7 @@ project/
 **Construction method:**
 
 1. Scaffold the folder by hand (do not run a generator), write `package.json`, `tsconfig.json`, `vite.config.ts`, `index.html`, `.gitignore`.
-2. Copy the verbatim files from this skill's `effects/` and `lib/` folders into `src/effects/` and `src/lib/` unchanged. If the skill folder is not available, stop and ask for it — do not rewrite the effects from memory.
+2. For each markdown file in this skill's `effects/` folder, write its single fenced code block, byte for byte, to the path named on its **Write to:** line (`src/effects/…`). Copy the files in `lib/` into `src/lib/` unchanged. If the skill folder is not available, stop and ask for it — do not rewrite the effects from memory.
 3. Write `styles.css` tokens first, then shared parts (CRT room, cursor, kicker, `.h-display`, `.btn-machine`, section shell), then one block per section, then reduced-motion, contrast, and print blocks.
 4. Write components in page order; wire `App.tsx` last.
 5. Resolve fonts from the approved lists and verify the Google Fonts URL returns `200`.
@@ -528,7 +528,7 @@ Every output must satisfy all of these before it is complete.
 - Dark only; the three-role emissive color system; light only from emitters.
 - The three-font system (pixel / terminal / grotesk) and uppercase-machine vs sentence-case-human split.
 - The boot gate: the site is dead until a coin goes in, keyboard included.
-- The ASCII wave hero driven by `setPower`, and the ascii-flame furnace — both from the verbatim effect files.
+- The ASCII wave hero driven by `setPower`, and the ascii-flame furnace — both extracted verbatim from the effect markdown files.
 - Text arriving by decode; panels by CRT power-on; paper by feed; copy by wipe. No fades, no counters, no loaders.
 - Stepped loops, the two-elastic rule, the WebAudio-only sound, and the four-layer CRT room.
 - Exactly one playable game that files initials to the ledger.
