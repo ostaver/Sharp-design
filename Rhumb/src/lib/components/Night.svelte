@@ -189,7 +189,7 @@
 		width: 1px;
 		background: linear-gradient(to bottom, transparent, var(--signal) 12%, var(--signal) 88%, transparent);
 		box-shadow: 0 0 12px rgba(255, 92, 210, 0.5);
-		z-index: 2;
+		z-index: 0;
 	}
 	.readout {
 		position: absolute;
@@ -216,11 +216,13 @@
 		color: var(--muted);
 	}
 
+	/* cards pass over the "now" line, so it never cuts through their text */
 	.track {
 		position: absolute;
 		left: var(--mx);
 		top: 0;
 		bottom: 0;
+		z-index: 1;
 		width: var(--w);
 		will-change: transform;
 	}

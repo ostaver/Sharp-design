@@ -166,6 +166,20 @@ vec4 planet(vec2 P, vec2 cell, float th, vec3 wk) {
 		if (depth < uScale * 1.2) col = RIM[3 + int(step(0.5, fract(th * 3.7)))];
 
 		float on = step(0.5, boot + (1.0 - fres) * -0.25 + 0.25);
+		// Falling through the atmosphere: bright streaks race up past the camera.
+		float rush = smoothstep(0.18, 0.4, uDive) * (1.0 - smoothstep(0.62, 0.85, uDive));
+		if (rush > 0.0) {
+			float colH = hash11(cell.x * 1.7 + 3.0);
+			if (colH < 0.07 * rush) {
+				float len = 6.0 + 22.0 * hash11(cell.x * 5.3);
+				float speed = 40.0 + 70.0 * hash11(cell.x * 9.1);
+				float head = mod(uTime * speed + uDive * 900.0 + hash11(cell.x) * 400.0, uRes.y + len * 2.0) - len;
+				float t = cell.y - head;
+				// bright at the leading (top) end, breaking up along the tail
+				if (t > 0.0 && t < len) col = t > len * 0.75 ? RIM[4] : (hash21(cell + 3.0) < t / len ? RIM[3] : col);
+			}
+		}
+
 		// Once the night side has closed in, its empty texels let the stars through.
 		if (col == BG && late > hash21(cell + 211.0)) on = 0.0;
 		return vec4(col, on);

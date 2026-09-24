@@ -44,7 +44,7 @@
 				yPercent: -18,
 				autoAlpha: 0,
 				ease: 'none',
-				scrollTrigger: { trigger: root, start: 'top top', end: '32% top', scrub: true }
+				scrollTrigger: { trigger: root, start: 'top top', end: '21% top', scrub: true }
 			});
 			gsap.to(q('.chrome'), {
 				autoAlpha: 0,

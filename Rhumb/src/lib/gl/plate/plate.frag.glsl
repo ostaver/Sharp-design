@@ -42,7 +42,7 @@ const int CLOUDS = 5;
 const vec4 CLOUD[5] = vec4[5](
 	vec4(0.58, 0.47, 0.36, 0.13), // x, base y, width, height
 	vec4(0.02, 0.425, 0.24, 0.085),
-	vec4(1.08, 0.51, 0.3, 0.12),
+	vec4(1.13, 0.49, 0.28, 0.11),
 	vec4(1.24, 0.8, 0.16, 0.06),
 	vec4(1.55, 0.87, 0.13, 0.05)
 );
@@ -147,7 +147,8 @@ float gulls(vec2 p) {
 	for (int i = 0; i < 5; i++) {
 		float fi = float(i);
 		float speed = 0.004 + 0.003 * hash11(fi * 3.7);
-		vec2 c = vec2(fract(hash11(fi * 1.3) + uTime * speed * 0.35) * 1.9 - 0.15, 0.56 + 0.12 * hash11(fi * 5.1) + 0.01 * sin(uTime * 0.3 + fi));
+		// they keep below the links, over the bay and the far shore
+		vec2 c = vec2(fract(hash11(fi * 1.3) + uTime * speed * 0.35) * 1.9 - 0.15, 0.5 + 0.09 * hash11(fi * 5.1) + 0.008 * sin(uTime * 0.3 + fi));
 		float s = 0.0085 + 0.004 * hash11(fi * 2.9);
 		vec2 q = (p - c) / s;
 		if (abs(q.x) > 1.3 || abs(q.y) > 1.3) continue;
@@ -238,8 +239,7 @@ void main() {
 			float under = smoothstep(c.y + c.w * 0.3, c.y, y); // heavy, flat undersides
 			float core = smoothstep(0.0, 0.5, cl.x);
 			tone = (0.36 * pow(shade, 1.4) + 0.22 * under) * (0.45 + 0.55 * core);
-			// shading lines curve with the billows rather than ruling straight across
-			ang = mix(0.06, atan(cl.z, 1.0) * 0.6, 0.5);
+			ang = 0.06;
 			sp = 2.3;
 			wash = 0.2 + 0.35 * max(shade, under);
 			mat = 10.0;
@@ -254,7 +254,7 @@ void main() {
 
 		// sunburst: fine rays fanning from the sun through the clear sky near it
 		if (mat != 10.0 && r > 0.03 && y < 0.66) {
-			float a = atan(ds.y, ds.x);
+			float a = atan(ds.y, ds.x) + uTime * 0.004; // the burst turns, very slowly
 			float rays = 64.0;
 			float k = a / TAU * rays;
 			float rid = floor(k + 0.5);
@@ -330,6 +330,16 @@ void main() {
 		// the lines break into dashes, as a burin skips over water
 		float dash = vnoise(vec2(p.x * uPPW * 0.02 + hash11(line) * 97.0, line * 0.37));
 		tone *= smoothstep(0.1, 0.4, dash + 0.22 * depth);
+		// surf: the swell breaks white along the foot of the headland, in slow surges
+		if (p.x > 0.97) {
+			float below = mirror - p.y;
+			float surge = 0.5 + 0.5 * sin(t * 0.8 - p.x * 30.0);
+			float band = 0.004 + 0.009 * surge;
+			if (below > 0.0 && below < band) {
+				float foam = vnoise(vec2(p.x * 260.0 - t * 0.6, line * 0.9));
+				tone *= smoothstep(0.62, 0.35, foam * (1.0 - below / band) + 0.2);
+			}
+		}
 		// the horizon: a single ruled line
 		if (abs(p.y - HORIZON) < pxw * 0.8) outline = 0.9;
 	}

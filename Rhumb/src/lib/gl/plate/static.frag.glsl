@@ -41,16 +41,19 @@ void farRange(inout Surf s, vec2 p) {
 	if (p.y > top) return;
 	// Shade by a smoothed slope so whole faces read as lit or turned away, with spurs
 	// and gullies as broad soft modulation rather than stripes.
+	// The crest between sunlit and shaded faces wanders down the spurs instead of
+	// dropping plumb from each summit.
 	float e = 0.02;
-	float sl = (farRidge(p.x + e) - farRidge(p.x - e)) / (2.0 * e);
+	float xs = p.x + (fbm2(vec2(p.y * 34.0, 7.0)) - 0.5) * (top - p.y) * 2.2;
+	float sl = (farRidge(xs + e) - farRidge(xs - e)) / (2.0 * e);
 	float lit = clamp(0.5 + sl * 1.8, 0.0, 1.0);
 	float fall = p.x + (top - p.y) * (sl > 0.0 ? -0.7 : 0.7);
 	float spur = fbm2(vec2(fall * 26.0, p.y * 6.0));
 	float tone = mix(0.34, 0.07, lit) + 0.16 * (spur - 0.5) + 0.05;
 	// haze: the foot of the range fades into the morning air
 	tone *= mix(0.3, 1.0, smoothstep(HORIZON, HORIZON + 0.11, p.y));
-	// lines follow the lie of the slope
-	float ang = atan(sl * 0.8) + 0.12 * (vnoise(p * 20.0) - 0.5);
+	// one hatch direction per face, as an engraver would cut it (and no moiré)
+	float ang = sl > 0.0 ? 0.42 : -0.42;
 	put(s, true, max(tone, 0.03), ang, M_FAR);
 }
 
@@ -59,25 +62,58 @@ void coast(inout Surf s, vec2 p) {
 	if (p.y < HORIZON || p.y > top) return;
 	float n = fbm2(p * vec2(160.0, 220.0));
 	float tone = 0.34 + 0.3 * n - 0.1 * smoothstep(top - 0.006, top, p.y);
-	put(s, true, tone, 0.3 + 0.4 * (vnoise(p * 80.0) - 0.5), M_HILL);
+	put(s, true, tone, 0.3, M_HILL);
 
-	// The town: white houses along the waterfront, two rows deep.
-	for (int row = 0; row < 2; row++) {
+	// The town: whitewashed houses stepping up the hillside from the waterfront, back
+	// rows first so the front rows overlap them, with a bell tower and a few trees.
+	float along = smoothstep(0.62, 0.68, p.x) * (1.0 - smoothstep(1.05, 1.11, p.x));
+	if (along <= 0.0 || p.y > HORIZON + 0.045) return;
+	for (int row = 3; row >= 0; row--) {
 		float r = float(row);
-		float cw = 0.0068 - r * 0.0012;
-		float base = HORIZON + 0.0015 + r * 0.0085;
-		float ci = floor(p.x / cw);
+		float cw = 0.0105 - r * 0.0012;
+		float base = HORIZON + 0.0012 + r * 0.0072 + 0.004 * r * smoothstep(0.7, 0.86, p.x) * (1.0 - smoothstep(0.9, 1.02, p.x));
+		float shift = hash11(r * 11.0) * cw;
+		float ci = floor((p.x + shift) / cw);
+		float lx = (p.x + shift - ci * cw) / cw; // 0..1 across the lot
+		float dense = along * (0.35 + 0.55 * exp(-pow((p.x - 0.84) / 0.13, 2.0))) * (1.0 - r * 0.16);
 		float h = hash11(ci * 3.1 + r * 17.0);
-		float along = smoothstep(0.6, 0.66, p.x) * (1.0 - smoothstep(1.06, 1.12, p.x));
-		float dense = along * (0.55 + 0.4 * exp(-pow((p.x - 0.84) / 0.12, 2.0)));
 		if (h > dense) continue;
-		float hh = 0.005 + 0.007 * hash11(ci * 7.7 + r);
-		float lx = (p.x - ci * cw) / cw; // 0..1 inside the cell
-		if (lx < 0.1 || lx > 0.9 || p.y < base || p.y > base + hh + 0.0028) continue;
-		float wall = p.y < base + hh ? 1.0 : 0.0;
-		float tone2 = wall > 0.5 ? (lx > 0.68 ? 0.32 : 0.02) : 0.62; // lit wall, shaded side, roof
-		if (wall > 0.5 && hash21(vec2(ci, floor((p.y - base) / 0.003))) < 0.18 && lx > 0.3 && lx < 0.55) tone2 = 0.7; // a window
-		put(s, true, tone2, wall > 0.5 ? 0.0 : 0.5, M_TOWN);
+		float w0 = 0.08 + 0.12 * hash11(ci * 5.9 + r);
+		float w1 = 0.92 - 0.12 * hash11(ci * 8.3 + r);
+		float hh = 0.0055 + 0.0065 * hash11(ci * 7.7 + r);
+		if (lx < w0 || lx > w1 || p.y < base) continue;
+		// a hipped roof over each house
+		float u = (lx - w0) / (w1 - w0);
+		float roofTop = base + hh + 0.0032 * (1.0 - abs(u - 0.5) * 2.0);
+		if (p.y > roofTop) continue;
+		bool wall = p.y < base + hh;
+		float tone2;
+		if (wall) {
+			tone2 = u > 0.66 ? 0.34 : 0.02; // sunlit front, shaded flank
+			float wy = (p.y - base) / hh;
+			if (u > 0.2 && u < 0.5 && fract(wy * 2.0) > 0.35 && fract(wy * 2.0) < 0.75 && hash11(ci * 2.3 + r * 5.0) > 0.35) tone2 = 0.75;
+		} else {
+			tone2 = 0.5 + 0.2 * step(0.5, u);
+		}
+		put(s, true, tone2, wall ? 0.0 : 0.6, M_TOWN);
+	}
+	// the town's own bell tower
+	vec2 tw = vec2(0.842, HORIZON + 0.0012);
+	if (abs(p.x - tw.x) < 0.0034 && p.y > tw.y && p.y < tw.y + 0.033) {
+		float tone3 = p.x > tw.x + 0.001 ? 0.35 : 0.02;
+		if (p.y > tw.y + 0.024 && p.y < tw.y + 0.029 && abs(p.x - tw.x) < 0.0015) tone3 = 0.8;
+		put(s, true, tone3, 0.0, M_TOWN);
+	}
+	if (sdTri(p, vec2(tw.x - 0.0042, tw.y + 0.033), vec2(tw.x + 0.0042, tw.y + 0.033), vec2(tw.x, tw.y + 0.045)) < 0.0) put(s, true, 0.6, 1.0, M_TOWN);
+	// cypresses and pines between the houses
+	for (int i = 0; i < 7; i++) {
+		float fi = float(i);
+		float tx = 0.66 + fi * 0.062 + 0.02 * hash11(fi * 4.1);
+		float th = 0.012 + 0.012 * hash11(fi * 6.7);
+		float t = (p.y - HORIZON) / th;
+		if (t < 0.0 || t > 1.0) continue;
+		float w = 0.0022 * pow(1.0 - t, 0.6) * (0.8 + 0.4 * sin(t * 3.0));
+		if (abs(p.x - tx) < w) put(s, true, 0.8, PI * 0.5, M_LEAF);
 	}
 }
 
@@ -116,7 +152,7 @@ void headland(inout Surf s, vec2 p) {
 	float zone = brow * smoothstep(1.0, 1.05, p.x);
 	if (scrub * zone > 0.3) {
 		float lit = smoothstep(0.45, 0.75, fbm2(p * 300.0)) * smoothstep(0.3, 0.6, scrub * zone);
-		put(s, true, 0.82 - 0.45 * lit, 2.3 + scrub, M_LEAF);
+		put(s, true, 0.82 - 0.45 * lit, 2.3 + floor(scrub * 3.0) * 0.9, M_LEAF);
 	}
 }
 
@@ -284,7 +320,8 @@ void grove(inout Surf s, vec2 p) {
 		float lit = clamp(0.55 - d.x * 0.45 + d.y * 0.5, 0.0, 1.0);
 		float leaf = fbm2(p * 520.0 + fi);
 		float tone = 0.8 - 0.5 * lit * smoothstep(0.35, 0.75, leaf);
-		put(s, true, tone, 0.6 + 1.6 * leaf, M_LEAF);
+		// short scribbles in three directions read as leaves
+		put(s, true, tone, 0.5 + floor(leaf * 3.0) * 0.95, M_LEAF);
 	}
 }
 
@@ -308,7 +345,9 @@ void rocks(inout Surf s, vec2 p) {
 	float lit = clamp(0.5 + dot(normalize(g + 1e-5), normalize(vec2(-0.6, 0.8))) * 0.5, 0.0, 1.0);
 	float tone = mix(0.8, 0.14, lit);
 	tone += 0.2 * smoothstep(waterAt + 0.012, waterAt, p.y); // wet at the waterline
-	put(s, true, tone, atan(g.y, g.x) + PI * 0.5, M_ROCK);
+	// hatch each facet in one of four directions, from its slope
+	float fa = atan(g.y, g.x) + PI * 0.5;
+	put(s, true, tone, floor(fa / (PI * 0.25) + 0.5) * PI * 0.25, M_ROCK);
 }
 
 void agave(inout Surf s, vec2 p) {
