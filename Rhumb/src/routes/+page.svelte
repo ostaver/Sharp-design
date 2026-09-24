@@ -45,7 +45,8 @@
 		// Deep links: land on the section once layout has settled.
 		const hash = location.hash.slice(1);
 		if (hash && document.getElementById(hash)) {
-			setTimeout(() => scrollTo(`#${hash}`, { immediate: true }), 120);
+			// forced: the preloader holds the scroll lock at this point
+			setTimeout(() => scrollTo(`#${hash}`, { immediate: true, force: true }), 120);
 		}
 
 		return () => {

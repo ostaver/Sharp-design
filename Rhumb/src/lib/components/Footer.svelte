@@ -10,8 +10,6 @@
 	import { scrollTo } from '$lib/motion/scroll.js';
 
 	let root = $state();
-	let canvas = $state();
-	let plateReady = $state(false);
 
 	// In-page links glide back up the night; placeholder links (#) stay put.
 	function go(e, href) {
@@ -25,9 +23,6 @@
 
 	onMount(() => {
 		const q = gsap.utils.selector(root);
-		let plate = null;
-		let alive = true;
-		let visible = false;
 
 		const ctx = gsap.context(() => {
 			if (!ui.reduced) {
@@ -50,64 +45,12 @@
 				start: 'top bottom',
 				end: 'bottom top',
 				onToggle: (self) => {
-					visible = self.isActive;
-					if (plate) plate.visible = visible;
-					if (ui.sound) setSea(visible ? 1 : 0);
-				},
-				onUpdate: (self) => {
-					if (plate) plate.enter = Math.min(1, self.progress * 1.8);
+					if (ui.sound) setSea(self.isActive ? 1 : 0);
 				}
 			});
 		}, root);
 
-		// The engraving is loaded after the page settles; it's the last thing anyone sees.
-		const load = async () => {
-			if (!ui.gl) return;
-			const { Plate } = await import('$lib/gl/plate/Plate.js');
-			if (!alive) return;
-			try {
-				plate = new Plate(canvas, { reduced: ui.reduced });
-				plate.visible = visible;
-				keepClear();
-				const t = (_t, dt) => plate.render(Math.min(dt, 60) / 1000);
-				gsap.ticker.add(t);
-				plate._tick = t;
-				plateReady = true;
-			} catch (err) {
-				console.warn('[ostarev] engraving disabled:', err);
-			}
-		};
-		const idle = window.requestIdleCallback || ((f) => setTimeout(f, 600));
-		const handle = idle(load, { timeout: 2500 });
-
-		// The engraving is framed so the lettering never lands on the town.
-		const cols = root.querySelector('.cols');
-		const keepClear = () => {
-			if (!plate) return;
-			const c = canvas.getBoundingClientRect();
-			const r = cols.getBoundingClientRect();
-			plate.setClear({ right: r.right - c.left, bottom: r.bottom - c.top });
-		};
-		const ro = new ResizeObserver(keepClear);
-		ro.observe(cols);
-
-		const onResize = () => {
-			plate?.resize();
-			keepClear();
-		};
-		window.addEventListener('resize', onResize);
-
-		return () => {
-			alive = false;
-			window.cancelIdleCallback?.(handle);
-			window.removeEventListener('resize', onResize);
-			ro.disconnect();
-			if (plate) {
-				gsap.ticker.remove(plate._tick);
-				plate.destroy();
-			}
-			ctx.revert();
-		};
+		return () => ctx.revert();
 	});
 
 	$effect(() => {
@@ -117,9 +60,7 @@
 </script>
 
 <footer class="foot" bind:this={root} aria-label="Site">
-	<div class="plate" class:ready={plateReady} aria-hidden="true">
-		<canvas bind:this={canvas}></canvas>
-	</div>
+	<div class="wash" aria-hidden="true"></div>
 
 	<div class="over">
 		<div class="brand-col">
@@ -148,11 +89,11 @@
 		</nav>
 	</div>
 
-	<div class="plate-room" aria-hidden="true"></div>
+	<div class="wash-room" aria-hidden="true"></div>
 
 	<div class="colophon">
 		<span class="copy">© {site.year} {site.company}</span>
-		<span class="caption">{footer.plate}</span>
+		<span class="caption">{footer.caption}</span>
 		<span class="sculp">{footer.coords} · {footer.sculp}</span>
 	</div>
 </footer>
@@ -170,29 +111,51 @@
 		flex-direction: column;
 		justify-content: space-between;
 	}
-	/* The image stops short of the bottom, leaving a margin for the caption, as on a print. */
-	.plate {
+	/* A flat print of the morning: paper at the top (continuous with landfall), warming
+	   through a dawn blush into Delft blue, under a fixed grain. It stops short of the
+	   bottom, leaving a margin for the caption, as on a print. No canvas, no drawing. */
+	.wash {
+		--grain-ink: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.086 0 0 0 0 0.137 0 0 0 0 0.294 2.6 0 0 0 -1.25'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+		--grain-paper: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='31' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.98 0 0 0 0 0.92 0 0 0 0 0.8 0 2.6 0 0 -1.3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
 		position: absolute;
 		inset: 0 0 var(--margin) 0;
 		background:
-			repeating-linear-gradient(to bottom, rgba(31, 61, 145, 0.1) 0 1px, transparent 1px 4px) 0 100% / 100% 36% no-repeat,
+			radial-gradient(120% 55% at 72% 62%, rgba(255, 195, 144, 0.38), transparent 70%),
+			linear-gradient(
+				to bottom,
+				var(--paper) 0%,
+				var(--paper) 34%,
+				#eedac2 52%,
+				#d6c9cc 64%,
+				#9aa6cd 76%,
+				#4f69b4 89%,
+				var(--delft) 100%
+			),
 			var(--paper);
 	}
-	.plate.ready {
-		background: var(--paper);
-	}
-	.plate::after {
+	/* grain: ink specks that read on the paper, paper specks that read on the blue */
+	.wash::before {
 		content: '';
 		position: absolute;
 		inset: 0;
-		box-shadow: inset 0 -1px 0 rgba(22, 35, 75, 0.35);
-		pointer-events: none;
+		background: var(--grain-ink) 0 0 / 240px 240px;
+		/* none where the paper meets landfall, so the join stays seamless */
+		-webkit-mask-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.25) 30%, #000 70%);
+		mask-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.25) 30%, #000 70%);
+		opacity: 0.5;
 	}
-	.plate canvas {
-		display: block;
+	.wash::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: var(--grain-paper) 60px 90px / 240px 240px;
+		box-shadow: inset 0 -1px 0 rgba(22, 35, 75, 0.35);
+		-webkit-mask-image: linear-gradient(to bottom, transparent 45%, #000 85%);
+		mask-image: linear-gradient(to bottom, transparent 45%, #000 85%);
+		opacity: 0.5;
 	}
 
-	/* Links sit in the open sky on the left; the headland keeps the right of the plate. */
+	/* Links sit on the paper at the top of the wash. */
 	.over {
 		position: relative;
 		width: min(1240px, 100% - 2 * var(--gutter));
@@ -250,13 +213,6 @@
 	.col a {
 		font-size: 13.5px;
 		color: #2b3558;
-		/* a little clear paper around each word, as a printer would leave where the
-		   lettering crosses the engraving (the cypresses reach up into the columns) */
-		text-shadow:
-			0 0 2px var(--paper),
-			0 0 2px var(--paper),
-			0 0 4px var(--paper),
-			0 0 8px var(--paper);
 		background-image: linear-gradient(currentColor, currentColor);
 		background-size: 0% 1px;
 		background-repeat: no-repeat;
@@ -325,22 +281,22 @@
 			gap: 8px;
 		}
 	}
-	.plate-room {
+	.wash-room {
 		display: none;
 	}
 
-	/* Narrow screens: links on bare paper first, then the plate as a band beneath them. */
+	/* Narrow screens: links on bare paper first, then the wash deepens beneath them. */
 	@media (max-width: 720px) {
 		.foot {
-			--band: min(125vw, 560px);
+			--band: min(100vw, 440px);
 			--margin: 116px;
 			min-height: 0;
 		}
-		.plate {
+		.wash {
 			top: auto;
 			height: var(--band);
 		}
-		.plate-room {
+		.wash-room {
 			display: block;
 			height: calc(var(--band) + 24px);
 		}

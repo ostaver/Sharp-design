@@ -103,8 +103,11 @@
 			const sky = skyBus.sky;
 			const front = sky ? paperFront(sky.state.paper) : ui.day ? 2 : -1;
 			const vh = window.innerHeight;
-			for (const el of inkable) {
-				const r = el.getBoundingClientRect();
+			// measure everything before touching anything, so the loop never forces a relayout
+			const rects = inkable.map((el) => el.getBoundingClientRect());
+			for (let i = 0; i < inkable.length; i++) {
+				const el = inkable[i];
+				const r = rects[i];
 				// the rose starts printing as soon as the paper reaches its lower edge
 				const c = 1 - (el === roseEl ? r.bottom - r.height * 0.1 : r.top + r.height * 0.5) / vh;
 				const inked = front > c;

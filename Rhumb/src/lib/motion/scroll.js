@@ -2,12 +2,14 @@ import Lenis from 'lenis';
 import { gsap, ScrollTrigger } from './gsap.js';
 
 let lenis = null;
+let locked = false;
 
 // Smooth wheel scrolling on top of native scroll, so ScrollTrigger, sticky positioning
 // and anchor links all keep working. Skipped entirely for reduced motion.
 export function startScroll({ reduced }) {
 	if (reduced) return null;
 	lenis = new Lenis({ lerp: 0.105, wheelMultiplier: 0.95, smoothWheel: true, syncTouch: false });
+	if (locked) lenis.stop();
 	lenis.on('scroll', ScrollTrigger.update);
 	gsap.ticker.add(raf);
 	gsap.ticker.lagSmoothing(0);
@@ -27,12 +29,12 @@ export function scrollTo(target, opts = {}) {
 	}
 }
 
-export function lockScroll(locked) {
-	if (!lenis) {
-		document.documentElement.style.overflow = locked ? 'hidden' : '';
-		return;
-	}
-	locked ? lenis.stop() : lenis.start();
+// Always sets both: a lock taken before Lenis starts (the preloader mounts first) must
+// still be released on native scroll once Lenis is running, or touch scrolling stays off.
+export function lockScroll(on) {
+	locked = on;
+	document.documentElement.style.overflow = on ? 'hidden' : '';
+	if (lenis) on ? lenis.stop() : lenis.start();
 }
 
 export function stopScroll() {

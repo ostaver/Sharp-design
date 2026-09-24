@@ -248,7 +248,7 @@ export const footer = {
 		{ h: 'Resources', links: [L('Field notes'), L('Case studies', '#signals'), L('Community'), L('System status'), L('Security'), L('Brand kit')] },
 		{ h: 'Company', links: [L('About'), L('Careers'), L('Contact'), L('Terms of service'), L('Privacy policy'), L('Data processing')] }
 	],
-	plate: 'Pl. VIII — Landfall below Sv. Nikola, patron of sailors. Morning watch.',
+	caption: 'Landfall below Sv. Nikola, patron of sailors. Morning watch.',
 	coords: '42°29′ N · 18°41′ E',
-	sculp: 'Drawn in code · Leftovers sculp.'
+	sculp: 'Made overnight by Leftovers'
 };

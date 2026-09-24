@@ -44,7 +44,7 @@ const vec3 BG = vec3(0.0196, 0.0196, 0.0275);
 const vec3 GRAIN = vec3(0.066, 0.066, 0.086);
 const vec3 WHITE = vec3(0.925, 0.937, 1.0);
 const vec3 PAPER = vec3(0.929, 0.898, 0.82);
-const vec3 PAPER_GRAIN = vec3(0.897, 0.866, 0.79); // matches the grain on the engraved plate
+const vec3 PAPER_GRAIN = vec3(0.897, 0.866, 0.79);
 
 const vec3 PINK[6] = vec3[6](
 	vec3(0.0196, 0.0196, 0.0275),

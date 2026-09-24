@@ -7,6 +7,9 @@
 
 	let root = $state();
 	let played = false;
+	let split = null;
+
+	const splitTitle = (q) => SplitText.create(q('h1 .ln'), { type: 'words,chars', mask: 'words', wordsClass: 'w', charsClass: 'ch' });
 
 	function intro() {
 		if (played || !root) return;
@@ -18,7 +21,7 @@
 			return;
 		}
 
-		const split = SplitText.create(q('h1 .ln'), { type: 'words,chars', mask: 'words', wordsClass: 'w', charsClass: 'ch' });
+		split ??= splitTitle(q);
 		const tl = gsap.timeline({ defaults: { ease: 'helm' } });
 		tl.set(q('[data-in]'), { autoAlpha: 1 })
 			.from(q('.eyebrow .dot'), { scale: 0, duration: 0.6 }, 0)
@@ -40,6 +43,8 @@
 		// The copy lifts away while the camera falls into the planet.
 		const ctx = gsap.context(() => {
 			if (ui.reduced) return;
+			// Split now, while the preloader is up, so the intro starts without a layout hitch.
+			split ??= splitTitle(q);
 			gsap.to(q('.hero-copy'), {
 				yPercent: -18,
 				autoAlpha: 0,

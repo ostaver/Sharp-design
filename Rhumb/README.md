@@ -1,8 +1,8 @@
 # Ostarev
 
-A single-page site for **Ostarev**, a fictional coding agent that works overnight. You hand it a ticket at dusk and it has a pull request waiting by first light. The page is that night. It opens in orbit above a dithered planet at 20:00 and runs through the watches. It ends at 08:00, when the dither resolves into a Delft-blue engraving of a harbour.
+A single-page site for **Ostarev**, a fictional coding agent that works overnight. You hand it a ticket at dusk and it has a pull request waiting by first light. The page is that night. It opens in orbit above a dithered planet at 20:00 and runs through the watches. It ends at 08:00, when the dither resolves into paper and the footer washes from dawn into Delft blue.
 
-Everything visual is drawn in code: two GLSL shaders, some SVG and CSS. The page ships no images apart from the social preview.
+Everything visual is drawn in code: one GLSL shader, some SVG and CSS. The page ships no images apart from the social preview.
 
 ## Run it
 
@@ -31,7 +31,7 @@ SvelteKit 2 (Svelte 5 runes, fully prerendered with adapter-static) · Vite 8 ·
 | 06:30 | **Signals** | Quotes rotate with a word-level SplitText swap. Each person's initials are hoisted in International Code of Signals flags. |
 | 07:15 | **Charter** | Pricing. Dawn starts climbing the sky in ordered-dither bands. |
 | 08:00 | **Landfall** | The dither resolves into paper, sweeping up from the bottom. Each block of text turns to Delft ink at the moment the front passes it. A portolan wind rose prints itself onto the paper, masked to the dawn front, and its needle settles on 047°. |
-| — | **Footer** | The engraving (see below), with the links set in its open sky and a plate caption in the margin underneath, as on a print. |
+| — | **Footer** | A flat, grainy wash: paper at the top, warming through a dawn blush into Delft blue, with the links on the paper and a caption in the margin underneath, as on a print. Pure CSS, no canvas. |
 
 ## How it works
 
@@ -42,10 +42,7 @@ SvelteKit 2 (Svelte 5 runes, fully prerendered with adapter-static) · Vite 8 ·
   - dawn bands (Bayer)
   - paper sweep
 - **`src/lib/motion/choreo.js`** maps scroll position to everything that isn't local to one section: the sky's scene values, the ship's clock (piecewise, so the night log owns 21:00–06:00), the active section and day/night. It is measured on every ScrollTrigger refresh and evaluated every frame.
-- **`src/lib/gl/plate/`** is the engraving, in two passes:
-  - `static.frag.glsl` draws everything that never moves once per resize, into a tone map (tone, hatch angle, material, coverage). That covers the far range and the coast town, and the headland: faceted limestone, the stone wall, the monastery, a church with drum, dome and lantern, and a campanile with clock and bell. Cypresses, holm oaks, rocks and an agave complete it.
-  - `plate.frag.glsl` adds the sky, the heaped cumulus (a sum of flat-topped billows, contoured from the analytic gradient) and the sunrise. It also adds the sea (ruled lines whose spacing grows with depth, integrated so they never bunch), reflections, the sloop and the gulls. Then it engraves everything: swelling burin lines, cross-hatching in the darks, aquatint grain in the midtones, and a blue wash on cream paper.
-  - The plate etches in from the horizon as it scrolls into view. Clicking the water drops ripples into the lines.
+- **Loading.** The sky shader is compiled with `AsyncProgram` (`src/lib/gl/glsl.js`), which hands the work to the driver without asking for its status, so with `KHR_parallel_shader_compile` it links off the main thread. While the preloader covers the page, the sky draws one warm-up frame and then holds.
 - **`src/lib/components/`** holds one Svelte component per section, plus the nav with the ship's clock and bells, the section rail, the install tabs, the preloader and the flags.
 - **`src/lib/audio/bell.js`** synthesises a ship's bell (inharmonic partials, struck in pairs the way watches are kept) and a surf under the footer. Sound is off until the bell button in the nav is pressed.
 
@@ -55,7 +52,7 @@ SvelteKit 2 (Svelte 5 runes, fully prerendered with adapter-static) · Vite 8 ·
 - The rail on the left carries each section's number and its time. The nav picks up a blurred backing once content passes under it, and nav and rail step aside for the footer.
 - Install tabs are a proper ARIA tablist with arrow-key navigation. The command scrambles between package managers, and *Copy* confirms with a flash.
 - The hero line strikes through *babysitting* as it arrives.
-- The preloader takes a bearing: the rose draws itself and the needle swings onto 047° while the page loads.
+- The preloader takes a bearing. The rose draws itself with CSS from the first paint. The needle swings and hunts around 047° on its own compositor layer, so it keeps moving while scripts and the shader load. Once fonts are in and the sky has drawn, it settles on the bearing and the curtain lifts.
 
 ## Accessibility and fallbacks
 
@@ -64,7 +61,7 @@ SvelteKit 2 (Svelte 5 runes, fully prerendered with adapter-static) · Vite 8 ·
   - no smooth scroll, pinning, preloader or scroll-typed terminal
   - the night log becomes a vertical list
   - shaders render still frames
-- Without WebGL2, the hero falls back to a CSS-drawn limb and the footer to paper with ruled water.
+- Without WebGL2 (or if the sky shader fails to link), the hero falls back to a CSS-drawn limb.
 - Also covered:
   - skip link and landmarks
   - one `h1` and an unbroken `h2`/`h3` outline
@@ -74,6 +71,6 @@ SvelteKit 2 (Svelte 5 runes, fully prerendered with adapter-static) · Vite 8 ·
 
 ## Customise
 
-Copy, sections, times, tiers and footer links live in `src/lib/content.js`. Colours are tokens at the top of `src/app.css`. The dither palettes are the `PINK`, `RIM` and `DAWN` ramps in `sky.frag.glsl`, and the ink and paper colours are at the top of `plate.frag.glsl`.
+Copy, sections, times, tiers and footer links live in `src/lib/content.js`. Colours are tokens at the top of `src/app.css`. The dither palettes are the `PINK`, `RIM` and `DAWN` ramps in `sky.frag.glsl`, and the footer's wash and grain are in `Footer.svelte`.
 
 Ostarev, Leftovers, the people quoted and their companies are invented. Model names appear only as compatibility.

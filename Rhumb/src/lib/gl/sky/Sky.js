@@ -1,5 +1,5 @@
-import { Renderer, Program, Mesh, Triangle } from 'ogl';
-import { glsl, fullscreenVert } from '../glsl.js';
+import { Renderer, Mesh, Triangle } from 'ogl';
+import { glsl, fullscreenVert, AsyncProgram } from '../glsl.js';
 import frag from './sky.frag.glsl?raw';
 
 const TRAIL = 16;
@@ -41,6 +41,10 @@ export class Sky {
 		this.reduced = reduced;
 		this.cssCell = cssCell;
 		this.visible = true;
+		// While something opaque (the preloader) covers the sky, draw one frame to warm the
+		// pipeline and then stop, leaving the GPU and main thread to whatever is on top.
+		this.held = false;
+		this.drawn = false;
 		this.time = 0;
 		this.trail = Array.from({ length: TRAIL }, () => ({ x: -9999, y: -9999, t: -99, speed: 0, dx: 0, dy: 0 }));
 		this.trailHead = 0;
@@ -74,8 +78,7 @@ export class Sky {
 			dpr: 1,
 			alpha: false,
 			depth: false,
-			antialias: false,
-			powerPreference: 'high-performance'
+			antialias: false
 		});
 		const gl = (this.gl = this.renderer.gl);
 		gl.clearColor(0.0196, 0.0196, 0.0275, 1);
@@ -110,7 +113,7 @@ export class Sky {
 		this.trailBuf = trail;
 		this.trailDirBuf = trailDir;
 
-		const program = new Program(gl, {
+		const program = new AsyncProgram(gl, {
 			vertex: fullscreenVert,
 			fragment: glsl(frag),
 			uniforms: this.uniforms,
@@ -118,6 +121,13 @@ export class Sky {
 			depthWrite: false
 		});
 		this.mesh = new Mesh(gl, { geometry: new Triangle(gl), program });
+		this.linked = false;
+		this.drawn = false;
+		/** Resolves once the shader is linked and can draw (rejects if it can't). */
+		this.ready = program.ready.then(() => {
+			if (this.mesh.program === program) this.linked = true;
+		});
+		this.ready.catch((err) => console.warn('[ostarev] sky shader:', err));
 	}
 
 	resize() {
@@ -188,7 +198,8 @@ export class Sky {
 
 	/** Called by the shared GSAP ticker; `dt` in seconds. */
 	render(dt) {
-		if (this.lost || !this.visible || this.covered) return;
+		if (this.lost || !this.linked || !this.visible || this.covered) return;
+		if (this.held && this.drawn) return;
 		const u = this.uniforms;
 		const s = this.state;
 		const still = this.reduced;
@@ -237,6 +248,7 @@ export class Sky {
 
 		this.renderer.render({ scene: this.mesh });
 		this.dirty = false;
+		this.drawn = true;
 	}
 
 	/**

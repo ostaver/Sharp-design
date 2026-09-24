@@ -6,7 +6,7 @@ export const ui = $state({
 	sound: false,
 	day: false, // landfall: the page has turned to paper
 	scrolled: false, // past the very top: the nav gets its backing
-	foot: false, // the engraved footer fills the view: chrome steps aside
+	foot: false, // the footer fills the view: chrome steps aside
 	menu: false,
 	gl: true,
 	reduced: false

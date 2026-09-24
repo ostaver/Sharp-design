@@ -22,6 +22,11 @@
 			return;
 		}
 		skyBus.sky = sky;
+		// the shader links in the background; if it fails, fall back to the CSS sky
+		// (a lost context is left to Sky's own restore handler)
+		sky.ready.catch(() => {
+			if (skyBus.sky === sky && !sky.gl.isContextLost()) ui.gl = false;
+		});
 
 		const tick = (_t, dtMs) => sky.render(Math.min(dtMs, 60) / 1000);
 		gsap.ticker.add(tick);
