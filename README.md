@@ -347,7 +347,7 @@ Use issues to report a broken skill (include the model, prompt and observed outp
 ## Changelog
 
 ### 1.0.0
-- First stable release with seven skills: Argon, Atelier, Belfort, Binary, Comfort, Mirage and Stackable.
+- First stable release with eight skills: Arcadium, Argon, Atelier, Belfort, Binary, Comfort, Mirage and Stackable.
 - README rewritten with a skills overview, install steps for Claude Code and a full comparison table.
 
 ### 0.94
