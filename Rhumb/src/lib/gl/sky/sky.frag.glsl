@@ -44,7 +44,7 @@ const vec3 BG = vec3(0.0196, 0.0196, 0.0275);
 const vec3 GRAIN = vec3(0.066, 0.066, 0.086);
 const vec3 WHITE = vec3(0.925, 0.937, 1.0);
 const vec3 PAPER = vec3(0.929, 0.898, 0.82);
-const vec3 PAPER_GRAIN = vec3(0.86, 0.84, 0.80);
+const vec3 PAPER_GRAIN = vec3(0.897, 0.866, 0.79); // matches the grain on the engraved plate
 
 const vec3 PINK[6] = vec3[6](
 	vec3(0.0196, 0.0196, 0.0275),
@@ -394,7 +394,7 @@ void main() {
 		float y = P.y / uView.y;
 		float front = uPaper * 1.5 - 0.25;
 		float v = (front - y) * 3.0 + 0.5;
-		if (bayer8(cell) < v) col = hash21(cell + 17.0) < 0.05 ? PAPER_GRAIN : PAPER;
+		if (bayer8(cell) < v) col = hash21(cell + 17.0) < 0.035 ? PAPER_GRAIN : PAPER;
 	}
 
 	fragColor = vec4(col, 1.0);

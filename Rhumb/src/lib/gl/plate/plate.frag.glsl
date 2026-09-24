@@ -14,6 +14,7 @@ uniform float uEnter;    // 0..1
 uniform sampler2D uStatic;
 uniform float uBoat;     // boat x in world units
 uniform vec4 uRipples[6]; // x, y (world), age (s), strength
+uniform float uDpr;       // device px per CSS px on this canvas
 
 out vec4 fragColor;
 
@@ -382,11 +383,18 @@ void main() {
 	wash *= smoothstep(0.05, 0.35, front);
 
 	// ---- paper, wash and ink
+	// laid-paper fibre, faded in below the top edge so the plate starts on exactly the
+	// same flat sheet as the landfall above it
 	float fiber = vnoise(frag * vec2(0.9, 0.08)) * 0.5 + vnoise(frag * 0.35) * 0.5;
-	vec3 paper = PAPER * (0.975 + 0.035 * fiber);
-	// the paper darkens a little toward the edges of the plate
-	vec2 e = uv * (1.0 - uv);
-	paper *= 0.94 + 0.06 * smoothstep(0.0, 0.06, min(e.x, e.y) * 4.0);
+	float fiberAmt = smoothstep(0.985, 0.72, uv.y);
+	vec3 paper = PAPER * (1.0 + (0.03 * fiber - 0.015) * fiberAmt);
+	// the paper darkens a little toward the sides and foot of the plate (not the top,
+	// which meets the landfall's paper seamlessly)
+	float edgeD = min(min(uv.x, 1.0 - uv.x), uv.y);
+	paper *= mix(1.0, 0.94 + 0.06 * smoothstep(0.0, 0.05, edgeD), fiberAmt);
+	// the same sparse grain the landfall's paper carries (2 CSS px dots), so the two
+	// sheets read as one
+	if (hash21(floor(frag / (2.0 * uDpr)) + 71.0) < 0.035) paper *= 0.965;
 	vec3 col = mix(paper, paper * WASH, clamp(wash * (0.25 + 0.5 * tone), 0.0, 0.62));
 	vec3 inkCol = mix(INK, INK_DEEP, smoothstep(0.5, 0.95, tone));
 	col = mix(col, inkCol, ink * (0.86 + 0.14 * vnoise(frag * 0.5)));

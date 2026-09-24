@@ -87,7 +87,8 @@ export class Plate {
 			uEnter: { value: 0 },
 			uStatic: { value: this.rt.texture },
 			uBoat: { value: 0.3 },
-			uRipples: { value: new Array(24).fill(0) }
+			uRipples: { value: new Array(24).fill(0) },
+			uDpr: { value: 1 }
 		};
 		this.mesh = new Mesh(gl, {
 			geometry: tri,
@@ -144,6 +145,7 @@ export class Plate {
 		this.uniforms.uRes.value = [bw, bh];
 		this.uniforms.uWin.value = this.win;
 		this.uniforms.uPPW.value = bw / winW;
+		this.uniforms.uDpr.value = bw / cw;
 
 		this.rt.setSize(bw, bh);
 		this.renderer.render({ scene: this.staticMesh, target: this.rt });

@@ -141,7 +141,17 @@
 	<div class="stage">
 		<div class="rose-wrap" bind:this={roseWrap} aria-hidden="true">
 			<svg class="rose" bind:this={roseEl} data-ink viewBox="0 0 640 640">
-				<g class="rays">
+				<defs>
+					<!-- the rhumb lines thin out into the paper instead of stopping at an edge -->
+					<radialGradient id="rays-fade" gradientUnits="userSpaceOnUse" cx={C} cy={C} r="760">
+						<stop offset="0.36" stop-color="#fff" />
+						<stop offset="1" stop-color="#000" />
+					</radialGradient>
+					<mask id="rays-mask" maskUnits="userSpaceOnUse" x={C - 1000} y={C - 1000} width="2000" height="2000">
+						<rect x={C - 1000} y={C - 1000} width="2000" height="2000" fill="url(#rays-fade)" />
+					</mask>
+				</defs>
+				<g class="rays" mask="url(#rays-mask)">
 					{#each rays as r, i (i)}
 						<line class="draw" class:major={r.major} x1={C} y1={C} x2={r.x2} y2={r.y2} />
 					{/each}
@@ -338,13 +348,21 @@
 		pointer-events: none;
 		color: var(--delft);
 	}
+	/* Two masks: only on paper (below the dawn front), and faded out before the stage's
+	   foot so the rhumb lines never end on a hard edge where the footer begins. */
 	.rose-wrap {
 		--cut: 100%;
 		position: absolute;
 		inset: 0;
 		pointer-events: none;
-		-webkit-mask-image: linear-gradient(to bottom, transparent calc(var(--cut) - 40px), #000 calc(var(--cut) + 40px));
-		mask-image: linear-gradient(to bottom, transparent calc(var(--cut) - 40px), #000 calc(var(--cut) + 40px));
+		-webkit-mask-image:
+			linear-gradient(to bottom, transparent calc(var(--cut) - 40px), #000 calc(var(--cut) + 40px)),
+			linear-gradient(to top, transparent, #000 24%);
+		-webkit-mask-composite: source-in;
+		mask-image:
+			linear-gradient(to bottom, transparent calc(var(--cut) - 40px), #000 calc(var(--cut) + 40px)),
+			linear-gradient(to top, transparent, #000 24%);
+		mask-composite: intersect;
 	}
 	.rays line {
 		stroke: rgba(31, 61, 145, 0.16);
@@ -429,6 +447,10 @@
 	}
 
 	@media (max-width: 900px) {
+		.rose-wrap {
+			-webkit-mask-image: linear-gradient(to bottom, transparent calc(var(--cut) - 40px), #000 calc(var(--cut) + 40px));
+			mask-image: linear-gradient(to bottom, transparent calc(var(--cut) - 40px), #000 calc(var(--cut) + 40px));
+		}
 		/* the rose drops below the text and is cropped by the edge of the page */
 		.rose {
 			width: 96vw;
