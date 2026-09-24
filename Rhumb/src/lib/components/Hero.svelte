@@ -18,12 +18,12 @@
 			return;
 		}
 
-		const split = SplitText.create(q('h1 .ln'), { type: 'words,chars', mask: 'words', charsClass: 'ch' });
+		const split = SplitText.create(q('h1 .ln'), { type: 'words,chars', mask: 'words', wordsClass: 'w', charsClass: 'ch' });
 		const tl = gsap.timeline({ defaults: { ease: 'helm' } });
 		tl.set(q('[data-in]'), { autoAlpha: 1 })
 			.from(q('.eyebrow .dot'), { scale: 0, duration: 0.6 }, 0)
 			.from(q('.eyebrow .t'), { duration: 1.1, scrambleText: { text: '', chars: SCRAMBLE, revealDelay: 0.2 } }, 0.05)
-			.from(split.chars, { yPercent: 110, duration: 1.25, stagger: 0.016 }, 0.1)
+			.from(split.chars, { yPercent: 125, duration: 1.25, stagger: 0.016 }, 0.1)
 			.from(q('.lede'), { autoAlpha: 0, y: 16, duration: 1.1 }, 0.55)
 			.from(q('.strike'), { autoAlpha: 0, y: 12, duration: 1 }, 0.68)
 			.fromTo(q('.strike s'), { '--cut': 0 }, { '--cut': 1, duration: 0.7, ease: 'power3.inOut' }, 1.25)
@@ -51,6 +51,9 @@
 				ease: 'none',
 				scrollTrigger: { trigger: root, start: 'top top', end: '14% top', scrub: true }
 			});
+			const through = { trigger: q('.through')[0], start: 'top 78%', once: true };
+			gsap.from(q('.through .plumb'), { scaleY: 0, transformOrigin: 'top', duration: 1.2, ease: 'haul', scrollTrigger: through });
+			gsap.from(q('.through .label'), { opacity: 0, y: 10, duration: 1, stagger: 0.12, delay: 0.3, scrollTrigger: through });
 		}, root);
 
 		return () => ctx.revert();
@@ -88,12 +91,19 @@
 		</div>
 
 		<div class="chrome" aria-hidden="true">
-			<span class="leeward" data-in>
+			<span class="maker" data-in>
 				<svg width="14" height="14" viewBox="0 0 14 14"><path d="M3 1v11h9.5L3 1z" fill="currentColor" /><path d="M1 12.8h12" stroke="currentColor" stroke-width="1.2" /></svg>
-				Leeward
+				Leftovers
 			</span>
 			<span class="legal label" data-in>{site.company} © {site.year}</span>
 		</div>
+	</div>
+
+	<!-- The first log line, in the clear air below the dive. -->
+	<div class="through" aria-hidden="true">
+		<span class="plumb"></span>
+		<p class="label">{hero.through[0]}</p>
+		<p class="label sub">{hero.through[1]}</p>
 	</div>
 </section>
 
@@ -101,7 +111,7 @@
 	.hero {
 		position: relative;
 		z-index: 1;
-		height: 230vh;
+		height: 205vh;
 	}
 	.stage {
 		position: sticky;
@@ -117,6 +127,17 @@
 		width: min(1080px, 100% - 2 * var(--gutter));
 		margin-inline: auto;
 		padding: 88px 0 56px 110px;
+		position: relative;
+	}
+	/* A patch of deeper night behind the copy: the planet's dust thins out where the
+	   small type sits, and fades away with the copy on the dive. */
+	.hero-copy::before {
+		content: '';
+		position: absolute;
+		z-index: -1;
+		inset: -4% -12% -8% 2%;
+		pointer-events: none;
+		background: radial-gradient(ellipse 58% 56% at 38% 64%, rgba(5, 5, 7, 0.8), rgba(5, 5, 7, 0.52) 52%, transparent 78%);
 	}
 	:global(.js) [data-in] {
 		visibility: hidden;
@@ -245,7 +266,7 @@
 		padding: 0 18px 18px;
 		pointer-events: none;
 	}
-	.leeward {
+	.maker {
 		display: inline-flex;
 		align-items: center;
 		gap: 7px;
@@ -263,6 +284,37 @@
 		background: rgba(10, 10, 14, 0.6);
 	}
 
+	.through {
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 163vh;
+		display: grid;
+		justify-items: center;
+		gap: 9px;
+		text-align: center;
+		pointer-events: none;
+	}
+	.plumb {
+		width: 1px;
+		height: 72px;
+		margin-bottom: 8px;
+		background: linear-gradient(to bottom, transparent, var(--hair-3) 60%, var(--signal));
+	}
+	.through .label {
+		font-size: 10.5px;
+		letter-spacing: 0.24em;
+		color: var(--dim);
+	}
+	.through .sub {
+		font-size: 9.5px;
+		color: var(--muted);
+	}
+	/* without the dive the copy never clears the stage, so there is no quiet stretch */
+	:global(.rm) .through {
+		display: none;
+	}
+
 	@media (max-width: 1180px) {
 		.hero-copy {
 			padding-left: 64px;
@@ -276,6 +328,9 @@
 	@media (max-width: 640px) {
 		.hero {
 			height: 190vh;
+		}
+		.through {
+			top: 150vh;
 		}
 		.hero-copy {
 			padding-top: 96px;

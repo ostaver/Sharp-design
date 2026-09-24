@@ -5,6 +5,17 @@ import staticFrag from './static.frag.glsl?raw';
 import plateFrag from './plate.frag.glsl?raw';
 
 const HORIZON = 0.36;
+// The tall things on the headland, as [left edge x, top y] in world units: cypresses,
+// the town's roofline, the church's gable and lantern cross, the campanile's finial.
+const LANDMARKS = [
+	[1.0, 0.56],
+	[1.037, 0.62],
+	[1.069, 0.6],
+	[1.31, 0.63],
+	[1.345, 0.735],
+	[1.416, 0.614],
+	[1.44, 0.768]
+];
 const withScene = (src) => glsl(src.replace(/^[ \t]*#include scene[ \t]*$/m, sceneChunk));
 
 // The engraved harbour under the footer. Two passes: the still parts of the plate are
@@ -102,7 +113,18 @@ export class Plate {
 		});
 	}
 
-	resize() {
+	/**
+	 * The footer's lettering, in CSS px from the canvas's top-left: { right, bottom }.
+	 * The framing keeps the town clear of it.
+	 */
+	setClear(rect) {
+		const c = this.clear;
+		if (c && Math.abs(c.right - rect.right) < 1 && Math.abs(c.bottom - rect.bottom) < 1) return;
+		this.clear = rect;
+		this.resize(true);
+	}
+
+	resize(force = false) {
 		if (this.lost) return;
 		const host = this.canvas.parentElement;
 		const cw = host.clientWidth;
@@ -112,7 +134,7 @@ export class Plate {
 		const dpr = Math.min(window.devicePixelRatio || 1, cw * ch > 1.6e6 ? 1.35 : 1.6);
 		const bw = Math.round(cw * dpr);
 		const bh = Math.round(ch * dpr);
-		if (bw === this.bw && bh === this.bh) return;
+		if (!force && bw === this.bw && bh === this.bh) return;
 		this.bw = bw;
 		this.bh = bh;
 		this.cssW = cw;
@@ -137,6 +159,16 @@ export class Plate {
 			winW = A * winH;
 			x0 = Math.max(0, Math.min(1.6 - winW, 1.37 - winW * 0.56));
 			y0 = HORIZON - 0.3 * winH;
+		}
+		// Where the link columns reach over the headland, raise the window until the
+		// town sits below them, giving up sea (never less than a sixth of the plate).
+		const c = this.clear;
+		if (c && c.bottom > 0) {
+			const need = Math.min(1, (c.bottom + 20) / ch);
+			for (const [lx, top] of LANDMARKS) {
+				if (((lx - x0) / winW) * cw < c.right) y0 = Math.max(y0, top - winH * (1 - need));
+			}
+			y0 = Math.min(y0, HORIZON - winH / 6);
 		}
 		this.win = [x0, y0, winW, winH];
 

@@ -1,6 +1,6 @@
-# Rhumb
+# Ostarev
 
-A single-page site for **Rhumb**, a fictional coding agent that works overnight. You hand it a ticket at dusk and it has a pull request waiting by first light. The page is that night. It opens in orbit above a dithered planet at 20:00 and runs through the watches. It ends at 08:00, when the dither resolves into a Delft-blue engraving of a harbour.
+A single-page site for **Ostarev**, a fictional coding agent that works overnight. You hand it a ticket at dusk and it has a pull request waiting by first light. The page is that night. It opens in orbit above a dithered planet at 20:00 and runs through the watches. It ends at 08:00, when the dither resolves into a Delft-blue engraving of a harbour.
 
 Everything visual is drawn in code: two GLSL shaders, some SVG and CSS. The page ships no images apart from the social preview.
 
@@ -23,8 +23,8 @@ SvelteKit 2 (Svelte 5 runes, fully prerendered with adapter-static) · Vite 8 ·
 
 | Ship's time | Section | What happens |
 | --- | --- | --- |
-| 20:00 | **Heading** | Hero from the reference: a planet limb rendered as pink stochastic dither with a periwinkle rim and a halo of streaming dust. The pointer stirs the dust. Scrolling drops the camera through the limb, into the pink atmosphere, and out onto the night side. |
-| 20:10 | **Hand-off** | Pinned. Scroll types `rhumb sail …` into a terminal and plays the session: charting, soundings, hazards, the four waypoints, the prompt. The three steps beside it light up in step. |
+| 20:00 | **Heading** | Hero from the reference: a planet limb rendered as pink stochastic dither with a periwinkle rim and a halo of streaming dust. The pointer stirs the dust. Scrolling drops the camera through the limb, into the pink atmosphere, and out onto the night side, where the first log line waits in the clear air. |
+| 20:10 | **Hand-off** | Pinned. Scroll types `ostarev sail …` into a terminal and plays the session: charting, soundings, hazards, the four waypoints, the prompt. The three steps beside it light up in step. |
 | 20:20 | **Instruments** | Six live instruments. *Chart* plots a route across a portolan rhumb-line net. *Helm* renames a symbol at every reference. *Soundings* is an echo sounder with a test counter. The others are a scrolling log, crew branches merging back (one red), and an anchor cursor hauling back to a waypoint. They only run while on screen. |
 | 20:40 | **Bearing** | A dithered globe with a graticule and a family of 047° loxodromes. The ship sails our line; the globe turns to keep it in view. A label and a BRG/DRIFT readout track the ship, computed in JS with the same matrices as the shader. |
 | 21:00 → 06:00 | **The night** | Pinned horizontal log on a ship's-time axis, with half-hour ticks and the bells struck at each. Behind it the sky turns: star trails grow at 15° an hour around the pole. |
@@ -76,4 +76,4 @@ SvelteKit 2 (Svelte 5 runes, fully prerendered with adapter-static) · Vite 8 ·
 
 Copy, sections, times, tiers and footer links live in `src/lib/content.js`. Colours are tokens at the top of `src/app.css`. The dither palettes are the `PINK`, `RIM` and `DAWN` ramps in `sky.frag.glsl`, and the ink and paper colours are at the top of `plate.frag.glsl`.
 
-Rhumb, Leeward Labs, the people quoted and their companies are invented. Model names appear only as compatibility.
+Ostarev, Leftovers, the people quoted and their companies are invented. Model names appear only as compatibility.

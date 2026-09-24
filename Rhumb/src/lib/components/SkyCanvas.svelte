@@ -17,7 +17,7 @@
 		try {
 			sky = new Sky(canvas, { reduced: ui.reduced });
 		} catch (err) {
-			console.warn('[rhumb] sky disabled:', err);
+			console.warn('[ostarev] sky disabled:', err);
 			ui.gl = false;
 			return;
 		}

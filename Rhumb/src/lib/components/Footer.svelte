@@ -68,24 +68,40 @@
 			try {
 				plate = new Plate(canvas, { reduced: ui.reduced });
 				plate.visible = visible;
+				keepClear();
 				const t = (_t, dt) => plate.render(Math.min(dt, 60) / 1000);
 				gsap.ticker.add(t);
 				plate._tick = t;
 				plateReady = true;
 			} catch (err) {
-				console.warn('[rhumb] engraving disabled:', err);
+				console.warn('[ostarev] engraving disabled:', err);
 			}
 		};
 		const idle = window.requestIdleCallback || ((f) => setTimeout(f, 600));
 		const handle = idle(load, { timeout: 2500 });
 
-		const onResize = () => plate?.resize();
+		// The engraving is framed so the lettering never lands on the town.
+		const cols = root.querySelector('.cols');
+		const keepClear = () => {
+			if (!plate) return;
+			const c = canvas.getBoundingClientRect();
+			const r = cols.getBoundingClientRect();
+			plate.setClear({ right: r.right - c.left, bottom: r.bottom - c.top });
+		};
+		const ro = new ResizeObserver(keepClear);
+		ro.observe(cols);
+
+		const onResize = () => {
+			plate?.resize();
+			keepClear();
+		};
 		window.addEventListener('resize', onResize);
 
 		return () => {
 			alive = false;
 			window.cancelIdleCallback?.(handle);
 			window.removeEventListener('resize', onResize);
+			ro.disconnect();
 			if (plate) {
 				gsap.ticker.remove(plate._tick);
 				plate.destroy();
@@ -107,9 +123,9 @@
 
 	<div class="over">
 		<div class="brand-col">
-			<a class="brand" href="#heading" aria-label="Rhumb, back to the top" onclick={(e) => go(e, '#heading')}>
+			<a class="brand" href="#heading" aria-label="Ostarev, back to the top" onclick={(e) => go(e, '#heading')}>
 				<Mark size={24} />
-				<span class="word">rhumb</span>
+				<span class="word">ostarev</span>
 			</a>
 			<ul class="social">
 				<li><a href={site.github} target="_blank" rel="noreferrer" aria-label="GitHub"><Icon name="github" size={18} /></a></li>
@@ -181,7 +197,7 @@
 		position: relative;
 		width: min(1240px, 100% - 2 * var(--gutter));
 		margin-inline: auto;
-		padding-top: clamp(64px, 10vh, 110px);
+		padding-top: clamp(56px, 8vh, 96px);
 		display: grid;
 		grid-template-columns: 190px minmax(0, 720px);
 		gap: 40px;
@@ -234,6 +250,13 @@
 	.col a {
 		font-size: 13.5px;
 		color: #2b3558;
+		/* a little clear paper around each word, as a printer would leave where the
+		   lettering crosses the engraving (the cypresses reach up into the columns) */
+		text-shadow:
+			0 0 2px var(--paper),
+			0 0 2px var(--paper),
+			0 0 4px var(--paper),
+			0 0 8px var(--paper);
 		background-image: linear-gradient(currentColor, currentColor);
 		background-size: 0% 1px;
 		background-repeat: no-repeat;

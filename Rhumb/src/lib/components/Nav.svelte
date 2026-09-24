@@ -58,9 +58,9 @@
 
 <header class="nav" class:scrolled={ui.scrolled} class:away={ui.foot && !ui.menu}>
 	<div class="bar">
-		<a class="brand" href="#heading" onclick={(e) => go(e, 'heading')} aria-label="Rhumb, back to the top">
+		<a class="brand" href="#heading" onclick={(e) => go(e, 'heading')} aria-label="Ostarev, back to the top">
 			<Mark size={22} />
-			<span class="word">rhumb</span>
+			<span class="word">ostarev</span>
 		</a>
 
 		<div class="clock" aria-label="Ship's time {time}, {watch}, {bells} bells" role="img">
@@ -156,12 +156,12 @@
 	.nav::before {
 		content: '';
 		position: absolute;
-		inset: 0 0 -34px 0;
-		background: linear-gradient(to bottom, rgba(5, 5, 7, 0.9), rgba(5, 5, 7, 0.62) 58%, rgba(5, 5, 7, 0));
+		inset: 0 0 -40px 0;
+		background: linear-gradient(to bottom, rgba(5, 5, 7, 0.95), rgba(5, 5, 7, 0.88) 50%, rgba(5, 5, 7, 0));
 		-webkit-backdrop-filter: blur(7px);
 		backdrop-filter: blur(7px);
-		-webkit-mask-image: linear-gradient(to bottom, #000 52%, transparent);
-		mask-image: linear-gradient(to bottom, #000 52%, transparent);
+		-webkit-mask-image: linear-gradient(to bottom, #000 50%, transparent);
+		mask-image: linear-gradient(to bottom, #000 50%, transparent);
 		opacity: 0;
 		transition:
 			opacity 0.5s var(--ease),
@@ -181,7 +181,7 @@
 		color: var(--ink);
 	}
 	:global(.day) .nav::before {
-		background: linear-gradient(to bottom, rgba(237, 229, 209, 0.92), rgba(237, 229, 209, 0.6) 58%, rgba(237, 229, 209, 0));
+		background: linear-gradient(to bottom, rgba(237, 229, 209, 0.96), rgba(237, 229, 209, 0.88) 50%, rgba(237, 229, 209, 0));
 	}
 	.bar {
 		position: relative;

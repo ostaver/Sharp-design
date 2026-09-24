@@ -30,7 +30,7 @@ export function reveal(root, { start = 'top 84%' } = {}) {
 				onSplit(self) {
 					gsap.set(el, { autoAlpha: 1 });
 					return gsap.from(self.lines, {
-						yPercent: 108,
+						yPercent: 125,
 						duration: 1.25,
 						stagger: 0.09,
 						delay,

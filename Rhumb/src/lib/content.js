@@ -1,12 +1,12 @@
-// All copy for the page lives here. Rhumb, Leeward Labs, the people quoted and the
+// All copy for the page lives here. Ostarev, Leftovers, the people quoted and the
 // companies named are fictional. Model names are listed only as compatibility.
 
 export const site = {
-	name: 'Rhumb',
-	title: 'Rhumb — the coding agent that works the night watch',
+	name: 'Ostarev',
+	title: 'Ostarev — the coding agent that works the night watch',
 	description:
-		'Hand Rhumb the ticket at dusk. It plans, edits and tests on a constant bearing through the night, and has a pull request waiting by first light.',
-	company: 'Leeward Labs, Inc.',
+		'Hand Ostarev the ticket at dusk. It plans, edits and tests on a constant bearing through the night, and has a pull request waiting by first light.',
+	company: 'Leftovers, Inc.',
 	year: 2026,
 	github: 'https://github.com/',
 	discord: 'https://discord.com/',
@@ -31,31 +31,33 @@ export const sections = [
 export const hero = {
 	eyebrow: 'v0.9 — sea trials',
 	lines: ['A coding agent', 'that works', 'the night watch'],
-	lede: 'Hand Rhumb the ticket before you log off. It holds one bearing through plan, edit, test and review, inside your real editor, with every step on the log. By first light the pull request is waiting.',
+	lede: 'Hand Ostarev the ticket before you log off. It holds one bearing through plan, edit, test and review, inside your real editor, with every step on the log. By first light the pull request is waiting.',
 	strike: { before: 'Local-first. Any model. No ', struck: 'babysitting', after: '.' },
 	modelsLabel: 'Works with any model',
+	// logged in the quiet stretch after the camera falls through the planet's air
+	through: ['20:06 · through the cloud deck', 'clear to the east · wind ene 3 · 047°'],
 	models: ['Claude', 'GPT', 'Gemini', 'Llama', 'Mistral', 'Qwen', 'DeepSeek', 'Kimi', 'Ollama']
 };
 
 export const install = [
-	{ id: 'curl', label: 'curl', cmd: 'curl -fsSL https://rhumb.dev/install | sh', os: 'macOS · Linux' },
-	{ id: 'brew', label: 'brew', cmd: 'brew install leeward/tap/rhumb', os: 'macOS · Linux' },
-	{ id: 'npm', label: 'npm', cmd: 'npm i -g @rhumb/cli', os: 'Node 20+' },
-	{ id: 'pwsh', label: 'pwsh', cmd: 'irm https://rhumb.dev/install.ps1 | iex', os: 'Windows' },
-	{ id: 'nix', label: 'nix', cmd: 'nix run github:leeward/rhumb', os: 'NixOS · macOS · Linux' }
+	{ id: 'curl', label: 'curl', cmd: 'curl -fsSL https://ostarev.dev/install | sh', os: 'macOS · Linux' },
+	{ id: 'brew', label: 'brew', cmd: 'brew install leftovers/tap/ostarev', os: 'macOS · Linux' },
+	{ id: 'npm', label: 'npm', cmd: 'npm i -g @ostarev/cli', os: 'Node 20+' },
+	{ id: 'pwsh', label: 'pwsh', cmd: 'irm https://ostarev.dev/install.ps1 | iex', os: 'Windows' },
+	{ id: 'nix', label: 'nix', cmd: 'nix run github:leftovers/ostarev', os: 'NixOS · macOS · Linux' }
 ];
 
 export const handoff = {
 	title: ['Hand it the ticket', 'at dusk.'],
-	lede: 'Before it touches a line, Rhumb charts the whole repository: packages, services, tests, even the flaky one everybody skips. Then it commits to a single bearing you can read in ten seconds.',
+	lede: 'Before it touches a line, Ostarev charts the whole repository: packages, services, tests, even the flaky one everybody skips. Then it commits to a single bearing you can read in ten seconds.',
 	steps: [
 		{
 			k: 'Brief',
-			t: 'Paste a ticket, link an issue or just describe it. Rhumb asks the two questions that matter and none that don’t.'
+			t: 'Paste a ticket, link an issue or just describe it. Ostarev asks the two questions that matter and none that don’t.'
 		},
 		{
 			k: 'Chart',
-			t: 'Your language servers index every symbol. Rhumb moves by definition and reference, not by grep and hope.'
+			t: 'Your language servers index every symbol. Ostarev moves by definition and reference, not by grep and hope.'
 		},
 		{
 			k: 'Bearing',
@@ -66,7 +68,7 @@ export const handoff = {
 	// kind: cmd (typed after the prompt), out (printed), gap (blank line)
 	session: [
 		{ kind: 'path', text: '~/tidewater/billing', branch: 'main' },
-		{ kind: 'cmd', text: 'rhumb sail "Move billing webhooks onto Events v2" --until 07:00' },
+		{ kind: 'cmd', text: 'ostarev sail "Move billing webhooks onto Events v2" --until 07:00' },
 		{ kind: 'gap' },
 		{ kind: 'task', k: 'charting', v: '412 files · 38 packages · 3 services', s: 'done' },
 		{ kind: 'task', k: 'soundings', v: '1,284 tests · tsc strict · 81.4% cov', s: 'done' },
@@ -79,18 +81,18 @@ export const handoff = {
 		{ kind: 'wp', n: '4', text: 'retire v1 handlers behind a flag', where: 'apps/api', last: true },
 		{ kind: 'gap' },
 		{ kind: 'ask', text: 'hold this bearing until 07:00?', answer: 'y' },
-		{ kind: 'ok', text: 'bearing set. Rhumb has the watch. Close the laptop.' }
+		{ kind: 'ok', text: 'bearing set. Ostarev has the watch. Close the laptop.' }
 	]
 };
 
 export const instruments = {
 	title: ['Every instrument', 'on the bridge.'],
-	lede: 'Rhumb doesn’t squint at your codebase from outside. It drives the tools you already trust, wired in rather than bolted on.',
+	lede: 'Ostarev doesn’t squint at your codebase from outside. It drives the tools you already trust, wired in rather than bolted on.',
 	items: [
 		{
 			id: 'chart',
 			k: 'Chart',
-			t: 'A living map of every symbol, built by your language servers. Rhumb navigates by definition and reference.',
+			t: 'A living map of every symbol, built by your language servers. Ostarev navigates by definition and reference.',
 			m: '38 pkgs · 9,412 symbols'
 		},
 		{
@@ -127,8 +129,8 @@ export const instruments = {
 };
 
 export const bearing = {
-	title: ['Most agents drift.', 'Rhumb holds a bearing.'],
-	lede: 'Long tasks rarely fail loudly. They wander: a refactor nobody asked for, a test quietly skipped, a dependency bumped “while we’re here.” Every thirty minutes Rhumb re-reads the ticket, measures how far it has drifted from the plan and corrects course. If it can’t, it drops anchor and leaves you a note.',
+	title: ['Most agents drift.', 'Ostarev holds a bearing.'],
+	lede: 'Long tasks rarely fail loudly. They wander: a refactor nobody asked for, a test quietly skipped, a dependency bumped “while we’re here.” Every thirty minutes Ostarev re-reads the ticket, measures how far it has drifted from the plan and corrects course. If it can’t, it drops anchor and leaves you a note.',
 	stats: [
 		{ v: 94, suffix: '%', t: 'of overnight runs finish inside the approved plan' },
 		{ v: 0.6, suffix: '°', decimals: 1, t: 'mean drift from the bearing, checked every 30 minutes' },
@@ -156,7 +158,7 @@ export const night = {
 		{ time: 27 * 60 + 52, tag: 'fix', k: 'Flaky test, found and fixed', t: 'invoice.spec.ts assumed the server lived in UTC. It doesn’t.' },
 		{ time: 28 * 60 + 30, tag: 'test', k: 'All soundings green', t: '1,291 tests passing, none skipped.', good: true },
 		{ time: 29 * 60 + 12, tag: 'pr', k: 'Pull request #4182 opened', t: 'With the night’s log attached, in plain English.' },
-		{ time: 29 * 60 + 58, tag: 'done', k: 'Signal sent, anchor dropped', t: 'Summary posted to #billing. Rhumb stands down.' }
+		{ time: 29 * 60 + 58, tag: 'done', k: 'Signal sent, anchor dropped', t: 'Summary posted to #billing. Ostarev stands down.' }
 	]
 };
 
@@ -197,7 +199,7 @@ export const signals = {
 
 export const charter = {
 	title: ['Charter a watch.'],
-	lede: 'Every plan runs on your machine. Your code only leaves it if you point Rhumb at a remote model.',
+	lede: 'Every plan runs on your machine. Your code only leaves it if you point Ostarev at a remote model.',
 	tiers: [
 		{
 			id: 'deckhand',
@@ -232,7 +234,7 @@ export const charter = {
 
 export const landfall = {
 	kicker: 'Landfall · 08:00',
-	title: ['Rhumb has', 'the watch.'],
+	title: ['Ostarev has', 'the watch.'],
 	aside: 'Go outside.',
 	lede: 'Install it in one line tonight. Wake up to a green build tomorrow.'
 };
@@ -248,5 +250,5 @@ export const footer = {
 	],
 	plate: 'Pl. VIII — Landfall below Sv. Nikola, patron of sailors. Morning watch.',
 	coords: '42°29′ N · 18°41′ E',
-	sculp: 'Drawn in code · Leeward sculp.'
+	sculp: 'Drawn in code · Leftovers sculp.'
 };

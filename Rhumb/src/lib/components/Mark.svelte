@@ -1,5 +1,5 @@
 <script>
-	/** Rhumb's mark: an eight-point wind rose whose north-east point is a needle on 047°. */
+	/** Ostarev's mark: an eight-point wind rose whose north-east point is a needle on 047°. */
 	let { size = 22, class: cls = '' } = $props();
 </script>
 

@@ -104,7 +104,7 @@
 	</div>
 	<div class="cmd" role="tabpanel" id="{id}-panel" aria-labelledby="{id}-tab-{current.id}">
 		<span class="prompt" aria-hidden="true">$</span>
-		<code bind:this={codeEl}>{install[0].cmd}</code>
+		<code class="x-fade" bind:this={codeEl}>{install[0].cmd}</code>
 		<button class="copy label" type="button" bind:this={copyEl} onclick={copy} aria-label="Copy the install command">
 			<span class="copy-t">{copied ? 'Copied' : 'Copy'}</span>
 		</button>

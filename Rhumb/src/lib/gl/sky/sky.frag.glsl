@@ -161,9 +161,12 @@ vec4 planet(vec2 P, vec2 cell, float th, vec3 wk) {
 		float rimW = 8.5 + 9.0 * uDive;
 		float rim = exp(-depth / rimW);
 		float scan = 0.78 + 0.22 * step(0.5, fract(cell.y * 0.5));
-		float rimT = rim * scan;
+		// On tall screens the far limb rises into view as the camera comes out the other
+		// side; it dissolves with the night side instead of lingering as a stray arc.
+		float rimFade = 1.0 - smoothstep(0.5, 0.78, uDive);
+		float rimT = rim * scan * rimFade;
 		if (rimT > th * 0.75 + 0.1) col = rampRim(rimT * 1.08, fract(th * 7.13));
-		if (depth < uScale * 1.2) col = RIM[3 + int(step(0.5, fract(th * 3.7)))];
+		if (depth < uScale * 1.2 && th < rimFade) col = RIM[3 + int(step(0.5, fract(th * 3.7)))];
 
 		float on = step(0.5, boot + (1.0 - fres) * -0.25 + 0.25);
 		// Falling through the atmosphere: bright streaks race up past the camera.
@@ -200,8 +203,8 @@ vec4 planet(vec2 P, vec2 cell, float th, vec3 wk) {
 	dens *= clamp(boot * 1.2 - h / 900.0, 0.0, 1.0);
 	dens *= 1.0 - smoothstep(0.5, 0.9, uDive);
 
-	// A thin glow hugging the outside of the limb.
-	float halo = exp(-h / 3.2);
+	// A thin glow hugging the outside of the limb (gone with the rim late in the dive).
+	float halo = exp(-h / 3.2) * (1.0 - smoothstep(0.5, 0.78, uDive));
 	if (halo > th * 0.9 + 0.08 && boot > 0.3) return vec4(rampRim(0.45 + halo * 0.55, th), 1.0);
 
 	// Twinkle: one texel in eight re-rolls its threshold a few times a second.

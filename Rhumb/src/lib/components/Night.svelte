@@ -159,6 +159,18 @@
 		grid-template-rows: auto 1fr;
 		padding-top: 96px;
 	}
+	/* the trails thin out behind the heading, so it reads over the busiest hours */
+	.stage::before {
+		content: '';
+		position: absolute;
+		inset: 0 0 auto 0;
+		height: 44%;
+		pointer-events: none;
+		background: linear-gradient(to bottom, rgba(5, 5, 7, 0.72), rgba(5, 5, 7, 0.45) 55%, transparent);
+	}
+	.head {
+		position: relative;
+	}
 	.head {
 		padding-left: clamp(0px, 5vw, 64px);
 	}
@@ -180,6 +192,9 @@
 		position: relative;
 		--mx: 34vw;
 		--axis: 56%;
+		/* entries arrive out of the dark and leave into it, instead of being cut by the
+		   edges of the window */
+		mask-image: linear-gradient(90deg, transparent 1.5%, #000 11%, #000 89%, transparent 99%);
 	}
 	.marker {
 		position: absolute;
@@ -445,6 +460,10 @@
 		.viewport {
 			width: min(var(--wrap), 100% - 2 * var(--gutter));
 			margin: 48px auto 0;
+			mask-image: none;
+		}
+		.stage::before {
+			display: none;
 		}
 		.marker,
 		.readout,

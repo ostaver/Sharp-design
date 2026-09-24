@@ -191,6 +191,38 @@ samp {
 	letter-spacing: -0.042em;
 	text-wrap: balance;
 }
+/* SplitText masks clip at the line box, and display type is set tighter than its glyphs:
+   descenders and accents would be shaved off. Pad the clip and give the space back, so
+   layout is unchanged; reveals start far enough below (125%) to clear the padding. */
+.w-mask,
+.ln-mask {
+	padding-block: 0.1em 0.18em;
+	margin-block: -0.1em -0.18em;
+}
+
+/* A line of code longer than its box fades out at the edge, so it reads as "scroll for
+   more" rather than a cut; the fade lifts as the end scrolls in. The scroll timeline is
+   inactive while nothing overflows, so content that fits gets no fade at all. */
+@supports (animation-timeline: scroll()) {
+	.x-fade {
+		-webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 36px), transparent);
+		mask-image: linear-gradient(90deg, #000 calc(100% - 36px), transparent);
+		-webkit-mask-repeat: no-repeat;
+		mask-repeat: no-repeat;
+		mask-size: calc(100% + 36px) 100%;
+		animation: x-fade linear both;
+		animation-timeline: scroll(self inline);
+	}
+	@keyframes x-fade {
+		from {
+			mask-size: 100% 100%;
+		}
+		to {
+			mask-size: calc(100% + 36px) 100%;
+		}
+	}
+}
+
 .h-section .dim {
 	color: var(--muted);
 }

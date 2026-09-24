@@ -61,7 +61,7 @@
 			shipEl.style.transform = `translate3d(${p.x}px, ${p.y}px, 0)`;
 			shipEl.style.opacity = vis && p.visible ? '1' : '0';
 			if (hudEl) {
-				hudEl.style.transform = `translate3d(${p.cx - p.r * 1.02}px, ${p.cy - p.r * 1.04}px, 0)`;
+				hudEl.style.transform = `translate3d(${p.cx - p.r * 1.1}px, ${p.cy - p.r * 1.1}px, 0)`;
 				hudEl.style.opacity = vis ? '1' : '0';
 			}
 			const d = 0.35 + 0.3 * Math.abs(Math.sin(s.ship * 17.0)) + (s.ship > 0.55 && s.ship < 0.6 ? 2.4 : 0);
@@ -117,7 +117,7 @@
 		<div class="row"><span class="k">fix</span><span class="v">every 30 min</span></div>
 	</div>
 	<div class="ship" bind:this={shipEl} aria-hidden="true">
-		<span class="lbl">rhumb · wp {wp}/4</span>
+		<span class="lbl">ostarev · wp {wp}/4</span>
 	</div>
 </section>
 
@@ -193,7 +193,7 @@
 		display: grid;
 		grid-template-columns: repeat(3, minmax(0, 176px));
 		gap: 0 32px;
-		align-items: end;
+		align-items: start;
 	}
 	.stat {
 		border-top: 1px solid var(--hair-2);
@@ -237,8 +237,11 @@
 		transition: opacity 0.4s var(--ease);
 		will-change: transform;
 	}
+	/* The readout sits off the globe's shoulder on a scrap of night, so the dust
+	   around the sphere never runs through the figures. */
 	.hud {
-		padding: 14px 0 0 14px;
+		padding: 12px 16px 10px 16px;
+		background: linear-gradient(135deg, rgba(5, 5, 7, 0.82), rgba(5, 5, 7, 0.55));
 		font-family: var(--f-mono);
 		font-size: 10.5px;
 		letter-spacing: 0.14em;

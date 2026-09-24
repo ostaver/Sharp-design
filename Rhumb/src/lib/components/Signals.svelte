@@ -137,7 +137,7 @@
 		</figure>
 	</div>
 
-	<div class="fleet" aria-label="Crews running Rhumb overnight">
+	<div class="fleet" aria-label="Crews running Ostarev overnight">
 		<ul class="belt">
 			{#each [0, 1] as rep (rep)}
 				{#each signals.fleet as f (f)}
@@ -233,6 +233,11 @@
 		color: var(--text);
 		text-wrap: pretty;
 		text-indent: -0.42em;
+	}
+	/* The hanging indent is inherited: every inline-block word mask would shift its own
+	   first letter out of its clip. Only the paragraph's first line should hang. */
+	blockquote p :global(*) {
+		text-indent: 0;
 	}
 	.who {
 		display: grid;

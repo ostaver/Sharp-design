@@ -1,9 +1,9 @@
 {
-  "name": "rhumb",
+  "name": "ostarev",
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Rhumb — site for a fictional overnight coding agent. A dithered night sky that resolves into a Delft-blue engraving at landfall. SvelteKit, OGL shaders, GSAP.",
+  "description": "Ostarev — site for a fictional overnight coding agent. A dithered night sky that resolves into a Delft-blue engraving at landfall. SvelteKit, OGL shaders, GSAP.",
   "scripts": {
     "dev": "vite dev --port 5175 --strictPort",
     "build": "vite build",

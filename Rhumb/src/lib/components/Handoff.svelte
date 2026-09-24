@@ -133,10 +133,10 @@
 
 			<figure class="term" data-r="term">
 				<figcaption class="bar">
-					<span class="label">rhumb — ~/tidewater/billing</span>
+					<span class="label">ostarev — ~/tidewater/billing</span>
 					<span class="label live"><i aria-hidden="true"></i>zsh · 96×28</span>
 				</figcaption>
-				<div class="body">
+				<div class="body x-fade">
 					{#each handoff.session as l, i (i)}
 						{#if l.kind === 'path'}
 							<div class="tl path"><span class="c-dim">{l.text}</span> <span class="c-rim">({l.branch})</span></div>
