@@ -14,14 +14,14 @@
 			reveal(root);
 			if (ui.reduced) return;
 			gsap.from(q('.tier'), {
-				autoAlpha: 0,
+				opacity: 0,
 				y: 30,
 				duration: 1.2,
 				stagger: 0.12,
 				scrollTrigger: { trigger: q('.tiers')[0], start: 'top 82%', once: true }
 			});
 			gsap.from(q('.tier li'), {
-				autoAlpha: 0,
+				opacity: 0,
 				x: -8,
 				duration: 0.7,
 				stagger: 0.03,

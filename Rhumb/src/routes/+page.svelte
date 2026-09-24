@@ -18,6 +18,7 @@
 	import { gsap, ScrollTrigger } from '$lib/motion/gsap.js';
 	import { startScroll, stopScroll, scrollTo } from '$lib/motion/scroll.js';
 	import { createChoreo } from '$lib/motion/choreo.js';
+	import { revealOnFocus } from '$lib/motion/focus.js';
 
 	// Decided before any child mounts, so every section reads the same answer.
 	if (typeof window !== 'undefined') {
@@ -27,6 +28,7 @@
 	onMount(() => {
 		if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 		startScroll({ reduced: ui.reduced });
+		const stopFocus = revealOnFocus();
 		const choreo = createChoreo();
 		const tick = () => choreo.update();
 		gsap.ticker.add(tick);
@@ -47,6 +49,7 @@
 		}
 
 		return () => {
+			stopFocus();
 			gsap.ticker.remove(tick);
 			document.fonts?.removeEventListener?.('loadingdone', refresh);
 			window.removeEventListener('load', refresh);

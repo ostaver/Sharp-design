@@ -1,4 +1,5 @@
 <script>
+	import { replaceState } from '$app/navigation';
 	import Mark from './Mark.svelte';
 	import Icon from './Icon.svelte';
 	import { ui } from '$lib/state.svelte.js';
@@ -36,7 +37,7 @@
 			lockScroll(false);
 		}
 		scrollTo(`#${id}`);
-		history.replaceState(null, '', `#${id}`);
+		replaceState(`#${id}`, {});
 	}
 
 	function onMenuKey(e) {
@@ -169,11 +170,11 @@
 	.nav.scrolled::before {
 		opacity: 1;
 	}
-	.nav.away {
+	.nav.away:not(:focus-within) {
 		opacity: 0;
 		transform: translateY(-16px);
 	}
-	.nav.away .bar {
+	.nav.away:not(:focus-within) .bar {
 		pointer-events: none;
 	}
 	:global(.day) .nav {
@@ -184,8 +185,6 @@
 	}
 	.bar {
 		position: relative;
-	}
-	.bar {
 		pointer-events: auto;
 		width: min(1080px, 100% - 2 * var(--gutter));
 		height: 68px;

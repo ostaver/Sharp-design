@@ -1,4 +1,5 @@
 <script>
+	import { replaceState } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import Mark from './Mark.svelte';
 	import Icon from './Icon.svelte';
@@ -9,6 +10,8 @@
 	import { scrollTo } from '$lib/motion/scroll.js';
 
 	let root = $state();
+	let canvas = $state();
+	let plateReady = $state(false);
 
 	// In-page links glide back up the night; placeholder links (#) stay put.
 	function go(e, href) {
@@ -16,11 +19,9 @@
 		e.preventDefault();
 		if (href.length > 1) {
 			scrollTo(href, { duration: 2.6 });
-			history.replaceState(null, '', href);
+			replaceState(href, {});
 		}
 	}
-	let canvas = $state();
-	let plateReady = $state(false);
 
 	onMount(() => {
 		const q = gsap.utils.selector(root);
@@ -31,14 +32,14 @@
 		const ctx = gsap.context(() => {
 			if (!ui.reduced) {
 				gsap.from(q('.brand-col > *, .col'), {
-					autoAlpha: 0,
+					opacity: 0,
 					y: 16,
 					duration: 1.2,
 					stagger: 0.07,
 					scrollTrigger: { trigger: root, start: 'top 55%', once: true }
 				});
 				gsap.from(q('.colophon > *'), {
-					autoAlpha: 0,
+					opacity: 0,
 					duration: 1.2,
 					stagger: 0.1,
 					scrollTrigger: { trigger: q('.colophon')[0], start: 'top 98%', once: true }

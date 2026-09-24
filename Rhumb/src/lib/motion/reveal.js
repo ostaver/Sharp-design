@@ -40,7 +40,8 @@ export function reveal(root, { start = 'top 84%' } = {}) {
 				}
 			});
 		} else if (kind === 'fade') {
-			gsap.fromTo(el, { autoAlpha: 0, y: 18 }, { autoAlpha: 1, y: 0, duration: 1.1, delay, scrollTrigger: st });
+			// opacity, not autoAlpha: hidden content must stay reachable by keyboard
+			gsap.fromTo(el, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 1.1, delay, scrollTrigger: st });
 		} else if (kind === 'label') {
 			const text = el.textContent;
 			gsap.set(el, { autoAlpha: 1 });

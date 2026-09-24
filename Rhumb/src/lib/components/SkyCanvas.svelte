@@ -45,7 +45,7 @@
 	});
 </script>
 
-<div class="sky" class:off={!ui.gl} aria-hidden="true">
+<div class="sky" class:off={!ui.gl} class:past={ui.section > 0} class:day={ui.day} aria-hidden="true">
 	<canvas bind:this={canvas}></canvas>
 </div>
 
@@ -75,5 +75,13 @@
 			radial-gradient(circle at 113% 169%, #d5369c 0 56%, #93a0ff 56.3%, rgba(147, 160, 255, 0.25) 57%, transparent 64%),
 			radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.05), transparent 40%),
 			var(--night);
+		transition: background-color 0.8s var(--ease);
+	}
+	/* past the hero the planet sets; at landfall the page turns to paper */
+	.sky.off.past {
+		background: var(--night);
+	}
+	.sky.off.day {
+		background: var(--paper);
 	}
 </style>

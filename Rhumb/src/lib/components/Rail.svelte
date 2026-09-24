@@ -1,4 +1,5 @@
 <script>
+	import { replaceState } from '$app/navigation';
 	import Icon from './Icon.svelte';
 	import { ui } from '$lib/state.svelte.js';
 	import { sections } from '$lib/content.js';
@@ -8,7 +9,7 @@
 	function go(e, id) {
 		e.preventDefault();
 		scrollTo(`#${id}`);
-		history.replaceState(null, '', `#${id}`);
+		replaceState(`#${id}`, {});
 	}
 </script>
 
@@ -49,7 +50,8 @@
 			opacity 0.6s var(--ease),
 			translate 0.8s var(--ease);
 	}
-	.rail.away {
+	/* out of the way over the footer, unless a keyboard user is on it */
+	.rail.away:not(:focus-within) {
 		opacity: 0;
 		translate: -16px 0;
 		pointer-events: none;

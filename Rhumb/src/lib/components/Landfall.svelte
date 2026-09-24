@@ -6,6 +6,7 @@
 	import { gsap, ScrollTrigger } from '$lib/motion/gsap.js';
 	import { reveal } from '$lib/motion/reveal.js';
 	import { paperFront } from '$lib/motion/choreo.js';
+	import { scrollTo } from '$lib/motion/scroll.js';
 	import { skyBus } from '$lib/gl/sky/bus.js';
 	import { ui } from '$lib/state.svelte.js';
 
@@ -117,7 +118,18 @@
 		};
 		gsap.ticker.add(tick);
 
+		// The install block waits for daylight; a keyboard user who tabs into it early is
+		// carried forward to the morning so they can see what they are focusing.
+		const act = q('.act')[0];
+		const onFocus = () => {
+			if (act.hasAttribute('data-inked')) return;
+			const top = root.getBoundingClientRect().top + window.scrollY;
+			scrollTo(top + window.innerHeight * 1.5, { duration: 1.2 });
+		};
+		act.addEventListener('focusin', onFocus);
+
 		return () => {
+			act.removeEventListener('focusin', onFocus);
 			gsap.ticker.remove(tick);
 			st.kill();
 			ctx.revert();
