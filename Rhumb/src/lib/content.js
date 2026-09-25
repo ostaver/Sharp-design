@@ -167,28 +167,28 @@ export const signals = {
 	quotes: [
 		{
 			q: 'I hand it the gnarly migration at six. At nine the next morning there’s a pull request, and a log I can actually read.',
-			name: 'Ines Kovač',
-			role: 'Staff Engineer',
+			name: 'Filip Karamazov',
+			role: 'Shut yo bitch ass up',
 			org: 'Tidewater',
 			flag: 'IK'
 		},
 		{
 			q: 'The drift checks are the feature. It told me it was about to refactor something I hadn’t asked for, and then it didn’t.',
-			name: 'Dario Mendes',
+			name: 'OSTAVEN',
 			role: 'Platform Lead',
 			org: 'Northlight',
 			flag: 'DM'
 		},
 		{
 			q: 'My editor, my linters, my tests. It’s the first agent that feels like a colleague on the night shift instead of a slot machine.',
-			name: 'Priya Raman',
+			name: 'OSTAREV',
 			role: 'Engineering Manager',
 			org: 'Saltworks',
 			flag: 'PR'
 		},
 		{
 			q: 'We run a crew of eight overnight on the monorepo. Mornings are code review now, not archaeology.',
-			name: 'Tomás Ferreira',
+			name: 'OSTAR',
 			role: 'CTO',
 			org: 'Halyard',
 			flag: 'TF'
