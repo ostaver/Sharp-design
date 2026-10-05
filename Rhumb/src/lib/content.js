@@ -33,9 +33,11 @@ export const hero = {
 	lines: ['A coding agent', 'that works', 'the night watch'],
 	lede: 'Hand Ostarev the ticket before you log off. It holds one bearing through plan, edit, test and review, inside your real editor, with every step on the log. By first light the pull request is waiting.',
 	strike: { before: 'Local-first. Any model. No ', struck: 'babysitting', after: '.' },
-	modelsLabel: 'Works with any model',
+	modelsLabel: 'At the helm',
 	// logged in the quiet stretch after the camera falls through the planet's air
 	through: ['20:06 · through the cloud deck', 'clear to the east · wind ene 3 · 047°'],
+	// subtitled in the letterbox while the camera falls
+	descent: '20:03 · descending through the upper air',
 	models: ['Claude', 'GPT', 'Gemini', 'Llama', 'Mistral', 'Qwen', 'DeepSeek', 'Kimi', 'Ollama']
 };
 
@@ -131,10 +133,11 @@ export const instruments = {
 export const bearing = {
 	title: ['Most agents drift.', 'Ostarev holds a bearing.'],
 	lede: 'Long tasks rarely fail loudly. They wander: a refactor nobody asked for, a test quietly skipped, a dependency bumped “while we’re here.” Every thirty minutes Ostarev re-reads the ticket, measures how far it has drifted from the plan and corrects course. If it can’t, it drops anchor and leaves you a note.',
+	// Each figure is read off its own scale, like an instrument: [min, max] and the tick step.
 	stats: [
-		{ v: 94, suffix: '%', t: 'of overnight runs finish inside the approved plan' },
-		{ v: 0.6, suffix: '°', decimals: 1, t: 'mean drift from the bearing, checked every 30 minutes' },
-		{ v: 3, suffix: ' min', t: 'median morning review, because the log reads like prose' }
+		{ v: 94, suffix: '%', t: 'of overnight runs finish inside the approved plan', scale: [0, 100], step: 10 },
+		{ v: 0.6, suffix: '°', decimals: 1, t: 'mean drift from the bearing, checked every 30 minutes', scale: [-5, 5], step: 1 },
+		{ v: 3, suffix: ' min', t: 'median morning review, because the log reads like prose', scale: [0, 30], step: 5 }
 	],
 	source: 'Sea trials, 1,200 overnight tasks across 41 repositories. Q3 2026.',
 	definition: {
@@ -194,6 +197,7 @@ export const signals = {
 			flag: 'TF'
 		}
 	],
+	fleetLabel: 'Kept the watch last night',
 	fleet: ['Tidewater', 'Northlight', 'Saltworks', 'Halyard', 'Brine & Co', 'Osprey', 'Lantern', 'Kestrel']
 };
 
@@ -248,7 +252,10 @@ export const footer = {
 		{ h: 'Resources', links: [L('Field notes'), L('Case studies', '#signals'), L('Community'), L('System status'), L('Security'), L('Brand kit')] },
 		{ h: 'Company', links: [L('About'), L('Careers'), L('Contact'), L('Terms of service'), L('Privacy policy'), L('Data processing')] }
 	],
-	plate: 'Pl. VIII — Landfall below Sv. Nikola, patron of sailors. Morning watch.',
+	// The footer runs as the night's end credits, over the morning sky.
+	kicker: 'End of the watch',
+	relieved: 'The watch is relieved.',
+	after: 'Hand it the next ticket at dusk.',
 	coords: '42°29′ N · 18°41′ E',
-	sculp: 'Drawn in code · Leftovers sculp.'
+	sculp: 'Drawn in code'
 };

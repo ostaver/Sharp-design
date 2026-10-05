@@ -8,6 +8,7 @@ let lenis = null;
 export function startScroll({ reduced }) {
 	if (reduced) return null;
 	lenis = new Lenis({ lerp: 0.105, wheelMultiplier: 0.95, smoothWheel: true, syncTouch: false });
+	if (document.documentElement.style.overflow === 'hidden') lenis.stop();
 	lenis.on('scroll', ScrollTrigger.update);
 	gsap.ticker.add(raf);
 	gsap.ticker.lagSmoothing(0);
@@ -27,11 +28,13 @@ export function scrollTo(target, opts = {}) {
 	}
 }
 
+// Svelte mounts children before parents, so the Preloader can lock before Lenis exists.
+// That lock lands on <html> as overflow:hidden, which a later Lenis start() never clears
+// and which blocks native touch scrolling (Lenis does not take over touch). Always
+// apply and clear the inline lock, and drive Lenis too when it is running.
 export function lockScroll(locked) {
-	if (!lenis) {
-		document.documentElement.style.overflow = locked ? 'hidden' : '';
-		return;
-	}
+	document.documentElement.style.overflow = locked ? 'hidden' : '';
+	if (!lenis) return;
 	locked ? lenis.stop() : lenis.start();
 }
 

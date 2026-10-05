@@ -4,9 +4,13 @@
 	import { hero, site } from '$lib/content.js';
 	import { gsap, ScrollTrigger, SplitText, SCRAMBLE } from '$lib/motion/gsap.js';
 	import { ui } from '$lib/state.svelte.js';
+	import { cine } from '$lib/motion/cine.js';
 
 	let root = $state();
+	let modelEl = $state();
+	let mi = $state(0);
 	let played = false;
+	const pad = (n) => String(n).padStart(2, '0');
 
 	function intro() {
 		if (played || !root) return;
@@ -18,9 +22,14 @@
 			return;
 		}
 
-		const split = SplitText.create(q('h1 .ln'), { type: 'words,chars', mask: 'words', wordsClass: 'w', charsClass: 'ch' });
+		// aria: 'none' — SplitText's default puts aria-label on the line span, which has no role to carry a name; the h1 is named instead.
+		const split = SplitText.create(q('h1 .ln'), { type: 'words,chars', mask: 'words', wordsClass: 'w', charsClass: 'ch', aria: 'none' });
+		const wide = window.matchMedia('(min-width: 861px) and (pointer: fine)').matches;
 		const tl = gsap.timeline({ defaults: { ease: 'helm' } });
-		tl.set(q('[data-in]'), { autoAlpha: 1 })
+		// Opening shot: the frame starts letterboxed and opens out as the title lands.
+		tl.to(cine, { intro: 0, duration: 2.1, ease: 'power3.inOut' }, 0.35);
+		if (wide) tl.fromTo(q('h1'), { filter: 'blur(14px)' }, { filter: 'blur(0px)', duration: 1.9, ease: 'power2.out', clearProps: 'filter' }, 0.1);
+		tl.set(q('[data-in]'), { autoAlpha: 1 }, 0)
 			.from(q('.eyebrow .dot'), { scale: 0, duration: 0.6 }, 0)
 			.from(q('.eyebrow .t'), { duration: 1.1, scrambleText: { text: '', chars: SCRAMBLE, revealDelay: 0.2 } }, 0.05)
 			.from(split.chars, { yPercent: 125, duration: 1.25, stagger: 0.016 }, 0.1)
@@ -30,8 +39,7 @@
 			.from(q('.install .tabs > *'), { autoAlpha: 0, y: 8, duration: 0.8, stagger: 0.06 }, 0.8)
 			.from(q('.install .cmd'), { clipPath: 'inset(0 100% 0 0)', duration: 1.1, ease: 'haul' }, 0.9)
 			.from(q('.install code'), { duration: 1.1, scrambleText: { text: '', chars: 'lowerCase', revealDelay: 0.3 } }, 1.1)
-			.from(q('.models .label'), { autoAlpha: 0, duration: 0.8 }, 1.15)
-			.from(q('.models li'), { autoAlpha: 0, y: 6, duration: 0.7, stagger: 0.05 }, 1.2)
+			.from(q('.helm > *'), { autoAlpha: 0, duration: 0.8, stagger: 0.08 }, 1.15)
 			.from(q('.chrome > *'), { autoAlpha: 0, duration: 1.2, stagger: 0.1 }, 1.3);
 	}
 
@@ -56,7 +64,30 @@
 			gsap.from(q('.through .label'), { opacity: 0, y: 10, duration: 1, stagger: 0.12, delay: 0.3, scrollTrigger: through });
 		}, root);
 
-		return () => ctx.revert();
+		// Every model takes a turn at the helm, only while the hero is on screen.
+		let helm = null;
+		const turn = () => {
+			mi = (mi + 1) % hero.models.length;
+			gsap.to(modelEl, { duration: 0.9, scrambleText: { text: hero.models[mi], chars: SCRAMBLE, speed: 0.6 } });
+			helm = gsap.delayedCall(2.6, turn);
+		};
+		const helmST = ui.reduced
+			? null
+			: ScrollTrigger.create({
+					trigger: root,
+					start: 'top bottom',
+					end: '30% top',
+					onToggle: (self) => {
+						helm?.kill();
+						helm = self.isActive ? gsap.delayedCall(2.6, turn) : null;
+					}
+				});
+
+		return () => {
+			helm?.kill();
+			helmST?.kill();
+			ctx.revert();
+		};
 	});
 
 	$effect(() => {
@@ -68,7 +99,7 @@
 	<div class="stage">
 		<div class="hero-copy">
 			<p class="eyebrow label" data-in><span class="dot" aria-hidden="true"></span><span class="t">{hero.eyebrow}</span></p>
-			<h1 id="hero-title" data-in>
+			<h1 id="hero-title" aria-label="{hero.lines.join(' ')}." data-in>
 				<span class="ln l1">{hero.lines[0]}</span>
 				<span class="ln l2">{hero.lines[1]}</span>
 				<span class="ln l3">{hero.lines[2]}<span class="stop">.</span></span>
@@ -81,12 +112,13 @@
 				<Install id="hero-install" />
 			</div>
 			<div class="models" data-in>
-				<p class="label">{hero.modelsLabel}</p>
-				<ul>
-					{#each hero.models as m (m)}
-						<li>{m}</li>
-					{/each}
-				</ul>
+				<p class="helm" aria-hidden="true">
+					<span class="label k">{hero.modelsLabel}</span>
+					<span class="model" bind:this={modelEl}>{hero.models[0]}</span>
+					<span class="rule"></span>
+					<span class="label idx">{pad(mi + 1)}/{pad(hero.models.length)}</span>
+				</p>
+				<p class="sr-only">Works with any model: {hero.models.join(', ')}.</p>
 			</div>
 		</div>
 
@@ -234,27 +266,39 @@
 
 	.models {
 		margin-top: 30px;
-	}
-	.models .label {
-		font-size: 10px;
-		color: var(--muted);
-		margin-bottom: 12px;
-	}
-	.models ul {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 6px 20px;
 		max-width: 540px;
 	}
-	.models li {
-		font-family: var(--f-mono);
-		font-size: 12px;
-		letter-spacing: 0.02em;
-		color: var(--muted);
-		transition: color 0.3s var(--ease);
+	/* One readout instead of a wall of names: whoever has the helm, in turn. */
+	.helm {
+		display: flex;
+		align-items: baseline;
+		gap: 14px;
 	}
-	.models li:hover {
+	.helm .k {
+		font-size: 10px;
+		color: var(--muted);
+		white-space: nowrap;
+	}
+	.helm .rule {
+		flex: 1;
+		height: 1px;
+		align-self: center;
+		background: linear-gradient(90deg, var(--hair-2), var(--hair));
+	}
+	.model {
+		font-family: var(--f-serif);
+		font-style: italic;
+		font-size: 1.5rem;
+		line-height: 1;
+		letter-spacing: -0.01em;
 		color: var(--text);
+		min-width: 5.4em;
+		white-space: nowrap;
+	}
+	.helm .idx {
+		font-size: 9.5px;
+		color: var(--faint);
+		font-variant-numeric: tabular-nums;
 	}
 
 	.chrome {
@@ -346,9 +390,6 @@
 		}
 		.strike {
 			margin-bottom: 30px;
-		}
-		.models ul {
-			gap: 4px 14px;
 		}
 		.chrome {
 			padding: 0 16px 14px;

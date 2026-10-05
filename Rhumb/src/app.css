@@ -12,7 +12,7 @@
 	--text: #f3f2f6;
 	--text-2: #c2c1cc;
 	--dim: #a09fac;
-	--muted: #6c6b78;
+	--muted: #807f8c;
 	--faint: #45444f;
 	--signal: #ff5cd2;
 	--signal-2: #d73fad;
@@ -39,6 +39,9 @@
 	--wrap: 1240px;
 	--ease: cubic-bezier(0.16, 1, 0.3, 1);
 	--ease-io: cubic-bezier(0.65, 0, 0.35, 1);
+
+	/* Fractal noise, grey around 0.5 and opaque: made for overlay blending. */
+	--grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 
 	color-scheme: dark;
 }
@@ -74,6 +77,7 @@ body {
 	-moz-osx-font-smoothing: grayscale;
 	text-rendering: optimizeLegibility;
 	overflow-x: clip;
+	-webkit-tap-highlight-color: transparent;
 }
 
 h1,
@@ -280,6 +284,17 @@ html.lenis body {
 	height: 100lvh;
 	visibility: hidden;
 	pointer-events: none;
+}
+
+/* ---- phones ---------------------------------------------------------------------- */
+
+/* A backdrop blur over the live WebGL sky re-blurs the whole region every frame, which
+   is what makes a phone stutter mid-scroll. Every panel has a dark enough ground without. */
+@media (max-width: 860px), (pointer: coarse) {
+	* {
+		-webkit-backdrop-filter: none !important;
+		backdrop-filter: none !important;
+	}
 }
 
 /* ---- reduced motion / contrast / print ----------------------------------------- */

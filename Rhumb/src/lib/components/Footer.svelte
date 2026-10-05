@@ -2,7 +2,6 @@
 	import { replaceState } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import Mark from './Mark.svelte';
-	import Icon from './Icon.svelte';
 	import { footer, site } from '$lib/content.js';
 	import { gsap, ScrollTrigger } from '$lib/motion/gsap.js';
 	import { ui } from '$lib/state.svelte.js';
@@ -10,8 +9,12 @@
 	import { scrollTo } from '$lib/motion/scroll.js';
 
 	let root = $state();
-	let canvas = $state();
-	let plateReady = $state(false);
+
+	const elsewhere = [
+		{ t: 'GitHub', href: site.github },
+		{ t: 'Discord', href: site.discord },
+		{ t: 'X', href: site.x }
+	];
 
 	// In-page links glide back up the night; placeholder links (#) stay put.
 	function go(e, href) {
@@ -25,89 +28,34 @@
 
 	onMount(() => {
 		const q = gsap.utils.selector(root);
-		let plate = null;
-		let alive = true;
-		let visible = false;
 
 		const ctx = gsap.context(() => {
 			if (!ui.reduced) {
-				gsap.from(q('.brand-col > *, .col'), {
+				const st = (el, start = 'top 88%') => ({ trigger: el, start, once: true });
+				gsap.from(q('.head .rule'), { scaleX: 0, transformOrigin: 'left', duration: 1.6, ease: 'haul', scrollTrigger: st(q('.head')[0]) });
+				gsap.from(q('.head > :not(.rule), .lead > *'), { opacity: 0, y: 16, duration: 1.3, stagger: 0.08, scrollTrigger: st(q('.head')[0]) });
+				// the billing comes up column by column, like a card of credits
+				gsap.from(q('.role'), { opacity: 0, y: 22, duration: 1.3, stagger: 0.07, scrollTrigger: st(q('.roll')[0]) });
+				gsap.from(q('.title'), {
+					yPercent: 22,
 					opacity: 0,
-					y: 16,
-					duration: 1.2,
-					stagger: 0.07,
-					scrollTrigger: { trigger: root, start: 'top 55%', once: true }
+					duration: 2.2,
+					ease: 'helm',
+					scrollTrigger: st(q('.endcard')[0], 'top 45%')
 				});
-				gsap.from(q('.colophon > *'), {
-					opacity: 0,
-					duration: 1.2,
-					stagger: 0.1,
-					scrollTrigger: { trigger: q('.colophon')[0], start: 'top 98%', once: true }
-				});
+				gsap.from(q('.colophon > *'), { opacity: 0, duration: 1.4, stagger: 0.1, delay: 0.6, scrollTrigger: st(q('.endcard')[0], 'top 45%') });
 			}
 			ScrollTrigger.create({
 				trigger: root,
 				start: 'top bottom',
 				end: 'bottom top',
 				onToggle: (self) => {
-					visible = self.isActive;
-					if (plate) plate.visible = visible;
-					if (ui.sound) setSea(visible ? 1 : 0);
-				},
-				onUpdate: (self) => {
-					if (plate) plate.enter = Math.min(1, self.progress * 1.8);
+					if (ui.sound) setSea(self.isActive ? 1 : 0);
 				}
 			});
 		}, root);
 
-		// The engraving is loaded after the page settles; it's the last thing anyone sees.
-		const load = async () => {
-			if (!ui.gl) return;
-			const { Plate } = await import('$lib/gl/plate/Plate.js');
-			if (!alive) return;
-			try {
-				plate = new Plate(canvas, { reduced: ui.reduced });
-				plate.visible = visible;
-				keepClear();
-				const t = (_t, dt) => plate.render(Math.min(dt, 60) / 1000);
-				gsap.ticker.add(t);
-				plate._tick = t;
-				plateReady = true;
-			} catch (err) {
-				console.warn('[ostarev] engraving disabled:', err);
-			}
-		};
-		const idle = window.requestIdleCallback || ((f) => setTimeout(f, 600));
-		const handle = idle(load, { timeout: 2500 });
-
-		// The engraving is framed so the lettering never lands on the town.
-		const cols = root.querySelector('.cols');
-		const keepClear = () => {
-			if (!plate) return;
-			const c = canvas.getBoundingClientRect();
-			const r = cols.getBoundingClientRect();
-			plate.setClear({ right: r.right - c.left, bottom: r.bottom - c.top });
-		};
-		const ro = new ResizeObserver(keepClear);
-		ro.observe(cols);
-
-		const onResize = () => {
-			plate?.resize();
-			keepClear();
-		};
-		window.addEventListener('resize', onResize);
-
-		return () => {
-			alive = false;
-			window.cancelIdleCallback?.(handle);
-			window.removeEventListener('resize', onResize);
-			ro.disconnect();
-			if (plate) {
-				gsap.ticker.remove(plate._tick);
-				plate.destroy();
-			}
-			ctx.revert();
-		};
+		return () => ctx.revert();
 	});
 
 	$effect(() => {
@@ -117,246 +65,265 @@
 </script>
 
 <footer class="foot" bind:this={root} aria-label="Site">
-	<div class="plate" class:ready={plateReady} aria-hidden="true">
-		<canvas bind:this={canvas}></canvas>
-	</div>
-
-	<div class="over">
-		<div class="brand-col">
+	<div class="frame credits">
+		<p class="head label">
 			<a class="brand" href="#heading" aria-label="Ostarev, back to the top" onclick={(e) => go(e, '#heading')}>
-				<Mark size={24} />
-				<span class="word">ostarev</span>
+				<Mark size={16} />
 			</a>
-			<ul class="social">
-				<li><a href={site.github} target="_blank" rel="noreferrer" aria-label="GitHub"><Icon name="github" size={18} /></a></li>
-				<li><a href={site.discord} target="_blank" rel="noreferrer" aria-label="Discord"><Icon name="discord" size={19} /></a></li>
-				<li><a href={site.x} target="_blank" rel="noreferrer" aria-label="X"><Icon name="x" size={16} /></a></li>
-			</ul>
-		</div>
+			<span>{footer.kicker}</span>
+			<span class="rule" aria-hidden="true"></span>
+			<span class="tm">08:00</span>
+		</p>
 
-		<nav class="cols" aria-label="Footer">
-			{#each footer.columns as c (c.h)}
-				<div class="col">
-					<h2>{c.h}</h2>
+		<div class="body">
+			<div class="lead">
+				<p class="relieved">{footer.relieved}</p>
+				<p class="after">{footer.after}</p>
+			</div>
+
+			<nav class="roll" aria-label="Footer">
+				{#each footer.columns as c (c.h)}
+					<div class="role">
+						<h2 class="label">{c.h}</h2>
+						<ul>
+							{#each c.links as l (l.t)}
+								<li><a href={l.href} onclick={(e) => go(e, l.href)}>{l.t}</a></li>
+							{/each}
+						</ul>
+					</div>
+				{/each}
+				<div class="role">
+					<h2 class="label">Elsewhere</h2>
 					<ul>
-						{#each c.links as l (l.t)}
-							<li><a href={l.href} onclick={(e) => go(e, l.href)}>{l.t}</a></li>
+						{#each elsewhere as l (l.t)}
+							<li>
+								<a href={l.href} target="_blank" rel="noreferrer">{l.t}<span class="ne" aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a>
+							</li>
 						{/each}
 					</ul>
 				</div>
-			{/each}
-		</nav>
+			</nav>
+		</div>
 	</div>
 
-	<div class="plate-room" aria-hidden="true"></div>
-
-	<div class="colophon">
-		<span class="copy">© {site.year} {site.company}</span>
-		<span class="caption">{footer.plate}</span>
-		<span class="sculp">{footer.coords} · {footer.sculp}</span>
+	<!-- The end card: a grainy morning sky, and the name set edge to edge across it. -->
+	<div class="endcard">
+		<div class="frame card-in">
+			<p class="title" aria-hidden="true">ostarev</p>
+			<div class="colophon">
+				<span>© {site.year} {site.company}</span>
+				<span class="mid">{footer.coords}</span>
+				<span class="end">{footer.sculp}</span>
+			</div>
+		</div>
 	</div>
 </footer>
 
 <style>
 	.foot {
-		--margin: 60px;
 		position: relative;
 		z-index: 2;
-		min-height: max(100vh, 720px);
+		isolation: isolate;
 		color: var(--ink);
 		background: var(--paper);
 		overflow: hidden;
-		display: flex;
-		flex-direction: column;
-		justify-content: space-between;
 	}
-	/* The image stops short of the bottom, leaving a margin for the caption, as on a print. */
-	.plate {
-		position: absolute;
-		inset: 0 0 var(--margin) 0;
-		background:
-			repeating-linear-gradient(to bottom, rgba(31, 61, 145, 0.1) 0 1px, transparent 1px 4px) 0 100% / 100% 36% no-repeat,
-			var(--paper);
-	}
-	.plate.ready {
-		background: var(--paper);
-	}
-	.plate::after {
-		content: '';
-		position: absolute;
-		inset: 0;
-		box-shadow: inset 0 -1px 0 rgba(22, 35, 75, 0.35);
-		pointer-events: none;
-	}
-	.plate canvas {
-		display: block;
+	/* Same gutters as the page: nothing floats on its own axis in the middle of a wide screen. */
+	.frame {
+		width: calc(100% - 2 * var(--gutter));
+		margin-inline: auto;
 	}
 
-	/* Links sit in the open sky on the left; the headland keeps the right of the plate. */
-	.over {
-		position: relative;
-		width: min(1240px, 100% - 2 * var(--gutter));
-		margin-inline: auto;
-		padding-top: clamp(56px, 8vh, 96px);
-		display: grid;
-		grid-template-columns: 190px minmax(0, 720px);
-		gap: 40px;
+	/* ---- credits ---- */
+	.credits {
+		padding: clamp(120px, 20vh, 240px) 0 clamp(72px, 10vh, 140px);
+	}
+	.head {
+		display: flex;
+		align-items: center;
+		gap: 14px;
+		font-size: clamp(10px, 0.28vw + 5.5px, 12px);
+		letter-spacing: 0.24em;
+		color: var(--ink-2);
+		margin-bottom: clamp(48px, 8vh, 96px);
+	}
+	.head .rule {
+		flex: 1;
+		height: 1px;
+		background: linear-gradient(90deg, rgba(22, 35, 75, 0.28), rgba(22, 35, 75, 0.08));
+	}
+	.head .tm {
+		color: var(--delft);
 	}
 	.brand {
-		display: inline-flex;
-		align-items: center;
-		gap: 10px;
-		margin-bottom: 30px;
-	}
-	.word {
-		font-size: 21px;
-		font-weight: 600;
-		letter-spacing: -0.04em;
-	}
-	.social {
-		display: grid;
-		gap: 6px;
-		justify-items: start;
-	}
-	.social a {
 		display: grid;
 		place-items: center;
-		width: 36px;
-		height: 36px;
-		margin-left: -7px;
+		width: 32px;
+		height: 32px;
+		margin: -8px -4px -8px -8px;
 		color: var(--ink);
-		transition: color 0.3s var(--ease), transform 0.4s var(--ease);
 	}
-	.social a:hover {
-		color: var(--delft);
-		transform: translateX(3px);
+	.brand :global(.mark) {
+		transition: transform 0.9s var(--ease);
+	}
+	.brand:hover :global(.mark) {
+		transform: rotate(-47deg);
 	}
 
-	.cols {
+	.body {
 		display: grid;
-		grid-template-columns: repeat(4, minmax(0, 1fr));
-		gap: 32px;
+		grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+		gap: clamp(48px, 6vw, 140px);
+		align-items: start;
 	}
-	.col h2 {
-		font-size: 15px;
-		font-weight: 600;
+	.relieved {
+		font-family: var(--f-serif);
+		font-style: italic;
+		font-size: clamp(2.4rem, 3.9vw, 5.6rem);
+		line-height: 1;
+		letter-spacing: -0.02em;
+		color: var(--delft);
+		text-wrap: balance;
+	}
+	.after {
+		margin-top: 0.9em;
+		max-width: 30ch;
+		font-size: clamp(1rem, 0.3vw + 0.9rem, 1.3rem);
+		line-height: 1.5;
+		color: var(--ink-2);
+	}
+
+	.roll {
+		display: grid;
+		grid-template-columns: repeat(5, minmax(0, 1fr));
+		gap: clamp(28px, 2.6vw, 56px) clamp(20px, 2vw, 44px);
+		padding-top: 0.6em;
+	}
+	.role h2 {
+		font-size: clamp(9.5px, 0.22vw + 6px, 11.5px);
+		letter-spacing: 0.22em;
+		color: var(--ink-2);
+		padding-bottom: 12px;
+		margin-bottom: 14px;
+		border-bottom: 1px solid rgba(22, 35, 75, 0.14);
+	}
+	.role ul {
+		display: grid;
+		gap: 2px;
+	}
+	.role a {
+		display: inline-flex;
+		align-items: baseline;
+		gap: 5px;
+		font-size: clamp(0.94rem, 0.24vw + 0.84rem, 1.2rem);
+		font-weight: 440;
 		letter-spacing: -0.01em;
-		margin-bottom: 18px;
-	}
-	.col ul {
-		display: grid;
-		gap: 9px;
-	}
-	.col a {
-		font-size: 13.5px;
-		color: #2b3558;
-		/* a little clear paper around each word, as a printer would leave where the
-		   lettering crosses the engraving (the cypresses reach up into the columns) */
-		text-shadow:
-			0 0 2px var(--paper),
-			0 0 2px var(--paper),
-			0 0 4px var(--paper),
-			0 0 8px var(--paper);
+		line-height: 1.75;
+		color: var(--ink);
 		background-image: linear-gradient(currentColor, currentColor);
 		background-size: 0% 1px;
 		background-repeat: no-repeat;
-		background-position: 0 100%;
+		background-position: 0 88%;
 		transition:
 			background-size 0.45s var(--ease),
 			color 0.3s var(--ease);
 	}
-	.col a:hover {
+	.role a:hover {
 		color: var(--delft);
 		background-size: 100% 1px;
 	}
-	:global(.day) .foot :focus-visible,
+	.ne {
+		font-size: 0.75em;
+		opacity: 0.55;
+	}
 	.foot :focus-visible {
 		outline-color: var(--delft);
 	}
 
-	.colophon {
+	/* ---- the end card: paper where landfall left off, deepening into Delft ---- */
+	.endcard {
 		position: relative;
-		width: min(1240px, 100% - 2 * var(--gutter));
-		height: var(--margin);
-		margin: 0 auto;
+		isolation: isolate;
+		/* sky enough above the name for the gradient to breathe, and no more */
+		padding-top: clamp(180px, 30vh, 420px);
+		background: linear-gradient(
+			180deg,
+			var(--paper) 0%,
+			#e4d6bf 12%,
+			#c8c2c4 26%,
+			#93a1c9 42%,
+			#5a74bd 58%,
+			#2f4a9e 74%,
+			#1f3d91 86%,
+			#15205a 100%
+		);
+		color: var(--paper);
+	}
+	.endcard::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		pointer-events: none;
+		background: var(--grain) 0 0 / 180px 180px;
+		mix-blend-mode: overlay;
+		opacity: 0.55;
+		/* none at the seam, where the page-wide grain already matches the paper */
+		-webkit-mask-image: linear-gradient(to bottom, transparent 4%, #000 34%);
+		mask-image: linear-gradient(to bottom, transparent 4%, #000 34%);
+	}
+	.card-in {
+		container-type: inline-size;
+		padding-bottom: clamp(18px, 2.4vh, 32px);
+	}
+	/* Set to the frame's width, so the name meets both gutters on any screen. */
+	.title {
+		font-size: min(32cqw, 60vh);
+		font-weight: 560;
+		letter-spacing: -0.065em;
+		line-height: 0.74;
+		margin-left: -0.045em;
+		color: var(--paper);
+		opacity: 0.95;
+		white-space: nowrap;
+	}
+	.colophon {
+		margin-top: clamp(22px, 3.4vh, 44px);
+		padding-top: 14px;
+		border-top: 1px solid rgba(237, 229, 209, 0.2);
 		display: grid;
 		grid-template-columns: 1fr auto 1fr;
-		gap: 24px;
-		align-items: center;
-		font-size: 12px;
-		color: var(--ink-2);
+		gap: 16px;
+		font-family: var(--f-mono);
+		font-size: clamp(10px, 0.26vw + 6px, 12px);
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: rgba(237, 229, 209, 0.7);
 	}
-	.caption {
-		font-family: var(--f-serif);
-		font-style: italic;
-		font-size: 16px;
-		color: var(--ink);
-		text-align: center;
-	}
-	.sculp {
+	.colophon .end {
 		text-align: right;
-		font-family: var(--f-mono);
-		font-size: 10px;
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
-	}
-	.copy {
-		font-family: var(--f-mono);
-		font-size: 10px;
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
 	}
 
-	@media (max-width: 1000px) {
-		.over {
+	@media (max-width: 1180px) {
+		.body {
 			grid-template-columns: 1fr;
-			gap: 36px;
 		}
-		.brand-col {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-		}
-		.brand {
-			margin-bottom: 0;
-		}
-		.social {
-			display: flex;
-			gap: 8px;
+		.lead {
+			max-width: 640px;
 		}
 	}
-	.plate-room {
-		display: none;
-	}
-
-	/* Narrow screens: links on bare paper first, then the plate as a band beneath them. */
-	@media (max-width: 720px) {
-		.foot {
-			--band: min(125vw, 560px);
-			--margin: 116px;
-			min-height: 0;
-		}
-		.plate {
-			top: auto;
-			height: var(--band);
-		}
-		.plate-room {
-			display: block;
-			height: calc(var(--band) + 24px);
-		}
-		.cols {
+	@media (max-width: 760px) {
+		.roll {
 			grid-template-columns: repeat(2, minmax(0, 1fr));
-			gap: 30px 20px;
+		}
+		.endcard {
+			padding-top: clamp(200px, 34svh, 320px);
 		}
 		.colophon {
 			grid-template-columns: 1fr;
-			gap: 4px;
-			align-content: center;
-			padding-top: 8px;
-			text-align: left;
+			gap: 6px;
 		}
-		.caption,
-		.sculp {
+		.colophon .end {
 			text-align: left;
 		}
 	}

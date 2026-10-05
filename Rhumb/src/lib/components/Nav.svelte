@@ -83,9 +83,8 @@
 				<Icon name="discord" size={15} />
 				<Icon name="arrow-ne" size={9} class="ne" />
 			</a>
-			<a class="ext" href={site.github} target="_blank" rel="noreferrer" aria-label="GitHub, 18.2 thousand stars (opens in a new tab)">
+			<a class="ext" href={site.github} target="_blank" rel="noreferrer" aria-label="GitHub (opens in a new tab)">
 				<Icon name="github" size={14} />
-				<span class="stars label">18.2k</span>
 				<Icon name="arrow-ne" size={9} class="ne" />
 			</a>
 			<button class="sound" type="button" aria-pressed={ui.sound} onclick={toggleSound} aria-label="Ship's bell sound">
@@ -293,11 +292,6 @@
 		opacity: 0.6;
 		transform: translateY(-3px);
 	}
-	.stars {
-		font-size: 10px;
-		letter-spacing: 0.08em;
-		opacity: 0.75;
-	}
 	.sound {
 		width: 36px;
 		justify-content: center;
@@ -420,6 +414,11 @@
 	}
 
 	@media (max-width: 860px) {
+		/* no live blur over the WebGL sky on phones: the gradient alone is opaque enough */
+		.nav::before {
+			-webkit-backdrop-filter: none;
+			backdrop-filter: none;
+		}
 		.bar {
 			grid-template-columns: 1fr auto;
 		}

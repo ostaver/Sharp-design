@@ -7,6 +7,7 @@
 	import { ui } from '$lib/state.svelte.js';
 
 	let root = $state();
+	const ROMAN = ['I', 'II', 'III', 'IV'];
 
 	onMount(() => {
 		const q = gsap.utils.selector(root);
@@ -20,7 +21,7 @@
 				stagger: 0.12,
 				scrollTrigger: { trigger: q('.tiers')[0], start: 'top 82%', once: true }
 			});
-			gsap.from(q('.tier li'), {
+			gsap.from(q('.tier .feats li'), {
 				opacity: 0,
 				x: -8,
 				duration: 0.7,
@@ -45,21 +46,23 @@
 			</div>
 		</header>
 
+		<!-- Three articles of one charter party, not three cards: ruled columns, clauses in
+		     the margin, the price set like a sum written in. -->
 		<ul class="tiers">
-			{#each charter.tiers as t (t.id)}
+			{#each charter.tiers as t, ti (t.id)}
 				<li class="tier" class:featured={t.featured}>
-					{#if t.featured}<span class="badge label">Most chartered</span>{/if}
+					<p class="art label">Art. {ROMAN[ti]}{#if t.featured}<span class="note">most chartered</span>{/if}</p>
 					<h3>{t.k}</h3>
 					<p class="price">
 						<span class="amt">{t.price}</span>
 						<span class="per label">{t.per}</span>
 					</p>
 					<p class="tag">{t.t}</p>
-					<ul class="feats">
-						{#each t.features as f (f)}
-							<li><Icon name="check" size={13} /><span>{f}</span></li>
+					<ol class="feats">
+						{#each t.features as f, fi (f)}
+							<li><span class="cl" aria-hidden="true">§{fi + 1}</span><span>{f}</span></li>
 						{/each}
-					</ul>
+					</ol>
 					<a class="cta label" href="#landfall">
 						<span>{t.cta}</span>
 						<Icon name="arrow-r" size={14} />
@@ -97,60 +100,71 @@
 	.tiers {
 		display: grid;
 		grid-template-columns: repeat(3, minmax(0, 1fr));
-		border-left: 1px solid var(--hair);
+		border-top: 1px solid var(--hair-2);
 	}
 	.tier {
 		position: relative;
 		display: flex;
 		flex-direction: column;
-		padding: 30px 28px 28px;
-		border: 1px solid var(--hair);
-		border-left: 0;
-		background: rgba(7, 7, 10, 0.64);
-		-webkit-backdrop-filter: blur(3px);
-		backdrop-filter: blur(3px);
-		transition: background-color 0.5s var(--ease);
+		padding: 26px clamp(20px, 2.4vw, 34px) 30px;
+		/* a dark ground under the type once the dawn bands climb behind it */
+		background: linear-gradient(to bottom, rgba(5, 5, 7, 0.74), rgba(5, 5, 7, 0.5));
 	}
-	.tier:hover {
-		background: rgba(12, 10, 16, 0.8);
+	.tier + .tier {
+		border-left: 1px solid var(--hair);
 	}
-	.tier.featured {
-		background: rgba(22, 8, 20, 0.72);
-	}
+	/* the featured article is ruled off in signal ink */
 	.tier.featured::before {
 		content: '';
 		position: absolute;
-		inset: -1px -1px auto -1px;
-		height: 2px;
-		background: var(--signal);
-		box-shadow: 0 0 18px var(--signal);
+		left: -1px;
+		top: -1px;
+		bottom: 0;
+		width: 1px;
+		background: linear-gradient(to bottom, var(--signal), rgba(255, 92, 210, 0.15));
 	}
-	.badge {
+	.tier.featured::after {
+		content: '';
 		position: absolute;
-		top: 18px;
-		right: 18px;
-		font-size: 9.5px;
+		left: -1px;
+		right: 0;
+		top: -1px;
+		height: 1px;
+		background: var(--signal);
+	}
+	.art {
+		display: flex;
+		align-items: baseline;
+		gap: 12px;
+		font-size: 10px;
+		color: var(--muted);
+		margin-bottom: 20px;
+	}
+	.note {
+		font-family: var(--f-serif);
+		font-style: italic;
+		font-size: 1.05rem;
+		letter-spacing: 0;
+		text-transform: none;
 		color: var(--signal);
-		padding: 5px 8px;
-		border: 1px solid rgba(255, 92, 210, 0.35);
 	}
 	h3 {
 		font-size: 1.12rem;
 		font-weight: 540;
 		letter-spacing: -0.02em;
-		margin-bottom: 26px;
+		margin-bottom: 14px;
 	}
 	.price {
 		display: flex;
 		align-items: baseline;
 		gap: 12px;
-		margin-bottom: 10px;
+		margin-bottom: 12px;
 	}
 	.amt {
-		font-size: clamp(2.3rem, 3.4vw, 3.2rem);
-		font-weight: 480;
-		letter-spacing: -0.05em;
-		line-height: 1;
+		font-family: var(--f-serif);
+		font-size: clamp(3rem, 4.6vw, 4.4rem);
+		letter-spacing: -0.02em;
+		line-height: 0.95;
 	}
 	.per {
 		font-size: 10px;
@@ -159,57 +173,78 @@
 	.tag {
 		font-size: 0.95rem;
 		color: var(--dim);
-		margin-bottom: 26px;
+		margin-bottom: 24px;
 		min-height: 3em;
 	}
 	.feats {
 		display: grid;
-		gap: 11px;
-		padding-top: 22px;
-		border-top: 1px solid var(--hair);
-		margin-bottom: 34px;
+		gap: 0;
+		margin-bottom: 30px;
 		flex: 1;
+		align-content: start;
 	}
 	.feats li {
 		display: grid;
-		grid-template-columns: 18px 1fr;
-		align-items: start;
+		grid-template-columns: 3.2ch 1fr;
+		align-items: baseline;
+		padding: 9px 0;
+		border-top: 1px dashed var(--hair);
 		font-size: 0.92rem;
 		line-height: 1.45;
 		color: var(--text-2);
 	}
-	.feats :global(svg) {
-		margin-top: 3px;
-		color: var(--teal);
+	.cl {
+		font-family: var(--f-mono);
+		font-size: 10px;
+		color: var(--faint);
 	}
+	.featured .cl {
+		color: var(--signal-2);
+	}
+	/* The call to action is a signature line: a rule that draws on hover, not a box. */
 	.cta {
+		position: relative;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
 		min-height: 48px;
-		padding: 0 16px;
-		border: 1px solid var(--hair-2);
 		font-size: 10.5px;
 		color: var(--text);
-		transition:
-			border-color 0.3s var(--ease),
-			color 0.3s var(--ease),
-			background-color 0.3s var(--ease);
+		border-bottom: 1px solid var(--hair-2);
+		transition: color 0.3s var(--ease);
+	}
+	.cta::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: -1px;
+		height: 1px;
+		background: var(--signal);
+		transform: scaleX(0);
+		transform-origin: left;
+		transition: transform 0.6s var(--ease);
 	}
 	.cta :global(svg) {
 		transition: transform 0.45s var(--ease);
 	}
 	.cta:hover {
-		border-color: var(--signal);
 		color: var(--signal);
+	}
+	.cta:hover::after {
+		transform: scaleX(1);
 	}
 	.cta:hover :global(svg) {
 		transform: translateX(4px);
 	}
 	.featured .cta {
+		padding: 0 16px;
 		background: var(--signal);
 		border-color: var(--signal);
 		color: #140612;
+	}
+	.featured .cta::after {
+		display: none;
 	}
 	.featured .cta:hover {
 		background: #ff7fdd;
@@ -219,14 +254,16 @@
 	@media (max-width: 960px) {
 		.tiers {
 			grid-template-columns: 1fr;
-			border-left: 0;
-		}
-		.tier {
-			border-left: 1px solid var(--hair);
 			border-top: 0;
 		}
-		.tier:first-child {
-			border-top: 1px solid var(--hair);
+		.tier {
+			border-top: 1px solid var(--hair-2);
+		}
+		.tier + .tier {
+			border-left: 0;
+		}
+		.tier.featured::before {
+			display: none;
 		}
 		.head-row {
 			grid-template-columns: 1fr;

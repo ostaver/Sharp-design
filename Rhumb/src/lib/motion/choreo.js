@@ -2,6 +2,7 @@ import { ScrollTrigger } from './gsap.js';
 import { sections } from '$lib/content.js';
 import { ui } from '$lib/state.svelte.js';
 import { skyBus } from '$lib/gl/sky/bus.js';
+import { cine } from './cine.js';
 
 const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
 const lin = (a, b, v) => clamp01((v - a) / (b - a));
@@ -72,6 +73,14 @@ export function createChoreo() {
 			s.dawn = smooth(top('signals') - 0.2 * vh, top('landfall') + 0.55 * vh, y);
 			s.paper = lin(top('landfall') + 0.55 * vh, top('landfall') + 1.45 * vh, y);
 			s.starsOn = 1;
+		}
+
+		// ---- letterbox: the bars close as the camera starts to fall and part again as it
+		// comes out of the cloud deck onto the night side
+		if (!ui.reduced) {
+			const hp = Math.max(bot('heading') - vh - top('heading'), 1);
+			const hy = y - top('heading');
+			cine.scroll = smooth(0.12 * vh, 0.42 * vh, hy) * (1 - smooth(hp * 0.78, hp + 0.2 * vh, hy));
 		}
 
 		// ---- ship's clock: keyed to section tops, and to the pinned night log

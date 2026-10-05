@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import SkyCanvas from '$lib/components/SkyCanvas.svelte';
 	import Preloader from '$lib/components/Preloader.svelte';
+	import Cinema from '$lib/components/Cinema.svelte';
 	import Nav from '$lib/components/Nav.svelte';
 	import Rail from '$lib/components/Rail.svelte';
 	import Hero from '$lib/components/Hero.svelte';
@@ -82,6 +83,7 @@
 
 <SkyCanvas />
 <Preloader />
+<Cinema />
 <Nav />
 <Rail />
 

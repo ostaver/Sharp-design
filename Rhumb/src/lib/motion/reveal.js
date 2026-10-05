@@ -3,7 +3,7 @@ import { ui } from '$lib/state.svelte.js';
 
 /**
  * Scroll reveals for everything inside `root` marked with data-r:
- *   lines  — heading lines rise out of masks
+ *   lines  — heading lines rise out of masks, pulling into focus
  *   fade   — a short lift and fade
  *   label  — mono labels decode through chart glyphs
  *   clip   — a panel is drawn open from the top edge
@@ -16,16 +16,26 @@ export function reveal(root, { start = 'top 84%' } = {}) {
 		gsap.set(els, { autoAlpha: 1 });
 		return;
 	}
+	// A focus pull on headings, where there's a fine pointer and GPU to spare for the blur.
+	const pull = window.matchMedia('(min-width: 861px) and (pointer: fine)').matches;
 	els.forEach((el) => {
 		const kind = el.dataset.r;
 		const delay = parseFloat(el.dataset.delay || '0');
 		const st = { trigger: el, start, once: true };
 
 		if (kind === 'lines') {
+			if (pull) {
+				gsap.fromTo(
+					el,
+					{ filter: 'blur(10px)' },
+					{ filter: 'blur(0px)', duration: 1.7, delay, ease: 'power2.out', clearProps: 'filter', scrollTrigger: st }
+				);
+			}
 			SplitText.create(el, {
 				type: 'lines',
 				mask: 'lines',
 				linesClass: 'ln',
+				aria: 'none',
 				autoSplit: true,
 				onSplit(self) {
 					gsap.set(el, { autoAlpha: 1 });

@@ -68,6 +68,7 @@
 		const inkable = q('[data-ink]');
 		let drawn = false;
 		let near = false;
+		let lastCut = '';
 
 		const ctx = gsap.context(() => {
 			reveal(root, { start: 'top 60%' });
@@ -103,8 +104,10 @@
 			const sky = skyBus.sky;
 			const front = sky ? paperFront(sky.state.paper) : ui.day ? 2 : -1;
 			const vh = window.innerHeight;
-			for (const el of inkable) {
-				const r = el.getBoundingClientRect();
+			// all reads first, then all writes, so a frame never forces a second layout
+			const rects = inkable.map((el) => el.getBoundingClientRect());
+			inkable.forEach((el, i) => {
+				const r = rects[i];
 				// the rose starts printing as soon as the paper reaches its lower edge
 				const c = 1 - (el === roseEl ? r.bottom - r.height * 0.1 : r.top + r.height * 0.5) / vh;
 				const inked = front > c;
@@ -112,9 +115,10 @@
 					el.toggleAttribute('data-inked', inked);
 					if (inked && el === roseEl) drawRose();
 				}
-				// ...and only exists on paper: masked off above the dawn front
-				if (el === roseEl) roseWrap.style.setProperty('--cut', `${(vh * (1 - front)).toFixed(1)}px`);
-			}
+			});
+			// ...and only exists on paper: masked off above the dawn front
+			const cut = `${(vh * (1 - front)).toFixed(1)}px`;
+			if (cut !== lastCut) roseWrap.style.setProperty('--cut', (lastCut = cut));
 		};
 		gsap.ticker.add(tick);
 
@@ -220,6 +224,7 @@
 		position: sticky;
 		top: 0;
 		height: 100vh;
+		height: 100svh;
 		min-height: 640px;
 		display: flex;
 		align-items: center;
@@ -448,8 +453,12 @@
 
 	@media (max-width: 900px) {
 		.rose-wrap {
-			-webkit-mask-image: linear-gradient(to bottom, transparent calc(var(--cut) - 40px), #000 calc(var(--cut) + 40px));
-			mask-image: linear-gradient(to bottom, transparent calc(var(--cut) - 40px), #000 calc(var(--cut) + 40px));
+			-webkit-mask-image:
+				linear-gradient(to bottom, transparent calc(var(--cut) - 40px), #000 calc(var(--cut) + 40px)),
+				linear-gradient(to top, transparent, #000 22%);
+			mask-image:
+				linear-gradient(to bottom, transparent calc(var(--cut) - 40px), #000 calc(var(--cut) + 40px)),
+				linear-gradient(to top, transparent, #000 22%);
 		}
 		/* the rose drops below the text and is cropped by the edge of the page */
 		.rose {

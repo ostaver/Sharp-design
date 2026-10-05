@@ -1,8 +1,7 @@
 <script>
 	import { onMount, tick } from 'svelte';
 	import Flag from './Flag.svelte';
-	import Icon from './Icon.svelte';
-	import { signals } from '$lib/content.js';
+		import { signals } from '$lib/content.js';
 	import { gsap, ScrollTrigger, SplitText } from '$lib/motion/gsap.js';
 	import { reveal } from '$lib/motion/reveal.js';
 	import { ui } from '$lib/state.svelte.js';
@@ -28,9 +27,12 @@
 	}
 
 	async function go(dir) {
-		if (busy) return;
+		return goTo((idx + dir + signals.quotes.length) % signals.quotes.length);
+	}
+
+	async function goTo(next) {
+		if (busy || next === idx) return;
 		busy = true;
-		const next = (idx + dir + signals.quotes.length) % signals.quotes.length;
 		if (!ui.reduced && split) {
 			await gsap.to(split.words, { yPercent: -110, duration: 0.45, stagger: 0.008, ease: 'power3.in' });
 			await gsap.to(root.querySelectorAll('.who > *'), { autoAlpha: 0, duration: 0.2 });
@@ -45,7 +47,7 @@
 
 	function enter() {
 		if (ui.reduced) return;
-		split = SplitText.create(quoteEl, { type: 'words', mask: 'words' });
+		split = SplitText.create(quoteEl, { type: 'words', mask: 'words', aria: 'none' });
 		gsap.from(split.words, { yPercent: 110, duration: 1, stagger: 0.018, ease: 'helm' });
 		gsap.fromTo(root.querySelectorAll('.who > *'), { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.8, stagger: 0.08, delay: 0.35 });
 		gsap.from(root.querySelectorAll('.flags .flag-wrap'), { yPercent: 120, duration: 0.9, stagger: 0.12, ease: 'back.out(1.6)', delay: 0.3 });
@@ -55,7 +57,7 @@
 		const ctx = gsap.context(() => {
 			reveal(root);
 			if (ui.reduced) return;
-			split = SplitText.create(quoteEl, { type: 'words', mask: 'words' });
+			split = SplitText.create(quoteEl, { type: 'words', mask: 'words', aria: 'none' });
 			gsap.from(split.words, {
 				yPercent: 110,
 				duration: 1.1,
@@ -99,16 +101,24 @@
 			<h2 id="signals-title" class="h-section" data-r="lines">
 				{signals.title[0]} <span class="dim">{signals.title[1]}</span>
 			</h2>
-			<div class="ctrl" data-r="fade" role="group" aria-label="Testimonials">
-				<button type="button" class="arrow" onclick={() => go(-1)} aria-label="Previous signal">
-					<Icon name="arrow-l" size={15} />
-				</button>
-				<span class="count label" aria-live="polite">
-					<span class="cur">{pad(idx + 1)}</span> / {pad(signals.quotes.length)}
-				</span>
-				<button type="button" class="arrow" onclick={() => go(1)} aria-label="Next signal">
-					<Icon name="arrow-r" size={15} />
-				</button>
+			<!-- Each signal is picked by its hoist: the one flying is the one you're reading. -->
+			<div class="hoists" data-r="fade" role="group" aria-label="Signals from the morning watch">
+				{#each signals.quotes as s, i (i)}
+					<button
+						type="button"
+						class="hoist"
+						class:on={idx === i}
+						aria-pressed={idx === i}
+						aria-label="Signal {i + 1} of {signals.quotes.length}, from {s.name}, {s.org}"
+						onclick={() => goTo(i)}
+					>
+						<span class="line" aria-hidden="true"></span>
+						<span class="set" aria-hidden="true">
+							{#each s.flag.split('') as l, j (j)}<Flag letter={l} size={22} />{/each}
+						</span>
+						<span class="n label" aria-hidden="true">{pad(i + 1)}</span>
+					</button>
+				{/each}
 				<span class="bar" aria-hidden="true"><span bind:this={barEl}></span></span>
 			</div>
 		</div>
@@ -137,14 +147,12 @@
 		</figure>
 	</div>
 
-	<div class="fleet" aria-label="Crews running Ostarev overnight">
-		<ul class="belt">
-			{#each [0, 1] as rep (rep)}
-				{#each signals.fleet as f (f)}
-					<li aria-hidden={rep === 1 ? 'true' : undefined}>{f}</li>
-				{/each}
-			{/each}
-		</ul>
+	<!-- The crews, set as a sentence in the log rather than a belt of logos. -->
+	<div class="wrap fleet" data-r="fade">
+		<p class="fleet-k label">{signals.fleetLabel}</p>
+		<p class="port">
+			{#each signals.fleet as f, i (f)}<span class="crew">{f}</span>{#if i < signals.fleet.length - 2}<span class="sep">{', '}</span>{:else if i === signals.fleet.length - 2}<span class="sep">{' and '}</span>{/if}{/each}<span class="sep">.</span>
+		</p>
 	</div>
 </section>
 
@@ -168,41 +176,72 @@
 		font-size: clamp(2.1rem, 3.5vw, 3.4rem);
 		margin-bottom: 44px;
 	}
-	.ctrl {
-		display: grid;
-		grid-template-columns: auto auto auto 1fr;
-		align-items: center;
-		gap: 10px;
+	.hoists {
+		display: flex;
+		align-items: flex-end;
+		gap: 4px;
+		position: relative;
+		padding-bottom: 14px;
 	}
-	.arrow {
-		width: 44px;
-		height: 44px;
+	/* A hoist: flags on a halyard. Lowered and faded until it's the one flying. */
+	.hoist {
+		position: relative;
 		display: grid;
-		place-items: center;
-		border: 1px solid var(--hair-2);
-		color: var(--text-2);
+		justify-items: start;
+		gap: 8px;
+		min-width: 60px;
+		min-height: 76px;
+		padding: 6px 14px 0 13px;
+		text-align: left;
+	}
+	.hoist .line {
+		position: absolute;
+		left: 6px;
+		top: 0;
+		bottom: 0;
+		width: 1px;
+		background: var(--hair-2);
+		transition: background-color 0.4s var(--ease);
+	}
+	.hoist .set {
+		display: flex;
+		flex-direction: column;
+		gap: 3px;
+		transform: translateY(14px);
+		opacity: 0.45;
+		filter: saturate(0.35);
 		transition:
-			border-color 0.3s var(--ease),
-			color 0.3s var(--ease);
+			transform 0.8s var(--ease),
+			opacity 0.5s var(--ease),
+			filter 0.5s var(--ease);
 	}
-	.arrow:hover {
-		border-color: var(--signal);
+	.hoist .n {
+		font-size: 9.5px;
+		color: var(--faint);
+		transition: color 0.4s var(--ease);
+	}
+	.hoist:hover .set {
+		opacity: 0.7;
+		transform: translateY(8px);
+	}
+	.hoist.on .set {
+		transform: none;
+		opacity: 1;
+		filter: none;
+	}
+	.hoist.on .line {
+		background: var(--muted);
+	}
+	.hoist.on .n {
 		color: var(--signal);
 	}
-	.count {
-		min-width: 9ch;
-		text-align: center;
-		color: var(--muted);
-		font-variant-numeric: tabular-nums;
-	}
-	.count .cur {
-		color: var(--text);
-	}
 	.bar {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
 		height: 1px;
 		background: var(--hair);
-		margin-left: 12px;
-		position: relative;
 		overflow: hidden;
 	}
 	.bar span {
@@ -277,42 +316,37 @@
 	}
 
 	.fleet {
-		margin-top: clamp(80px, 14vh, 150px);
-		border-block: 1px solid var(--hair);
-		overflow: hidden;
-		mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+		margin-top: clamp(96px, 16vh, 170px);
+		padding-top: 22px;
+		border-top: 1px solid var(--hair);
+		display: grid;
+		grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+		gap: clamp(40px, 6vw, 110px);
+		padding-left: clamp(0px, 5vw, 64px);
+		box-sizing: border-box;
 	}
-	.belt {
-		display: flex;
-		width: max-content;
-		animation: belt 46s linear infinite;
-	}
-	.fleet:hover .belt {
-		animation-play-state: paused;
-	}
-	.belt li {
-		padding: 22px 44px;
-		font-family: var(--f-mono);
-		font-size: 12.5px;
-		letter-spacing: 0.26em;
-		text-transform: uppercase;
+	.fleet-k {
 		color: var(--muted);
-		white-space: nowrap;
-		position: relative;
+		padding-top: 0.7em;
 	}
-	.belt li::after {
-		content: '◆';
-		position: absolute;
-		right: -5px;
-		font-size: 7px;
-		top: 50%;
-		transform: translateY(-50%);
-		color: var(--faint);
+	.port {
+		font-family: var(--f-serif);
+		font-size: clamp(1.5rem, 2.4vw, 2.3rem);
+		line-height: 1.25;
+		letter-spacing: -0.01em;
+		color: var(--text-2);
+		text-wrap: balance;
 	}
-	@keyframes belt {
-		to {
-			transform: translateX(-50%);
-		}
+	.crew {
+		font-style: italic;
+		color: var(--text);
+		transition: color 0.3s var(--ease);
+	}
+	.crew:hover {
+		color: var(--signal);
+	}
+	.sep {
+		color: var(--muted);
 	}
 
 	@media (max-width: 900px) {
@@ -323,17 +357,10 @@
 		h2 {
 			margin-bottom: 28px;
 		}
-	}
-	@media (prefers-reduced-motion: reduce) {
-		.belt {
-			animation: none;
-			flex-wrap: wrap;
-			justify-content: center;
-			width: auto;
-		}
-		/* the second copy only exists to make the loop seamless */
-		.belt li[aria-hidden='true'] {
-			display: none;
+		.fleet {
+			grid-template-columns: 1fr;
+			gap: 14px;
+			padding-left: 0;
 		}
 	}
 </style>

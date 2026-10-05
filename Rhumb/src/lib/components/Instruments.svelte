@@ -218,7 +218,7 @@
 								<circle class="merge" cx="250" cy="75" r="3.5" />
 								<g class="rej"><path d="M210 120l8 8M218 120l-8 8" /></g>
 								<text x="12" y="68">main</text>
-								<text x="222" y="140" class="rejt">1 red · not brought aboard</text>
+								<text x="310" y="142" text-anchor="end" class="rejt">1 red · not brought aboard</text>
 							</svg>
 						{:else if it.id === 'anchor'}
 							<div class="chain">

@@ -12,6 +12,9 @@
 	let drift = $state('0.4');
 	let wp = $state(1);
 
+	// where a value sits on its stat's scale, 0..1
+	const at = (s, v) => ((v - s.scale[0]) / (s.scale[1] - s.scale[0])).toFixed(4);
+
 	onMount(() => {
 		const q = gsap.utils.selector(root);
 		const ctx = gsap.context(() => {
@@ -21,6 +24,7 @@
 			q('.stat').forEach((el, i) => {
 				const s = bearing.stats[i];
 				const num = el.querySelector('.num');
+				const scale = el.querySelector('.scale');
 				const o = { v: 0 };
 				if (ui.reduced) return;
 				gsap.to(o, {
@@ -28,7 +32,11 @@
 					duration: 1.8,
 					ease: 'power3.out',
 					scrollTrigger: { trigger: el, start: 'top 88%', once: true },
-					onUpdate: () => (num.textContent = o.v.toFixed(s.decimals || 0))
+					onStart: () => scale.style.setProperty('--p', at(s, 0)),
+					onUpdate: () => {
+						num.textContent = o.v.toFixed(s.decimals || 0);
+						scale.style.setProperty('--p', at(s, o.v));
+					}
 				});
 			});
 
@@ -101,6 +109,12 @@
 				{#each bearing.stats as s, i (i)}
 					<li class="stat" data-r="fade" data-delay={i * 0.1}>
 						<p class="v"><span class="num">{s.decimals ? s.v.toFixed(s.decimals) : s.v}</span><span class="suf">{s.suffix}</span></p>
+						<!-- read off a scale, like every other figure on the bridge -->
+						<div class="scale" style="--n:{(s.scale[1] - s.scale[0]) / s.step}; --p:{at(s, s.v)}" aria-hidden="true">
+							<span class="pip"></span>
+							<span class="lo">{s.scale[0]}</span>
+							<span class="hi">{s.scale[1]}</span>
+						</div>
 						<p class="t">{s.t}</p>
 					</li>
 				{/each}
@@ -212,6 +226,50 @@
 		font-size: 0.55em;
 		letter-spacing: -0.02em;
 		margin-left: 2px;
+	}
+	.scale {
+		position: relative;
+		height: 9px;
+		margin: 2px 0 26px;
+		border-right: 1px solid var(--hair-3);
+		background:
+			linear-gradient(var(--hair-2), var(--hair-2)) 0 100% / 100% 1px no-repeat,
+			repeating-linear-gradient(90deg, var(--hair-3) 0 1px, transparent 1px calc(100% / var(--n)));
+	}
+	.pip {
+		position: absolute;
+		left: calc(var(--p) * 100%);
+		bottom: -1px;
+		width: 1.5px;
+		height: 15px;
+		margin-left: -0.75px;
+		background: var(--signal);
+		box-shadow: 0 0 8px var(--signal-glow);
+	}
+	.pip::after {
+		content: '';
+		position: absolute;
+		left: 50%;
+		top: -5px;
+		border: 4px solid transparent;
+		border-top: 5px solid var(--signal);
+		transform: translateX(-50%);
+	}
+	.lo,
+	.hi {
+		position: absolute;
+		top: calc(100% + 5px);
+		font-family: var(--f-mono);
+		font-size: 8.5px;
+		letter-spacing: 0.06em;
+		color: var(--faint);
+	}
+	.lo {
+		left: 0;
+	}
+	.hi {
+		right: 0;
+		transform: translateX(50%);
 	}
 	.stat .t {
 		font-size: 0.86rem;
