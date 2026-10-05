@@ -2,7 +2,7 @@
   <img src="Banner.png" alt="Sharp Design" width="100%">
 </p>
 
-<h1 align="center">Sharp Design v1.01</h1>
+<h1 align="center">Sharp Design v1.02</h1>
 
 <p align="center">
   <strong>A frontend skill library for AI agents.</strong><br>
@@ -10,8 +10,8 @@
 </p>
 
 <p align="center">
-  <img alt="Version" src="https://img.shields.io/badge/version-1.01-2ea44f">
-  <img alt="Skills" src="https://img.shields.io/badge/skills-9-blue">
+  <img alt="Version" src="https://img.shields.io/badge/version-1.02-2ea44f">
+  <img alt="Skills" src="https://img.shields.io/badge/skills-10-blue">
   <a href="./LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-lightgrey"></a>
 </p>
 
@@ -38,10 +38,11 @@ Sharp Design is a collection of **agent skills for building professional, award-
 | [**Binary**](#binary) | Dark, monochrome instrument panel | HTML · CSS · JS · WebGL · Node | Repo/folder | ~18.6k | 9.6 |
 | [**Comfort**](#comfort) | Warm, smooth, editorial | Astro · CSS Modules · Vite | Repo/folder | ~13k | 9.2 |
 | [**Mirage**](#mirage) | Achromatic op-art, kinetic type | HTML · CSS · Canvas · anime.js | Single `.html` | ~7.5k | 9.4 |
+| [**Pellucid**](#pellucid) | Light, optical, liquid glass | HTML · CSS · JS · WebGL · GSAP | Repo/folder | ~8.5k | 9.3 |
 | [**Rhumb**](#rhumb) | Nocturnal, green-lit dithered sky, rolled per build | SvelteKit · OGL · GSAP · Lenis | Repo/folder | ~16k | 9.9 |
 | [**Stackable**](#stackable) | Loud, colorful, poster-style events | HTML · CSS · GSAP | Single `.html` | ~10k | 8.8 |
 
-> **Not sure where to start?** Use **Atelier** for a quick single-file site, **Binary** or **Comfort** for a full repository, **Belfort** when you need a backend, and **Rhumb** for the flagship nocturnal experience.
+> **Not sure where to start?** Use **Atelier** for a quick single-file site, **Binary** or **Comfort** for a full repository, **Belfort** when you need a backend, **Pellucid** for an optical product studio, and **Rhumb** for the flagship nocturnal experience.
 
 ---
 
@@ -232,6 +233,25 @@ Strictly black and white, for perception studios and exhibition sites: kinetic v
 
 ---
 
+### Pellucid
+
+> *Light, bent into form. Glass is only the excuse — the real work is what it does to the room.*
+
+A daylight, optical design language for object makers, material brands, and studios whose product is how something looks *through* it. A live WebGL liquid-glass raymarcher morphs across shapes on a pinned optical stage, bending and splitting the page's own typography into colour with soft spectral caustics. It features a hands-on optical bench configurator, an automated snapshot gallery rendered in-browser with zero image assets, a scroll-drawn lens diagram, and a dark closing stage.
+
+- **Style:** Optics lab at noon, porcelain ground, near-black ink, colour as refraction and prism caustics
+- **Stack:** HTML · CSS · JavaScript · WebGL · GSAP (ScrollTrigger, SplitText) · Lenis
+- **External:** Google Fonts (variable display with width axis + grotesk body)
+- **Best for:** Glass, lighting, jewellery, eyewear, optics, hardware, material studios, launch showcases
+- **Output:** Repository/folder (give the agent the `pellucid-skill/` folder: it bundles `kit/glass.js`)
+
+| Hero | Bench | Disperse |
+| --- | --- | --- |
+| ![Pellucid Hero](Pellucid/preview-hero.png) | ![Pellucid Bench](Pellucid/preview-bench.png) | ![Pellucid Disperse](Pellucid/preview-disperse.png) |
+
+[SKILL.md](Pellucid/pellucid-skill/SKILL.md) · [About](Pellucid/About.md)
+
+---
 ### Rhumb
 
 > *One night on a ship's clock. The dither resolves into paper at landfall.*
@@ -273,15 +293,15 @@ A high-contrast editorial language for independent festivals, live events and mu
 
 ## Comparison
 
-| | Arcadium | Argon | Atelier | Belfort | Binary | Comfort | Mirage | Rhumb | Stackable |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| **Mood** | Arcade / nocturnal | Gallery / terminal | Editorial / warm | Dark / elegant | Instrument / cold | Warm / soft | Op-art / clinical | Nocturnal / nautical | Loud / poster |
-| **Theme** | Dark | Dark | Light + dark | Dark | Dark | Light + dark | Light only | Night, then paper | Colorful |
-| **Type voice** | Pixel + terminal + sans | Serif + mono | Serif + sans | Serif + sans | Sans + mono | Serif + sans | Variable width sans | Sans + mono + serif italic | Condensed display |
-| **Hero** | WebGL ASCII wave | WebGL backdrop | Ambient motion | Generative canvas | GLSL shader | Textured gradient | Moiré canvas | Dithered WebGL2 planet dive | Full-impact type |
-| **Backend** | None | None | None | Firebase | Node server | None | None | None | None |
-| **Complexity** | High | Medium | Low–Medium | High | High | High | Medium | High | Medium–High |
-| **Output** | Repo | `.html` | `.html` | Repo | Repo | Repo | `.html` | Repo | `.html` |
+| | Arcadium | Argon | Atelier | Belfort | Binary | Comfort | Mirage | Pellucid | Rhumb | Stackable |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| **Mood** | Arcade / nocturnal | Gallery / terminal | Editorial / warm | Dark / elegant | Instrument / cold | Warm / soft | Op-art / clinical | Optical / luminous | Nocturnal / nautical | Loud / poster |
+| **Theme** | Dark | Dark | Light + dark | Dark | Dark | Light + dark | Light only | Light (1 dark section) | Night, then paper | Colorful |
+| **Type voice** | Pixel + terminal + sans | Serif + mono | Serif + sans | Serif + sans | Sans + mono | Serif + sans | Variable width sans | Condensed display + grotesk | Sans + mono + serif italic | Condensed display |
+| **Hero** | WebGL ASCII wave | WebGL backdrop | Ambient motion | Generative canvas | GLSL shader | Textured gradient | Moiré canvas | Raymarched glass SDF morph | Dithered WebGL2 planet dive | Full-impact type |
+| **Backend** | None | None | None | Firebase | Node server | None | None | None | None | None |
+| **Complexity** | High | Medium | Low–Medium | High | High | High | Medium | High | High | Medium–High |
+| **Output** | Repo | `.html` | `.html` | Repo | Repo | Repo | `.html` | Repo | Repo | `.html` |
 
 ---
 
@@ -366,6 +386,9 @@ Use issues to report a broken skill (include the model, prompt and observed outp
 ---
 
 ## Changelog
+
+### 1.02
+- Tenth skill: **Pellucid**, an optical design language for object makers, material brands, and physical studios. Built around a live WebGL liquid-glass raymarcher (`kit/glass.js`) that morphs between shapes and refracts 2D canvas typography, with an interactive optical bench, zero-asset client-rendered snapshot gallery, scroll-drawn lens diagram, and dark closing stage.
 
 ### 1.01
 - Ninth skill: **Rhumb**, a nocturnal SvelteKit language with a dithered WebGL2 sky, a green signal, a ship's clock and a paper landfall. It ships a `kit/` of runtime files and a seeded `roll.mjs` that rolls each build's colours, fonts, sections, layout and sky scene.
