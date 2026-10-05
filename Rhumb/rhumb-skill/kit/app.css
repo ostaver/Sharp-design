@@ -1,0 +1,318 @@
+/* ---- tokens ------------------------------------------------------------------ */
+/* Colours and fonts are NOT here. They are rolled per build by roll.mjs into src/tokens.css
+   (imported before this file): --night --night-1 --night-2 --panel --hair --hair-2 --hair-3
+   --text --text-2 --dim --muted --faint --signal --signal-2 --signal-glow --rim --ok --warn
+   --bad --paper --paper-2 --day-accent --day-accent-2 --ink --ink-2 --vignette-night
+   --vignette-day --bars --flag-r --flag-b --flag-y --flag-w --flag-k --f-sans --f-mono
+   --f-serif --f-features. This file is the language itself: copy it unchanged. */
+
+:root {
+	--gutter: clamp(20px, 5vw, 72px);
+	--rail: 46px;
+	--wrap: 1240px;
+	--ease: cubic-bezier(0.16, 1, 0.3, 1);
+	--ease-io: cubic-bezier(0.65, 0, 0.35, 1);
+	/* Fractal noise, grey around 0.5 and opaque: made for overlay blending. */
+	--grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+
+	color-scheme: dark;
+}
+
+/* ---- reset ------------------------------------------------------------------- */
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html {
+	-webkit-text-size-adjust: 100%;
+	text-size-adjust: 100%;
+	background: var(--night);
+	scrollbar-width: none;
+}
+html::-webkit-scrollbar {
+	display: none;
+}
+
+body {
+	margin: 0;
+	min-height: 100vh;
+	background: var(--night);
+	color: var(--text);
+	font-family: var(--f-sans);
+	font-size: 16px;
+	line-height: 1.55;
+	font-feature-settings: var(--f-features);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-rendering: optimizeLegibility;
+	overflow-x: clip;
+	-webkit-tap-highlight-color: transparent;
+}
+
+/* Mobile Chrome widens the layout viewport past an overflowing child even under body's
+   clip; clipping the content landmarks keeps phones at their real width. clip (unlike
+   hidden) makes no scroll container, so sticky stages still work. */
+main,
+footer.foot {
+	overflow-x: clip;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+ol,
+ul,
+figure,
+blockquote,
+dl,
+dd {
+	margin: 0;
+}
+ol,
+ul {
+	padding: 0;
+	list-style: none;
+}
+a {
+	color: inherit;
+	text-decoration: none;
+}
+button {
+	font: inherit;
+	color: inherit;
+	background: none;
+	border: 0;
+	padding: 0;
+	cursor: pointer;
+}
+img,
+svg,
+canvas {
+	display: block;
+}
+code,
+kbd,
+pre,
+samp {
+	font-family: var(--f-mono);
+}
+::selection {
+	background: var(--signal);
+	color: var(--night);
+}
+
+/* ---- focus -------------------------------------------------------------------- */
+
+:focus {
+	outline: none;
+}
+:focus-visible {
+	outline: 1.5px solid var(--signal);
+	outline-offset: 3px;
+	border-radius: 1px;
+}
+.day :focus-visible {
+	outline-color: var(--day-accent);
+}
+
+/* ---- utilities ---------------------------------------------------------------- */
+
+.sr-only {
+	position: absolute !important;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+.skiplink {
+	position: fixed;
+	left: 16px;
+	top: 12px;
+	z-index: 100;
+	padding: 10px 14px;
+	background: var(--signal);
+	color: var(--night);
+	font: 500 12px/1 var(--f-mono);
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	transform: translateY(-160%);
+	transition: transform 0.3s var(--ease);
+}
+.skiplink:focus-visible {
+	transform: none;
+	outline-color: var(--text);
+}
+
+.wrap {
+	width: min(var(--wrap), 100% - 2 * var(--gutter));
+	margin-inline: auto;
+}
+
+/* Mono small caps used for every label, tab and readout. */
+.label {
+	font-family: var(--f-mono);
+	font-size: 11px;
+	font-weight: 450;
+	line-height: 1.2;
+	letter-spacing: 0.16em;
+	text-transform: uppercase;
+}
+
+.h-section {
+	font-size: clamp(2.35rem, 4.7vw, 4.6rem);
+	font-weight: 500;
+	line-height: 0.98;
+	letter-spacing: -0.042em;
+	text-wrap: balance;
+}
+/* SplitText masks clip at the line box, and display type is set tighter than its glyphs:
+   descenders and accents would be shaved off. Pad the clip and give the space back, so
+   layout is unchanged; reveals start far enough below (125%) to clear the padding. */
+.w-mask,
+.ln-mask {
+	padding-block: 0.1em 0.18em;
+	margin-block: -0.1em -0.18em;
+}
+
+/* A line of code longer than its box fades out at the edge, so it reads as "scroll for
+   more" rather than a cut; the fade lifts as the end scrolls in. The scroll timeline is
+   inactive while nothing overflows, so content that fits gets no fade at all. */
+@supports (animation-timeline: scroll()) {
+	.x-fade {
+		-webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 36px), transparent);
+		mask-image: linear-gradient(90deg, #000 calc(100% - 36px), transparent);
+		-webkit-mask-repeat: no-repeat;
+		mask-repeat: no-repeat;
+		mask-size: calc(100% + 36px) 100%;
+		animation: x-fade linear both;
+		animation-timeline: scroll(self inline);
+	}
+	@keyframes x-fade {
+		from {
+			mask-size: 100% 100%;
+		}
+		to {
+			mask-size: calc(100% + 36px) 100%;
+		}
+	}
+}
+
+.h-section .dim {
+	color: var(--muted);
+}
+
+.lede {
+	font-size: clamp(1rem, 0.35vw + 0.93rem, 1.125rem);
+	line-height: 1.62;
+	color: var(--dim);
+	text-wrap: pretty;
+}
+
+/* Section head: numbered label with the ship's time. */
+.sec-head {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	color: var(--muted);
+}
+.sec-head .n {
+	color: var(--signal);
+}
+.sec-head .rule {
+	flex: 1;
+	height: 1px;
+	background: linear-gradient(90deg, var(--hair-2), transparent);
+}
+
+/* ---- lenis ---------------------------------------------------------------------- */
+
+html.lenis,
+html.lenis body {
+	height: auto;
+}
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+	overflow: clip;
+}
+.lenis [data-lenis-prevent] {
+	overscroll-behavior: contain;
+}
+
+#lvh-probe {
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 1px;
+	height: 100vh;
+	height: 100lvh;
+	visibility: hidden;
+	pointer-events: none;
+}
+
+/* ---- phones ---------------------------------------------------------------------- */
+
+/* A backdrop blur over the live WebGL sky re-blurs the whole region every frame, which
+   is what makes a phone stutter mid-scroll. Every panel has a dark enough ground without. */
+@media (max-width: 860px), (pointer: coarse) {
+	* {
+		-webkit-backdrop-filter: none !important;
+		backdrop-filter: none !important;
+	}
+}
+
+/* ---- reduced motion / contrast / print ----------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.001ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.001ms !important;
+		scroll-behavior: auto !important;
+	}
+}
+
+/* The raised --dim/--muted/--hair values for this query are rolled into tokens.css. */
+@media (prefers-contrast: more) {
+	:focus-visible {
+		outline-width: 2.5px;
+	}
+}
+
+@media print {
+	:root {
+		--text: #000;
+		--dim: #222;
+		--muted: #444;
+	}
+	html,
+	body {
+		background: #fff !important;
+		color: #000 !important;
+	}
+	canvas,
+	.no-print {
+		display: none !important;
+	}
+	* {
+		animation: none !important;
+		transition: none !important;
+		mix-blend-mode: normal !important;
+		color: #000 !important;
+		background: transparent !important;
+		box-shadow: none !important;
+	}
+	section {
+		break-inside: avoid;
+	}
+}

@@ -11,7 +11,7 @@
 
 <p align="center">
   <img alt="Version" src="https://img.shields.io/badge/version-1.0.0-2ea44f">
-  <img alt="Skills" src="https://img.shields.io/badge/skills-8-blue">
+  <img alt="Skills" src="https://img.shields.io/badge/skills-9-blue">
   <a href="./LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-lightgrey"></a>
 </p>
 
@@ -38,6 +38,7 @@ Sharp Design is a collection of **agent skills for building professional, award-
 | [**Binary**](#binary) | Dark, monochrome instrument panel | HTML · CSS · JS · WebGL · Node | Repo/folder | ~18.6k | 9.6 |
 | [**Comfort**](#comfort) | Warm, smooth, editorial | Astro · CSS Modules · Vite | Repo/folder | ~13k | 9.2 |
 | [**Mirage**](#mirage) | Achromatic op-art, kinetic type | HTML · CSS · Canvas · anime.js | Single `.html` | ~7.5k | 9.4 |
+| [**Rhumb**](#rhumb) | Nocturnal, green-lit dithered sky, rolled per build | SvelteKit · OGL · GSAP · Lenis | Repo/folder | ~16k | 9.0 |
 | [**Stackable**](#stackable) | Loud, colorful, poster-style events | HTML · CSS · GSAP | Single `.html` | ~10k | n/a |
 
 > **Not sure where to start?** Use **Atelier** for a quick single-file site, **Binary** or **Comfort** for a full repository, and **Belfort** when you need a backend.
@@ -231,6 +232,26 @@ Strictly black and white, for perception studios and exhibition sites: kinetic v
 
 ---
 
+### Rhumb
+
+> *One night on a ship's clock. The dither resolves into paper at landfall.*
+
+For products that work while their people sleep: background agents, CI and data pipelines, monitoring, backups, logistics. A fixed WebGL2 sky drawn in hard-pixel stochastic and Bayer dither sits behind the whole page, lit by a green signal. A letterboxed opening dives the camera through a planet, a globe sails a rhumb line, and star trails turn over a pinned night log. Every section is stamped with the ship's time. At landfall the dawn bands climb, the sky resolves into paper and the text turns to ink as the front passes it. Each build runs a seeded `roll.mjs` that picks its exact colours, fonts, clock, sections, layout variants and sky scene, so no two builds match.
+
+- **Style:** Ship's bridge at night, green signal, instrument-panel mono labels, paper and one ink at dawn
+- **Stack:** SvelteKit 2 · Svelte 5 · OGL (WebGL2) · GSAP / ScrollTrigger / SplitText · Lenis
+- **External:** None at runtime (fonts self-hosted through Fontsource)
+- **Best for:** Background agents, schedulers, CI, data and backup tools, logistics, night services
+- **Output:** Repository/folder (give the agent the whole `rhumb-skill/` folder: it bundles the `kit/` and `roll.mjs`)
+
+| Hero                                    | Bearing                                     | Landfall                                        |
+| ---                                     | ---                                         | ---                                             |
+| ![Rhumb Hero](Rhumb/preview-hero.png)   | ![Rhumb Scene](Rhumb/preview-scene.png)     | ![Rhumb Landfall](Rhumb/preview-landfall.png)   |
+
+[SKILL.md](Rhumb/rhumb-skill/SKILL.md) · [About](Rhumb/About.md)
+
+---
+
 ### Stackable
 
 > *Loud, colorful, poster-like.*
@@ -252,15 +273,15 @@ A high-contrast editorial language for independent festivals, live events and mu
 
 ## Comparison
 
-| | Arcadium | Argon | Atelier | Belfort | Binary | Comfort | Mirage | Stackable |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| **Mood** | Arcade / nocturnal | Gallery / terminal | Editorial / warm | Dark / elegant | Instrument / cold | Warm / soft | Op-art / clinical | Loud / poster |
-| **Theme** | Dark | Dark | Light + dark | Dark | Dark | Light + dark | Light only | Colorful |
-| **Type voice** | Pixel + terminal + sans | Serif + mono | Serif + sans | Serif + sans | Sans + mono | Serif + sans | Variable width sans | Condensed display |
-| **Hero** | WebGL ASCII wave | WebGL backdrop | Ambient motion | Generative canvas | GLSL shader | Textured gradient | Moiré canvas | Full-impact type |
-| **Backend** | None | None | None | Firebase | Node server | None | None | None |
-| **Complexity** | High | Medium | Low–Medium | High | High | High | Medium | Medium–High |
-| **Output** | Repo | `.html` | `.html` | Repo | Repo | Repo | `.html` | `.html` |
+| | Arcadium | Argon | Atelier | Belfort | Binary | Comfort | Mirage | Rhumb | Stackable |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| **Mood** | Arcade / nocturnal | Gallery / terminal | Editorial / warm | Dark / elegant | Instrument / cold | Warm / soft | Op-art / clinical | Nocturnal / nautical | Loud / poster |
+| **Theme** | Dark | Dark | Light + dark | Dark | Dark | Light + dark | Light only | Night, then paper | Colorful |
+| **Type voice** | Pixel + terminal + sans | Serif + mono | Serif + sans | Serif + sans | Sans + mono | Serif + sans | Variable width sans | Sans + mono + serif italic | Condensed display |
+| **Hero** | WebGL ASCII wave | WebGL backdrop | Ambient motion | Generative canvas | GLSL shader | Textured gradient | Moiré canvas | Dithered WebGL2 planet dive | Full-impact type |
+| **Backend** | None | None | None | Firebase | Node server | None | None | None | None |
+| **Complexity** | High | Medium | Low–Medium | High | High | High | Medium | High | Medium–High |
+| **Output** | Repo | `.html` | `.html` | Repo | Repo | Repo | `.html` | Repo | `.html` |
 
 ---
 
@@ -345,6 +366,9 @@ Use issues to report a broken skill (include the model, prompt and observed outp
 ---
 
 ## Changelog
+
+### Unreleased
+- Ninth skill: **Rhumb**, a nocturnal SvelteKit language with a dithered WebGL2 sky, a green signal, a ship's clock and a paper landfall. It ships a `kit/` of runtime files and a seeded `roll.mjs` that rolls each build's colours, fonts, sections, layout and sky scene.
 
 ### 1.0.0
 - First stable release with eight skills: Arcadium, Argon, Atelier, Belfort, Binary, Comfort, Mirage and Stackable.
