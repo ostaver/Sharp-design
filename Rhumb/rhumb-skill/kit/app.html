@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="theme-color" content="#050507" />
+		<meta name="color-scheme" content="dark light" />
+		<link rel="icon" href="%sveltekit.assets%/favicon.svg" type="image/svg+xml" />
+		<script>
+			// Runs before first paint: lets CSS hold reveal states only when scripts will release them.
+			(function () {
+				var d = document.documentElement;
+				d.classList.add('js');
+				if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) d.classList.add('rm');
+				// ?skip jumps past the preloader (handy while working on the page)
+				if (/[?&]skip\b/.test(location.search)) d.classList.add('no-intro');
+				// The night always starts at dusk: a reload must not restore a mid-page offset.
+				// Set before the browser restores it; onMount would be too late.
+				if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+			})();
+		</script>
+		%sveltekit.head%
+	</head>
+	<body data-sveltekit-preload-data="off">
+		<div style="display: contents">%sveltekit.body%</div>
+	</body>
+</html>
