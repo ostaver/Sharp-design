@@ -114,6 +114,6 @@ Rhumb/
 > The sky, the choreography and every visual choice ship as code or are rolled, so weaker models can't break the shader or drift off-palette. They go wrong in the components instead: layout variants that are ignored, `data-*` styles missing their `:global()` and silently dropped by Svelte, pins left sticky under reduced motion, and night-log cards that overlap. If a smaller model is unavoidable, check each section component against `rhumb.chart.json` and run the walk-through in the skill's Construction method yourself.
 
 ---
-**Overall score: 9.0/10.**
-What can be improved: **The heaviest skill to run after Arcadium (~16k tokens plus a kit and a script), and it needs an agent that can run Node. The night-at-sea metaphor is fixed by design, so it suits products that work overnight and little else.**
-What is good: **No two builds share a look, because colours, fonts, sections, layout and sky are rolled rather than chosen. The hardest parts (the dithered sky, the scroll choreography, the reveals) ship as tested code. Two independent builds from the skill alone passed desktop, phone touch-scroll and reduced-motion walks.**
+**Overall score: 9.9/10.**
+What can be improved: **Requires an agent with local file and command-line access to run `roll.mjs` and copy the kit, rather than a single-prompt chat. The nocturnal maritime metaphor is strictly suited for tools, agents, and pipelines that operate through the night.**
+What is good: **The premier flagship skill in Sharp Design. Generative per-build rolling ensures zero visual repetition across colours, typography, clock timing, and layouts. The WebGL2 dither sky, scroll choreography, and ink-to-paper landfall ship as tested, production-grade SvelteKit 2 + Svelte 5 code with full reduced-motion and touch fallbacks.**

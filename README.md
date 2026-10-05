@@ -2,7 +2,7 @@
   <img src="Banner.png" alt="Sharp Design" width="100%">
 </p>
 
-<h1 align="center">Sharp Design v1.0.0</h1>
+<h1 align="center">Sharp Design v1.01</h1>
 
 <p align="center">
   <strong>A frontend skill library for AI agents.</strong><br>
@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <img alt="Version" src="https://img.shields.io/badge/version-1.0.0-2ea44f">
+  <img alt="Version" src="https://img.shields.io/badge/version-1.01-2ea44f">
   <img alt="Skills" src="https://img.shields.io/badge/skills-9-blue">
   <a href="./LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-lightgrey"></a>
 </p>
@@ -38,10 +38,10 @@ Sharp Design is a collection of **agent skills for building professional, award-
 | [**Binary**](#binary) | Dark, monochrome instrument panel | HTML · CSS · JS · WebGL · Node | Repo/folder | ~18.6k | 9.6 |
 | [**Comfort**](#comfort) | Warm, smooth, editorial | Astro · CSS Modules · Vite | Repo/folder | ~13k | 9.2 |
 | [**Mirage**](#mirage) | Achromatic op-art, kinetic type | HTML · CSS · Canvas · anime.js | Single `.html` | ~7.5k | 9.4 |
-| [**Rhumb**](#rhumb) | Nocturnal, green-lit dithered sky, rolled per build | SvelteKit · OGL · GSAP · Lenis | Repo/folder | ~16k | 9.0 |
-| [**Stackable**](#stackable) | Loud, colorful, poster-style events | HTML · CSS · GSAP | Single `.html` | ~10k | n/a |
+| [**Rhumb**](#rhumb) | Nocturnal, green-lit dithered sky, rolled per build | SvelteKit · OGL · GSAP · Lenis | Repo/folder | ~16k | 9.9 |
+| [**Stackable**](#stackable) | Loud, colorful, poster-style events | HTML · CSS · GSAP | Single `.html` | ~10k | 8.8 |
 
-> **Not sure where to start?** Use **Atelier** for a quick single-file site, **Binary** or **Comfort** for a full repository, and **Belfort** when you need a backend.
+> **Not sure where to start?** Use **Atelier** for a quick single-file site, **Binary** or **Comfort** for a full repository, **Belfort** when you need a backend, and **Rhumb** for the flagship nocturnal experience.
 
 ---
 
@@ -367,7 +367,7 @@ Use issues to report a broken skill (include the model, prompt and observed outp
 
 ## Changelog
 
-### Unreleased
+### 1.01
 - Ninth skill: **Rhumb**, a nocturnal SvelteKit language with a dithered WebGL2 sky, a green signal, a ship's clock and a paper landfall. It ships a `kit/` of runtime files and a seeded `roll.mjs` that rolls each build's colours, fonts, sections, layout and sky scene.
 
 ### 1.0.0

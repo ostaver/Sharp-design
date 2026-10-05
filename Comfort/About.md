@@ -74,6 +74,6 @@ comfort/
 > This skill does not use shaders, but does use frameworks. Make sure to use plan mode. If you use HTML only, you can use almost any model.
 
 ---
-**Overall score: 9.8/10.**
+**Overall score: 9.2/10.**
 What can be improved: **Context optimization / Compression**
 What is good: **It's production ready.**
