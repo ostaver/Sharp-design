@@ -2,7 +2,7 @@
   <img src="Banner.png" alt="Sharp Design" width="100%">
 </p>
 
-<h1 align="center">Sharp Design v1.02</h1>
+<h1 align="center">Sharp Design v1.0.3</h1>
 
 <p align="center">
   <strong>A frontend skill library for AI agents.</strong><br>
@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <img alt="Version" src="https://img.shields.io/badge/version-1.02-2ea44f">
+  <img alt="Version" src="https://img.shields.io/badge/version-1.0.3-2ea44f">
   <img alt="Skills" src="https://img.shields.io/badge/skills-10-blue">
   <a href="./LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-lightgrey"></a>
 </p>
@@ -115,7 +115,7 @@ A playable arcade for game studios, arcades and retro events. A coin door boots 
 
 ---
 
-### Argon
+### Argon (Deprecated)
 
 > *Dark, technical, gallery-grade.*
 
@@ -389,14 +389,10 @@ Use issues to report a broken skill (include the model, prompt and observed outp
 
 ## Changelog
 
-### Unreleased
-- **Rhumb:** short-screen and robustness rules. A pinned stage must fit the viewport, so the hero un-sticks below 700px tall and the hand-off and night only pin from 660px and 640px; landfall's type scales with height and its copy has a length budget; the preloader's wait is capped at 4.5s; the phone menu closes on resize and when "Docs" is tapped; and the Construction method gains a measured walk at 932×430, 375×553 and 1366×660. Verified by building a site from the skill alone: scrolling, menu and pin checks pass at 25 viewport sizes. That build also fixed the landfall inking snippet (a block scrolled past now stays inked) and made `reveal()` return early when there is nothing to reveal.
-- **Argon:** deprecated. It no longer receives updates and stays in the library as it was.
-
 ### 1.02
 - Tenth skill: **Pellucid**, an optical design language for object makers, material brands, and physical studios. Built around a live WebGL liquid-glass raymarcher (`kit/glass.js`) that morphs between shapes and refracts 2D canvas typography, with an interactive optical bench, zero-asset client-rendered snapshot gallery, scroll-drawn lens diagram, and dark closing stage.
 
-### 1.01
+### 1.0.1
 - Ninth skill: **Rhumb**, a nocturnal SvelteKit language with a dithered WebGL2 sky, a green signal, a ship's clock and a paper landfall. It ships a `kit/` of runtime files and a seeded `roll.mjs` that rolls each build's colours, fonts, sections, layout and sky scene.
 
 ### 1.0.0
