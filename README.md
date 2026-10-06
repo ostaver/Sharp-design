@@ -2,7 +2,7 @@
   <img src="Banner.png" alt="Sharp Design" width="100%">
 </p>
 
-<h1 align="center">Sharp Design v1.02</h1>
+<h1 align="center">Sharp Design v1.0.3</h1>
 
 <p align="center">
   <strong>A frontend skill library for AI agents.</strong><br>
