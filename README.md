@@ -115,7 +115,7 @@ A playable arcade for game studios, arcades and retro events. A coin door boots 
 
 ---
 
-### Argon
+### Argon (Deprecated)
 
 > *Dark, technical, gallery-grade.*
 
