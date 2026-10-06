@@ -2,6 +2,8 @@
 
 A dark, technical design language for artist portfolios, digital studios, and creative technologists. It produces a single-file, gallery-grade landing page that feels like a terminal at an exhibition opening: monospace structure, serif voice, WebGL atmosphere, and a custom cursor.
 
+> **Deprecated: Argon no longer receives updates.** The skill is kept as it was and still works, but it will not be fixed or extended. For a new site, prefer Atelier, Mirage or Rhumb.
+
 > The instructions the AI follows live in **`SKILL.md`**. This file explains what the skill is, when it triggers, and how to use it.
 
 ---

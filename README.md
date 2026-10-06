@@ -32,14 +32,14 @@ Sharp Design is a collection of **agent skills for building professional, award-
 | Skill | Aesthetic | Stack | Output | Tokens | Score |
 | --- | --- | --- | --- | --- | --- |
 | [**Arcadium**](#arcadium) | Dark coin-op arcade, playable | React · GSAP · Three.js · Vite | Repo/folder | ~12k | 9.1 |
-| [**Argon**](#argon) | Dark, technical, gallery-grade | HTML · CSS · JS · WebGL | Single `.html` | ~5k | 8.7 |
+| [**Argon**](#argon) *(deprecated)* | Dark, technical, gallery-grade | HTML · CSS · JS · WebGL | Single `.html` | ~5k | 8.7 |
 | [**Atelier**](#atelier) | Minimalist, typographic, craft | HTML · CSS · JS · WebGL | Single `.html` | ~4.2k | 9.0 |
 | [**Belfort**](#belfort) | Dark, elegant, bilingual, CMS-backed | HTML · CSS · JS · Firebase | Multi-page repo | ~9k | 7.6 |
 | [**Binary**](#binary) | Dark, monochrome instrument panel | HTML · CSS · JS · WebGL · Node | Repo/folder | ~18.6k | 9.6 |
 | [**Comfort**](#comfort) | Warm, smooth, editorial | Astro · CSS Modules · Vite | Repo/folder | ~13k | 9.2 |
 | [**Mirage**](#mirage) | Achromatic op-art, kinetic type | HTML · CSS · Canvas · anime.js | Single `.html` | ~7.5k | 9.4 |
 | [**Pellucid**](#pellucid) | Light, optical, liquid glass | HTML · CSS · JS · WebGL · GSAP | Repo/folder | ~8.5k | 9.3 |
-| [**Rhumb**](#rhumb) | Nocturnal, green-lit dithered sky, rolled per build | SvelteKit · OGL · GSAP · Lenis | Repo/folder | ~16k | 9.9 |
+| [**Rhumb**](#rhumb) | Nocturnal, green-lit dithered sky, rolled per build | SvelteKit · OGL · GSAP · Lenis | Repo/folder | ~17k | 9.9 |
 | [**Stackable**](#stackable) | Loud, colorful, poster-style events | HTML · CSS · GSAP | Single `.html` | ~10k | 8.8 |
 
 > **Not sure where to start?** Use **Atelier** for a quick single-file site, **Binary** or **Comfort** for a full repository, **Belfort** when you need a backend, **Pellucid** for an optical product studio, and **Rhumb** for the flagship nocturnal experience.
@@ -118,6 +118,8 @@ A playable arcade for game studios, arcades and retro events. A coin door boots 
 ### Argon
 
 > *Dark, technical, gallery-grade.*
+
+> **Deprecated.** Argon no longer receives updates. It remains in the library as it was and its `SKILL.md` still works, but new work should start from [Atelier](#atelier), [Mirage](#mirage) or [Rhumb](#rhumb) instead.
 
 Portfolio-first language for artists, studios and creative technologists. It sits between a gallery opening and a terminal window: serif voice, monospace structure, WebGL atmosphere, custom cursor.
 
@@ -386,6 +388,10 @@ Use issues to report a broken skill (include the model, prompt and observed outp
 ---
 
 ## Changelog
+
+### Unreleased
+- **Rhumb:** short-screen and robustness rules. A pinned stage must fit the viewport, so the hero un-sticks below 700px tall and the hand-off and night only pin from 660px and 640px; landfall's type scales with height and its copy has a length budget; the preloader's wait is capped at 4.5s; the phone menu closes on resize and when "Docs" is tapped; and the Construction method gains a measured walk at 932×430, 375×553 and 1366×660. Verified by building a site from the skill alone: scrolling, menu and pin checks pass at 25 viewport sizes. That build also fixed the landfall inking snippet (a block scrolled past now stays inked) and made `reveal()` return early when there is nothing to reveal.
+- **Argon:** deprecated. It no longer receives updates and stays in the library as it was.
 
 ### 1.02
 - Tenth skill: **Pellucid**, an optical design language for object makers, material brands, and physical studios. Built around a live WebGL liquid-glass raymarcher (`kit/glass.js`) that morphs between shapes and refracts 2D canvas typography, with an interactive optical bench, zero-asset client-rendered snapshot gallery, scroll-drawn lens diagram, and dark closing stage.

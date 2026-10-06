@@ -69,6 +69,8 @@ npm run check
 - **An instrument voice.** All labels are mono and uppercase, numbers sit on scales, headings are two clauses with the second muted, structure is drawn in hairlines, and corners are square.
 - **No hand-written colours.** Components use only tokens and `color-mix()` of tokens. The kit carries no colour or font values of its own.
 - **Full fallbacks.** Under reduced motion the pins release, the night log becomes a vertical list, the terminal shows fully printed and the sky freezes in time. On phones, touch scrolling stays native, and backdrop blur, grain and the pointer wake are switched off.
+- **Short screens.** A pinned stage never outgrows the viewport. The hero stops being sticky below 700px tall, the hand-off pins only from 660px and the night from 640px, with a compacted layout in between; below those heights the sections flow as ordinary scrolling content. Landfall's title scales with height, so the install line stays in frame on a phone on its side or a small laptop window.
+- **Never stuck.** The preloader's wait is capped at 4.5s, so its scroll lock cannot outlive a throttled tab or a stalled font, and the phone menu closes itself (and frees the page) if the viewport grows past the phone breakpoint.
 
 ## Files in this skill
 
@@ -91,7 +93,7 @@ Rhumb/
 
 ## Size
 
-- `SKILL.md`: ~9,800 words, ~64,000 characters, **~16k tokens**.
+- `SKILL.md`: ~10,200 words, ~67,500 characters, **~17k tokens**.
 - Kit: ~68 KB across 20 files, plus `roll.mjs` (~20 KB). The agent copies and runs them and does not need to read them in full.
 
 ## Recommended models

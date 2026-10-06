@@ -12,6 +12,7 @@ import { ui } from '$lib/state.svelte.js';
  */
 export function reveal(root, { start = 'top 84%' } = {}) {
 	const els = root.querySelectorAll('[data-r]');
+	if (!els.length) return;
 	if (ui.reduced) {
 		gsap.set(els, { autoAlpha: 1 });
 		return;
