@@ -387,10 +387,13 @@ Use issues to report a broken skill (include the model, prompt and observed outp
 
 ## Changelog
 
-### 1.02
+### 1.0.3
+- Improved Rhumb, Pellucid and verified they work properly.
+
+### 1.0.2
 - Tenth skill: **Pellucid**, an optical design language for object makers, material brands, and physical studios. Built around a live WebGL liquid-glass raymarcher (`kit/glass.js`) that morphs between shapes and refracts 2D canvas typography, with an interactive optical bench, zero-asset client-rendered snapshot gallery, scroll-drawn lens diagram, and dark closing stage.
 
-### 1.01
+### 1.0.1
 - Ninth skill: **Rhumb**, a nocturnal SvelteKit language with a dithered WebGL2 sky, a green signal, a ship's clock and a paper landfall. It ships a `kit/` of runtime files and a seeded `roll.mjs` that rolls each build's colours, fonts, sections, layout and sky scene.
 
 ### 1.0.0
