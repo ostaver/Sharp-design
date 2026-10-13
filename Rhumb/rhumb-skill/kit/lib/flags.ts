@@ -1,20 +1,38 @@
 // International Code of Signals flags on a 24×16 field, as simple shapes.
 // Colours are keys into the page palette: r red, b blue, y yellow, w white, k black.
 
+export type FlagShape =
+	| { t: 'rect'; a: { x: number; y: number; width: number; height: number }; c: string }
+	| { t: 'path'; a: { d: string }; c: string }
+	| { t: 'circle'; a: { cx: number; cy: number; r: number }; c: string };
+
 const W = 24;
 const H = 16;
-const rect = (x, y, w, h, c) => ({ t: 'rect', a: { x, y, width: w, height: h }, c });
-const poly = (d, c) => ({ t: 'path', a: { d }, c });
-const circle = (cx, cy, r, c) => ({ t: 'circle', a: { cx, cy, r }, c });
+const rect = (x: number, y: number, w: number, h: number, c: string): FlagShape => ({
+	t: 'rect',
+	a: { x, y, width: w, height: h },
+	c
+});
+const poly = (d: string, c: string): FlagShape => ({ t: 'path', a: { d }, c });
+const circle = (cx: number, cy: number, r: number, c: string): FlagShape => ({
+	t: 'circle',
+	a: { cx, cy, r },
+	c
+});
 
-const halfV = (a, b) => [rect(0, 0, W / 2, H, a), rect(W / 2, 0, W / 2, H, b)];
-const stripesH = (cs) => cs.map((c, i) => rect(0, (H / cs.length) * i, W, H / cs.length + 0.01, c));
-const stripesV = (cs) => cs.map((c, i) => rect((W / cs.length) * i, 0, W / cs.length + 0.01, H, c));
-const quarters = (tl, tr, bl, br) => [rect(0, 0, 12, 8, tl), rect(12, 0, 12, 8, tr), rect(0, 8, 12, 8, bl), rect(12, 8, 12, 8, br)];
-const saltire = (bg, fg) => [rect(0, 0, W, H, bg), poly('M0 0h3l21 14v2h-3L0 2z M24 0v2L3 16H0v-2L21 0z', fg)];
-const cross = (bg, fg) => [rect(0, 0, W, H, bg), rect(10, 0, 4, H, fg), rect(0, 6, W, 4, fg)];
+const halfV = (a: string, b: string): FlagShape[] => [rect(0, 0, W / 2, H, a), rect(W / 2, 0, W / 2, H, b)];
+const stripesH = (cs: string[]): FlagShape[] => cs.map((c, i) => rect(0, (H / cs.length) * i, W, H / cs.length + 0.01, c));
+const stripesV = (cs: string[]): FlagShape[] => cs.map((c, i) => rect((W / cs.length) * i, 0, W / cs.length + 0.01, H, c));
+const quarters = (tl: string, tr: string, bl: string, br: string): FlagShape[] => [
+	rect(0, 0, 12, 8, tl),
+	rect(12, 0, 12, 8, tr),
+	rect(0, 8, 12, 8, bl),
+	rect(12, 8, 12, 8, br)
+];
+const saltire = (bg: string, fg: string): FlagShape[] => [rect(0, 0, W, H, bg), poly('M0 0h3l21 14v2h-3L0 2z M24 0v2L3 16H0v-2L21 0z', fg)];
+const cross = (bg: string, fg: string): FlagShape[] => [rect(0, 0, W, H, bg), rect(10, 0, 4, H, fg), rect(0, 6, W, 4, fg)];
 
-export const FLAGS = {
+export const FLAGS: Record<string, FlagShape[]> = {
 	A: [rect(0, 0, 12, H, 'w'), poly('M12 0h12l-6 8 6 8H12z', 'b')],
 	B: [poly('M0 0h24l-6 8 6 8H0z', 'r')],
 	C: stripesH(['b', 'w', 'r', 'w', 'b']),

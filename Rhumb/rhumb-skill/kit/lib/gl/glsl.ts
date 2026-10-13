@@ -1,10 +1,10 @@
 import common from './glsl/common.glsl?raw';
 
-const chunks = { common };
+const chunks: Record<string, string> = { common };
 
 // Resolves `#include name` lines against the shared chunks above.
-export function glsl(src) {
-	return src.replace(/^[ \t]*#include (\w+)[ \t]*$/gm, (_, k) => {
+export function glsl(src: string): string {
+	return src.replace(/^[ \t]*#include (\w+)[ \t]*$/gm, (_, k: string) => {
 		if (!(k in chunks)) throw new Error(`glsl: unknown chunk "${k}"`);
 		return chunks[k];
 	});
@@ -18,8 +18,8 @@ void main() {
 `;
 
 // WebGL2 support, checked on a throwaway canvas so the real one stays untouched.
-let support;
-export function hasWebGL2() {
+let support: boolean | undefined;
+export function hasWebGL2(): boolean {
 	if (support !== undefined) return support;
 	try {
 		const c = document.createElement('canvas');

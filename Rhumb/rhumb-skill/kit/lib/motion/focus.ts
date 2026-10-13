@@ -1,12 +1,12 @@
-import { gsap } from './gsap.js';
+import { gsap } from './gsap';
 
 /**
  * Scroll reveals keep content at opacity 0 until it scrolls into view, but keyboard users
  * can tab into it sooner. Whatever holds focus finishes its reveal first.
  */
-export function revealOnFocus() {
-	const onFocus = (e) => {
-		for (let el = e.target; el && el !== document.body; el = el.parentElement) {
+export function revealOnFocus(): () => void {
+	const onFocus = (e: FocusEvent): void => {
+		for (let el = e.target as HTMLElement | null; el && el !== document.body; el = el.parentElement) {
 			for (const t of gsap.getTweensOf(el)) {
 				// only one-shot reveals; scrubbed tweens belong to the scroll position
 				const st = t.scrollTrigger;
@@ -14,6 +14,6 @@ export function revealOnFocus() {
 			}
 		}
 	};
-	document.addEventListener('focusin', onFocus);
-	return () => document.removeEventListener('focusin', onFocus);
+	document.addEventListener('focusin', onFocus as EventListener);
+	return () => document.removeEventListener('focusin', onFocus as EventListener);
 }

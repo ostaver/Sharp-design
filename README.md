@@ -38,8 +38,8 @@ Sharp Design is a collection of **agent skills for building professional, award-
 | [**Binary**](#binary) | Dark, monochrome instrument panel | HTML · CSS · JS · WebGL · Node | Repo/folder | ~18.6k | 9.6 |
 | [**Comfort**](#comfort) | Warm, smooth, editorial | Astro · CSS Modules · Vite | Repo/folder | ~13k | 9.2 |
 | [**Mirage**](#mirage) | Achromatic op-art, kinetic type | HTML · CSS · Canvas · anime.js | Single `.html` | ~7.5k | 9.4 |
-| [**Pellucid**](#pellucid) | Light, optical, liquid glass | HTML · CSS · JS · WebGL · GSAP | Repo/folder | ~8.5k | 9.3 |
-| [**Rhumb**](#rhumb) | Nocturnal, green-lit dithered sky, rolled per build | SvelteKit · OGL · GSAP · Lenis | Repo/folder | ~17k | 9.9 |
+| [**Pellucid**](#pellucid) | Light, optical, liquid glass | HTML · CSS · TypeScript · Vite · WebGL · GSAP | Repo/folder | ~8.5k | 9.3 |
+| [**Rhumb**](#rhumb) | Nocturnal, green-lit dithered sky, rolled per build | SvelteKit · TypeScript · OGL · GSAP · Lenis | Repo/folder | ~17k | 9.9 |
 | [**Stackable**](#stackable) | Loud, colorful, poster-style events | HTML · CSS · GSAP | Single `.html` | ~10k | 8.8 |
 
 > **Not sure where to start?** Use **Atelier** for a quick single-file site, **Binary** or **Comfort** for a full repository, **Belfort** when you need a backend, **Pellucid** for an optical product studio, and **Rhumb** for the flagship nocturnal experience.
@@ -84,10 +84,17 @@ A skill is a `SKILL.md` file inside a design-language folder. It defines everyth
 - **Layout grammar:** proportions, section types and composition rules.
 - **Component vocabulary:** how nav, hero, cards, forms and footers look and behave.
 - **Design tokens:** colors, type, spacing and motion as CSS custom properties.
-- **Runtime:** the JavaScript for motion, canvas/WebGL, cursor and interaction.
+- **Runtime:** TypeScript source for motion, canvas/WebGL, cursor and interaction in bundled kits; browser JavaScript for single-file HTML skills.
 - **Content guidance:** the voice, and a ban on reusing reference copy.
 
 Each language folder also has an `About.md`. It is written for humans and covers what the skill produces, its requirements, model compatibility and score.
+
+### TypeScript preference
+
+Favor TypeScript for new and maintained repository-based sites: `.ts` for modules, `.tsx` for React components, and `<script lang="ts">` / `.svelte.ts` for Svelte components and rune modules. Keep explicit DOM and public API types; do not bypass checking with `any` or `@ts-nocheck`.
+
+Compile or bundle TypeScript before serving it to browsers. Pellucid uses Vite; Rhumb uses SvelteKit. Never rename TypeScript source to `.js` and load it as a classic script. Single-file, no-build HTML skills still ship browser JavaScript; required framework config files, external library filenames, and Rhumb's dependency-free `roll.mjs` CLI are exceptions, not TypeScript source paths.
+
 
 Want to write your own? Start from the [SKILL Creator](SKILL%20CREATOR.md) template.
 
@@ -242,10 +249,10 @@ Strictly black and white, for perception studios and exhibition sites: kinetic v
 A daylight, optical design language for object makers, material brands, and studios whose product is how something looks *through* it. A live WebGL liquid-glass raymarcher morphs across shapes on a pinned optical stage, bending and splitting the page's own typography into colour with soft spectral caustics. It features a hands-on optical bench configurator, an automated snapshot gallery rendered in-browser with zero image assets, a scroll-drawn lens diagram, and a dark closing stage.
 
 - **Style:** Optics lab at noon, porcelain ground, near-black ink, colour as refraction and prism caustics
-- **Stack:** HTML · CSS · JavaScript · WebGL · GSAP (ScrollTrigger, SplitText) · Lenis
+- **Stack:** HTML · CSS · TypeScript · Vite · WebGL · GSAP (ScrollTrigger, SplitText) · Lenis
 - **External:** Google Fonts (variable display with width axis + grotesk body)
 - **Best for:** Glass, lighting, jewellery, eyewear, optics, hardware, material studios, launch showcases
-- **Output:** Repository/folder (give the agent the `pellucid-skill/` folder: it bundles `kit/glass.js`)
+- **Output:** Repository/folder (give the agent the `pellucid-skill/` folder: it bundles `kit/glass.ts`)
 
 | Hero | Bench | Disperse |
 | --- | --- | --- |
@@ -261,7 +268,7 @@ A daylight, optical design language for object makers, material brands, and stud
 For products that work while their people sleep: background agents, CI and data pipelines, monitoring, backups, logistics. A fixed WebGL2 sky drawn in hard-pixel stochastic and Bayer dither sits behind the whole page, lit by a green signal. A letterboxed opening dives the camera through a planet, a globe sails a rhumb line, and star trails turn over a pinned night log. Every section is stamped with the ship's time. At landfall the dawn bands climb, the sky resolves into paper and the text turns to ink as the front passes it. Each build runs a seeded `roll.mjs` that picks its exact colours, fonts, clock, sections, layout variants and sky scene, so no two builds match.
 
 - **Style:** Ship's bridge at night, green signal, instrument-panel mono labels, paper and one ink at dawn
-- **Stack:** SvelteKit 2 · Svelte 5 · OGL (WebGL2) · GSAP / ScrollTrigger / SplitText · Lenis
+- **Stack:** SvelteKit 2 · Svelte 5 · TypeScript · OGL (WebGL2) · GSAP / ScrollTrigger / SplitText · Lenis
 - **External:** None at runtime (fonts self-hosted through Fontsource)
 - **Best for:** Background agents, schedulers, CI, data and backup tools, logistics, night services
 - **Output:** Repository/folder (give the agent the whole `rhumb-skill/` folder: it bundles the `kit/` and `roll.mjs`)
@@ -389,12 +396,18 @@ Use issues to report a broken skill (include the model, prompt and observed outp
 
 ## Changelog
 
+### Unreleased
+
+- Ported all 14 bundled `.js` runtime files to TypeScript, including Svelte rune modules; updated kit imports and TypeScript-first construction instructions.
+- Pellucid now builds its browser modules with Vite; Rhumb's chart generator emits TypeScript configuration modules.
+
+
 ### 1.0.3
 
 - **Argon** Deprecated, **Rhumb** Fixed.
 
 ### 1.0.2
-- Tenth skill: **Pellucid**, an optical design language for object makers, material brands, and physical studios. Built around a live WebGL liquid-glass raymarcher (`kit/glass.js`) that morphs between shapes and refracts 2D canvas typography, with an interactive optical bench, zero-asset client-rendered snapshot gallery, scroll-drawn lens diagram, and dark closing stage.
+- Tenth skill: **Pellucid**, an optical design language for object makers, material brands, and physical studios. Built around a live WebGL liquid-glass raymarcher (`kit/glass.ts`) that morphs between shapes and refracts 2D canvas typography, with an interactive optical bench, zero-asset client-rendered snapshot gallery, scroll-drawn lens diagram, and dark closing stage.
 
 ### 1.0.1
 - Ninth skill: **Rhumb**, a nocturnal SvelteKit language with a dithered WebGL2 sky, a green signal, a ship's clock and a paper landfall. It ships a `kit/` of runtime files and a seeded `roll.mjs` that rolls each build's colours, fonts, sections, layout and sky scene.

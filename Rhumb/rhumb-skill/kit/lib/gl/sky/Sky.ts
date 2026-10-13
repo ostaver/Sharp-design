@@ -1,33 +1,144 @@
 import { Renderer, Program, Mesh, Triangle } from 'ogl';
-import { glsl, fullscreenVert } from '../glsl.js';
+import type { OGLRenderingContext } from 'ogl';
+import { glsl, fullscreenVert } from '../glsl';
 import frag from './sky.frag.glsl?raw';
 
 const TRAIL = 16;
 
+export interface SkyPalette {
+	bg: string;
+	grain: string;
+	white: string;
+	paper: string;
+	paperGrain: string;
+	body: string[];
+	rim: string[];
+	dawn: string[];
+}
+
+export interface SkyLayout {
+	planet: 'left' | 'right';
+	planetScale: number;
+	globe: 'left' | 'right';
+}
+
+export interface SkyScene {
+	grid: number;
+	loxodromes: number;
+	stars: number;
+	meteorEvery: number;
+	band: [number, number];
+	tilt: [number, number];
+}
+
+export interface SkyOptions {
+	palette: SkyPalette;
+	bearing: number;
+	cssCell: number;
+	layout: SkyLayout;
+	scene: SkyScene;
+	reduced?: boolean;
+}
+
+export interface SkyState {
+	intro: number;
+	planetOn: number;
+	dive: number;
+	globeOn: number;
+	ship: number;
+	trailsOn: number;
+	trailSpan: number;
+	starsOn: number;
+	dawn: number;
+	paper: number;
+}
+
+export interface TrailPoint {
+	x: number;
+	y: number;
+	t: number;
+	speed: number;
+	dx: number;
+	dy: number;
+}
+
+export interface PointerState {
+	x: number;
+	y: number;
+	on: number;
+	lastT: number;
+}
+
+export interface Uniform<T = unknown> {
+	value: T;
+}
+
+export interface SkyUniforms {
+	uRes: Uniform<[number, number]>;
+	uView: Uniform<[number, number]>;
+	uScale: Uniform<number>;
+	uTime: Uniform<number>;
+	uIntro: Uniform<number>;
+	uPlanet: Uniform<[number, number, number]>;
+	uPlanetOn: Uniform<number>;
+	uDive: Uniform<number>;
+	uSpin: Uniform<number>;
+	uSide: Uniform<number>;
+	uGlobe: Uniform<[number, number, number]>;
+	uGlobeOn: Uniform<number>;
+	uGlobeSpin: Uniform<number>;
+	uShip: Uniform<number>;
+	uBearing: Uniform<number>;
+	uTilt: Uniform<[number, number]>;
+	uGrid: Uniform<number>;
+	uLoxo: Uniform<number>;
+	uPole: Uniform<[number, number]>;
+	uTrailsOn: Uniform<number>;
+	uTrailSpan: Uniform<number>;
+	uStarsOn: Uniform<number>;
+	uStarDensity: Uniform<number>;
+	uMeteor: Uniform<number>;
+	uBand: Uniform<[number, number]>;
+	uDawn: Uniform<number>;
+	uPaper: Uniform<number>;
+	uTrail: Uniform<number[]>;
+	uTrailDir: Uniform<number[]>;
+	uMouse: Uniform<[number, number, number]>;
+	uBg: Uniform<[number, number, number]>;
+	uGrain: Uniform<[number, number, number]>;
+	uWhite: Uniform<[number, number, number]>;
+	uPaperCol: Uniform<[number, number, number]>;
+	uPaperGrain: Uniform<[number, number, number]>;
+	uBody: Uniform<number[]>;
+	uRim: Uniform<number[]>;
+	uDawnRamp: Uniform<number[]>;
+}
+
 // Row-major equivalents of the GLSL rotation helpers in common.glsl.
-const rotY = (a) => {
+const rotY = (a: number): number[][] => {
 	const c = Math.cos(a), s = Math.sin(a);
 	return [[c, 0, s], [0, 1, 0], [-s, 0, c]];
 };
-const rotX = (a) => {
+const rotX = (a: number): number[][] => {
 	const c = Math.cos(a), s = Math.sin(a);
 	return [[1, 0, 0], [0, c, -s], [0, s, c]];
 };
-const rotZ = (a) => {
+const rotZ = (a: number): number[][] => {
 	const c = Math.cos(a), s = Math.sin(a);
 	return [[c, -s, 0], [s, c, 0], [0, 0, 1]];
 };
-const mul = (A, B) => A.map((row) => [0, 1, 2].map((j) => row[0] * B[0][j] + row[1] * B[1][j] + row[2] * B[2][j]));
+const mul = (A: number[][], B: number[][]): number[][] =>
+	A.map((row) => [0, 1, 2].map((j) => row[0] * B[0][j] + row[1] * B[1][j] + row[2] * B[2][j]));
 
 // '#rrggbb' → [r, g, b] in 0..1. The shader writes these straight to the screen, so they
 // are the same sRGB values as the CSS tokens.
-const rgb = (hex) => {
+const rgb = (hex: string): [number, number, number] => {
 	const m = /^#?([0-9a-f]{6})$/i.exec(hex);
 	if (!m) throw new Error(`sky: bad colour "${hex}"`);
 	const n = parseInt(m[1], 16);
 	return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
 };
-const ramp = (list, len, name) => {
+const ramp = (list: string[], len: number, name: string): number[] => {
 	if (!Array.isArray(list) || list.length !== len) throw new Error(`sky: palette.${name} needs ${len} colours`);
 	return list.flatMap(rgb); // OGL resolves `name[0]` array uniforms from plain flat arrays
 };
@@ -35,8 +146,38 @@ const ramp = (list, len, name) => {
 // The fixed night sky behind the whole page. One fragment shader, drawn into a buffer
 // with one texel per dither pixel; the browser scales it up with `image-rendering: pixelated`.
 export class Sky {
-	/** Scroll-driven scene values, written every frame by choreo.js (intro by the preloader). */
-	state = {
+	canvas: HTMLCanvasElement;
+	palette: SkyPalette;
+	bearing: number;
+	layout: SkyLayout;
+	scene: SkyScene;
+	reduced: boolean;
+	cssCell: number;
+	visible: boolean;
+	time: number;
+	trail: TrailPoint[];
+	trailHead: number;
+	pointer: PointerState;
+	renderer!: Renderer;
+	gl!: OGLRenderingContext;
+	uniforms!: SkyUniforms;
+	trailBuf!: number[];
+	trailDirBuf!: number[];
+	mesh!: Mesh;
+	scale!: number;
+	vw!: number;
+	vh!: number;
+	planetBase!: { x: number; y: number; r: number };
+	globe!: { x: number; y: number; r: number };
+	pole!: { x: number; y: number };
+	lost?: boolean;
+	covered?: boolean;
+	onLeave: () => void;
+	onLost: (e: Event) => void;
+	onRestored: () => void;
+
+	/** Scroll-driven scene values, written every frame by choreo.ts (intro by the preloader). */
+	state: SkyState = {
 		intro: 0,
 		planetOn: 1,
 		dive: 0,
@@ -50,22 +191,17 @@ export class Sky {
 	};
 
 	/**
-	 * Everything visual comes from the build's rolled sky config (src/lib/sky.config.js,
+	 * Everything visual comes from the build's rolled sky config (src/lib/sky.config.ts,
 	 * written by roll.mjs). Nothing here has a default look of its own.
-	 * @param {HTMLCanvasElement} canvas
-	 * @param {object} opts
-	 *   palette  { bg, grain, white, paper, paperGrain, body: [6], rim: [5], dawn: [8] } as '#rrggbb'
-	 *   bearing  the course in degrees clockwise from north (the brand's signature bearing)
-	 *   cssCell  CSS px per dither pixel (2 or 3)
-	 *   layout   { planet: 'left'|'right', planetScale, globe: 'left'|'right' }
-	 *   scene    { grid (deg), loxodromes (1..8), stars (density ×), meteorEvery (s), band: [slope, offset], tilt: [x, z] (rad) }
-	 *   reduced  freeze time (prefers-reduced-motion)
 	 */
-	constructor(canvas, { palette, bearing, cssCell, layout, scene, reduced = false } = {}) {
+	constructor(canvas: HTMLCanvasElement, opts?: SkyOptions) {
+		const { palette, bearing, cssCell, layout, scene, reduced = false } = opts ?? {};
 		const missing = Object.entries({ palette, bearing, cssCell, layout, scene })
 			.filter(([, v]) => v == null)
 			.map(([k]) => k);
-		if (missing.length) throw new Error(`sky: sky.config.js is missing ${missing.join(', ')} (run roll.mjs)`);
+		if (palette == null || bearing == null || cssCell == null || layout == null || scene == null) {
+			throw new Error(`sky: sky.config.ts is missing ${missing.join(', ')} (run roll.mjs)`);
+		}
 		this.canvas = canvas;
 		this.palette = palette;
 		this.bearing = (bearing * Math.PI) / 180;
@@ -82,12 +218,11 @@ export class Sky {
 		this.#build();
 		this.resize();
 
-		this.onPointer = this.onPointer.bind(this);
 		this.onLeave = () => (this.pointer.on = 0);
-		window.addEventListener('pointermove', this.onPointer, { passive: true });
+		window.addEventListener('pointermove', this.onPointer as EventListener, { passive: true });
 		document.documentElement.addEventListener('pointerleave', this.onLeave);
 
-		this.onLost = (e) => {
+		this.onLost = (e: Event) => {
 			e.preventDefault();
 			this.lost = true;
 		};
@@ -100,7 +235,7 @@ export class Sky {
 		canvas.addEventListener('webglcontextrestored', this.onRestored);
 	}
 
-	#build() {
+	#build(): void {
 		// No powerPreference: asking for the discrete GPU forces a GPU switch on dual-GPU
 		// laptops, which is itself a hitch.
 		this.renderer = new Renderer({
@@ -117,8 +252,8 @@ export class Sky {
 		gl.clearColor(bg[0], bg[1], bg[2], 1);
 
 		// OGL only resolves `name[0]` array uniforms from plain arrays, not typed arrays.
-		const trail = new Array(TRAIL * 4).fill(0);
-		const trailDir = new Array(TRAIL * 2).fill(0);
+		const trail: number[] = new Array(TRAIL * 4).fill(0);
+		const trailDir: number[] = new Array(TRAIL * 2).fill(0);
 		this.uniforms = {
 			uRes: { value: [1, 1] },
 			uView: { value: [1, 1] },
@@ -172,7 +307,7 @@ export class Sky {
 		this.mesh = new Mesh(gl, { geometry: new Triangle(gl), program });
 	}
 
-	resize() {
+	resize(): void {
 		const probe = document.getElementById('lvh-probe');
 		const w = window.innerWidth;
 		const h = probe ? probe.offsetHeight || window.innerHeight : window.innerHeight;
@@ -198,7 +333,7 @@ export class Sky {
 		this.#layout();
 	}
 
-	#layout() {
+	#layout(): void {
 		const W = this.vw;
 		const H = this.vh;
 		const portrait = H > W;
@@ -214,13 +349,13 @@ export class Sky {
 		};
 		// The globe sits on its own side; copy goes on the other. The pole sits just above it.
 		const g = this.layout.globe === 'left' ? -1 : 1;
-		const gx = (f) => W * (0.5 + g * (f - 0.5));
+		const gx = (f: number): number => W * (0.5 + g * (f - 0.5));
 		const gr = portrait ? Math.min(W * 0.46, H * 0.3) : Math.min(W * 0.225, H * 0.35);
 		this.globe = portrait ? { x: gx(0.62), y: H * 0.7, r: gr } : { x: gx(0.75), y: H * 0.47, r: gr };
 		this.pole = portrait ? { x: gx(0.62), y: H * 1.02 } : { x: gx(0.74), y: H * 1.08 };
 	}
 
-	onPointer(e) {
+	onPointer = (e: PointerEvent): void => {
 		if (e.pointerType === 'touch') return;
 		const now = performance.now() / 1000;
 		const x = e.clientX;
@@ -247,7 +382,7 @@ export class Sky {
 	}
 
 	/** Called by the shared GSAP ticker; `dt` in seconds. */
-	render(dt) {
+	render(dt: number): void {
 		if (this.lost || !this.visible || this.covered) return;
 		const u = this.uniforms;
 		const s = this.state;
@@ -303,7 +438,7 @@ export class Sky {
 	 * Where the ship on the bearing globe is, in CSS px from the top-left of the viewport.
 	 * Mirrors the rotation in sky.frag.glsl so DOM labels can ride along with it.
 	 */
-	shipScreen() {
+	shipScreen(): { x: number; y: number; visible: boolean; r: number; cx: number; cy: number } {
 		const u = this.uniforms;
 		const [gx, gy, R] = u.uGlobe.value;
 		const spin = u.uGlobeSpin.value;
@@ -318,8 +453,8 @@ export class Sky {
 		return { x: gx + v[0] * R, y: this.vh - (gy + v[1] * R), visible: v[2] > 0, r: R, cx: gx, cy: this.vh - gy };
 	}
 
-	destroy() {
-		window.removeEventListener('pointermove', this.onPointer);
+	destroy(): void {
+		window.removeEventListener('pointermove', this.onPointer as EventListener);
 		document.documentElement.removeEventListener('pointerleave', this.onLeave);
 		this.canvas.removeEventListener('webglcontextlost', this.onLost);
 		this.canvas.removeEventListener('webglcontextrestored', this.onRestored);

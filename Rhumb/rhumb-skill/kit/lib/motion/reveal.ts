@@ -1,5 +1,5 @@
-import { gsap, SplitText, SCRAMBLE } from './gsap.js';
-import { ui } from '$lib/state.svelte.js';
+import { gsap, SplitText, SCRAMBLE } from './gsap';
+import { ui } from '$lib/state.svelte.ts';
 
 /**
  * Scroll reveals for everything inside `root` marked with data-r:
@@ -10,8 +10,12 @@ import { ui } from '$lib/state.svelte.js';
  *   term   — alias of clip, for terminals
  * Call inside a gsap.context so everything is reverted with the component.
  */
-export function reveal(root, { start = 'top 84%' } = {}) {
-	const els = root.querySelectorAll('[data-r]');
+export interface RevealOptions {
+	start?: string;
+}
+
+export function reveal(root: HTMLElement, { start = 'top 84%' }: RevealOptions = {}): void {
+	const els = root.querySelectorAll<HTMLElement>('[data-r]');
 	if (!els.length) return;
 	if (ui.reduced) {
 		gsap.set(els, { autoAlpha: 1 });
@@ -23,7 +27,6 @@ export function reveal(root, { start = 'top 84%' } = {}) {
 		const kind = el.dataset.r;
 		const delay = parseFloat(el.dataset.delay || '0');
 		const st = { trigger: el, start, once: true };
-
 		if (kind === 'lines') {
 			if (pull) {
 				gsap.fromTo(
@@ -54,7 +57,7 @@ export function reveal(root, { start = 'top 84%' } = {}) {
 			// opacity, not autoAlpha: hidden content must stay reachable by keyboard
 			gsap.fromTo(el, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 1.1, delay, scrollTrigger: st });
 		} else if (kind === 'label') {
-			const text = el.textContent;
+			const text = el.textContent ?? '';
 			gsap.set(el, { autoAlpha: 1 });
 			gsap.from(el, {
 				duration: 1,

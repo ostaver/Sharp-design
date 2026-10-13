@@ -1,8 +1,13 @@
-<script>
-	import { FLAGS } from '$lib/flags.js';
+<script lang="ts">
+	import { FLAGS } from '$lib/flags';
+
+	interface Props {
+		letter: string;
+		size?: number;
+	}
 
 	/** One signal flag, hoisted on a short halyard. */
-	let { letter, size = 26 } = $props();
+	let { letter, size = 26 }: Props = $props();
 	const shapes = $derived(FLAGS[letter.toUpperCase()] ?? []);
 </script>
 

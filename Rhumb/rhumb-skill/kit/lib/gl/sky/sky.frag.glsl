@@ -47,7 +47,7 @@ out vec4 fragColor;
 #include common
 
 // ---- palette -------------------------------------------------------------------
-// Set from JS (Sky.js, from the build's sky config). Every colour in the frame is one of
+// Set from TypeScript (Sky.ts, from the build's sky config). Every colour in the frame is one of
 // these: the dither picks between neighbouring steps, it never blends.
 
 uniform vec3 uBg;          // == CSS --night

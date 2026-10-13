@@ -250,9 +250,12 @@ Use this when the whole site ships as one self-contained `index.html`.
 
 ### Option B — Folder / repo / framework project
 
-Use this when the site ships as multiple files, a static repo, or a framework project (e.g., Astro, plain multi-file HTML/CSS/JS with a small Node server).
+Use this when the site ships as multiple files, a static repo, or a framework project (e.g., Astro or vanilla HTML/CSS/TypeScript built with Vite).
 
 **Canonical stack:** [Name the framework/build tool and any required libraries — e.g., "Astro 6, static output, Tailwind v4" — or state "hand-rolled, no framework" for a plain multi-file repo. List exact package versions or CDN sources if they must be pinned.]
+
+**TypeScript-first:** Favor `.ts` modules, `.tsx` React components, and Svelte `<script lang="ts">` / `.svelte.ts` rune modules. Define DOM and public API types and enable strict checking; never use `any` or `@ts-nocheck` to hide migration errors. Document how source is compiled or bundled to browser JavaScript, plus the dev, check, build and preview commands. Do not load raw `.ts` in a browser or copy it unchanged into `.js`. Use JavaScript only when an explicit no-build/single-HTML contract or framework/tool configuration requires it.
+
 
 **Project manifest:** List every file the agent must create, one line each, and mark whether its contents are **prescriptive** (copy verbatim, reused unmodified across every build) or **descriptive** (agent writes original content per build within the language's rules).
 
@@ -268,7 +271,7 @@ project/
 1. Create the output folder and scaffold [via `[command]` / by hand].
 2. Write the files listed in the manifest, in [order], filling only the placeholders called out as "author per build."
 3. Resolve external resource choices: [fonts, icons, images — verify each URL returns `200` before committing to it].
-4. Install/run: `[npm install && npm run dev]` or `[node server.js]`.
+4. Install/run/check/build: `[npm install && npm run dev]`, `[npm run check]`, `[npm run build]`, then `[npm run preview]` (substitute the chosen tool's actual commands).
 
 **Internet dependency & integrity** (include only if the build fetches resources from the network at build or run time):
 

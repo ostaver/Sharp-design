@@ -9,7 +9,7 @@
 //   node roll.mjs --out <project>        …and write it into the project
 //   node roll.mjs --seed <text> --out …  reproduce an earlier chart exactly
 //
-// With --out it writes src/tokens.css, src/lib/sky.config.js, src/lib/chart.js,
+// With --out it writes src/tokens.css, src/lib/sky.config.ts, src/lib/chart.ts,
 // src/routes/+layout.svelte, static/favicon.svg and rhumb.chart.json, and patches the
 // theme-color in src/app.html and the Fontsource dependencies in package.json if they exist.
 // Run it after copying kit/ into src/.
@@ -388,11 +388,12 @@ ${block(contrast, '\t\t')}
 }
 `;
 
-const chartJs = `// Rolled by roll.mjs (seed ${seed}). Import from here; never re-decide what this file says.
+const chartTs = `// Rolled by roll.mjs (seed ${seed}). Import from here; never re-decide what this file says.
 // sections: the line-up in page order. Ship's minutes keep counting past midnight (02:15 is 26 * 60 + 15).
 // layout:   each section's variant (and the chrome's). coordinates: for the colophon.
+import type { ChartSection } from './motion/choreo';
 export const seed = ${JSON.stringify(seed)};
-export const sections = ${JSON.stringify(
+export const sections: ChartSection[] = ${JSON.stringify(
 	sections.map(({ type, id, n, label, time, icon, role, span }) => ({ id, n, type, label, time, icon, ...(role && { role }), ...(span && { span }) })),
 	null,
 	'\t'
@@ -401,17 +402,22 @@ export const layout = ${JSON.stringify(layout, null, '\t')};
 export const coordinates = ${JSON.stringify(coord)};
 `;
 
-const skyJs = `// Rolled by roll.mjs (seed ${seed}). The sky's palette, bearing, pixel size, layout and scene.
+const skyTs = `// Rolled by roll.mjs (seed ${seed}). The sky's palette, bearing, pixel size, layout and scene.
 // palette.bg equals --night and palette.paper equals --paper in tokens.css, character for character.
-export const skyConfig = ${JSON.stringify(skyConfig, null, '\t')};
+import type { SkyOptions } from './gl/sky/Sky';
+export const skyConfig: SkyOptions = ${JSON.stringify(skyConfig, null, '\t')};
 `;
 
-const layoutSvelte = `<script>
+const layoutSvelte = `<script lang="ts">
+	import type { Snippet } from 'svelte';
 ${[fonts.sans, fonts.mono, fonts.serif].flatMap((f) => f.css.map((c) => `\timport '${f.pkg}/${c}';`)).join('\n')}
 	import '../tokens.css';
 	import '../app.css';
 
-	let { children } = $props();
+	interface Props {
+		children: Snippet;
+	}
+	let { children }: Props = $props();
 </script>
 
 {@render children()}
@@ -447,8 +453,8 @@ function write(rel, text) {
 const written = [];
 if (out) {
 	written.push(write('src/tokens.css', tokensCss));
-	written.push(write('src/lib/sky.config.js', skyJs));
-	written.push(write('src/lib/chart.js', chartJs));
+	written.push(write('src/lib/sky.config.ts', skyTs));
+	written.push(write('src/lib/chart.ts', chartTs));
 	written.push(write('src/routes/+layout.svelte', layoutSvelte));
 	written.push(write('static/favicon.svg', favicon));
 	written.push(write('rhumb.chart.json', JSON.stringify(chart, null, '\t') + '\n'));

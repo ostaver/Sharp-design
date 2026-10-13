@@ -1,13 +1,17 @@
-<script>
+<script lang="ts">
 	import { onMount } from 'svelte';
-	import { gsap } from '$lib/motion/gsap.js';
-	import { cine } from '$lib/motion/cine.js';
-	import { ui } from '$lib/state.svelte.js';
+	import { gsap } from '$lib/motion/gsap';
+	import { cine } from '$lib/motion/cine';
+	import { ui } from '$lib/state.svelte.ts';
+
+	interface Props {
+		subtitle?: string;
+	}
 
 	/** One log line shown in the bottom bar deep in the dive, e.g. '20:03 · descending through the upper air'. */
-	let { subtitle = '' } = $props();
+	let { subtitle = '' }: Props = $props();
 
-	let root = $state();
+	let root: HTMLDivElement;
 
 	onMount(() => {
 		if (ui.reduced) return;

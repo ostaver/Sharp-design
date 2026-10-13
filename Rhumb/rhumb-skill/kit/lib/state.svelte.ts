@@ -1,5 +1,18 @@
 // Page-wide UI state, shared between components (Svelte 5 runes).
-export const ui = $state({
+export interface UIState {
+	ready: boolean;
+	section: number;
+	clock: number;
+	sound: boolean;
+	day: boolean;
+	scrolled: boolean;
+	foot: boolean;
+	menu: boolean;
+	gl: boolean;
+	reduced: boolean;
+}
+
+export const ui: UIState = $state({
 	ready: false, // preloader has handed over; intro timelines may play
 	section: 0, // index into `sections`
 	clock: 20 * 60, // ship's time in minutes; runs past 24:00 through the night

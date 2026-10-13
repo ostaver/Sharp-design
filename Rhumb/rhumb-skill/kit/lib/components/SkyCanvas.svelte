@@ -1,20 +1,20 @@
-<script>
+<script lang="ts">
 	import { onMount } from 'svelte';
-	import { Sky } from '$lib/gl/sky/Sky.js';
-	import { skyConfig } from '$lib/sky.config.js';
-	import { skyBus } from '$lib/gl/sky/bus.js';
-	import { hasWebGL2 } from '$lib/gl/glsl.js';
-	import { gsap } from '$lib/motion/gsap.js';
-	import { ui } from '$lib/state.svelte.js';
+	import { Sky } from '$lib/gl/sky/Sky';
+	import { skyConfig } from '$lib/sky.config';
+	import { skyBus } from '$lib/gl/sky/bus';
+	import { hasWebGL2 } from '$lib/gl/glsl';
+	import { gsap } from '$lib/motion/gsap';
+	import { ui } from '$lib/state.svelte.ts';
 
-	let canvas;
+	let canvas: HTMLCanvasElement;
 
 	onMount(() => {
 		if (!hasWebGL2()) {
 			ui.gl = false;
 			return;
 		}
-		let sky;
+		let sky: Sky;
 		try {
 			sky = new Sky(canvas, { ...skyConfig, reduced: ui.reduced });
 		} catch (err) {
@@ -24,7 +24,7 @@
 		}
 		skyBus.sky = sky;
 
-		const tick = (_t, dtMs) => sky.render(Math.min(dtMs, 60) / 1000);
+		const tick = (_t: number, dtMs: number) => sky.render(Math.min(dtMs, 60) / 1000);
 		gsap.ticker.add(tick);
 
 		let raf = 0;

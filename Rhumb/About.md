@@ -55,6 +55,7 @@ npm run check
 ## Tech stack
 
 - **SvelteKit 2 + Svelte 5 (runes)** with `adapter-static`. The page is fully prerendered and uses relative paths.
+- **TypeScript first:** kit modules, authored content, generated `chart.ts` / `sky.config.ts`, `vite.config.ts` and route modules use `.ts`; Svelte scripts use `lang="ts"`. The Node CLI stays `roll.mjs`, and `svelte.config.js` stays JavaScript for SvelteKit's framework config convention. Check the app with the skill's strict `tsconfig.json`.
 - **OGL 1:** the sky's one full-screen triangle.
 - **GSAP 3.15:** ScrollTrigger, SplitText, ScrambleText, DrawSVG and CustomEase (eases `helm` and `haul`).
 - **Lenis 1.3:** smooth wheel scrolling on the GSAP ticker. Touch stays native.
@@ -63,7 +64,7 @@ npm run check
 
 ## Notable characteristics
 
-- **Scrolling is time passing.** Every section is stamped with the ship's time, and the clock, sky, rail and theme are all read from scroll position in one place (`choreo.js`).
+- **Scrolling is time passing.** Every section is stamped with the ship's time, and the clock, sky, rail and theme are all read from scroll position in one place (`choreo.ts`).
 - **One picture.** No images ship apart from an optional social preview. Everything visual is GLSL, SVG or CSS.
 - **Night, then paper.** There is no theme toggle. The page turns to day exactly once, at landfall, and the turn is the sky's own dither, not a CSS fade.
 - **An instrument voice.** All labels are mono and uppercase, numbers sit on scales, headings are two clauses with the second muted, structure is drawn in hairlines, and corners are square.
@@ -82,11 +83,11 @@ Rhumb/
 │   └── kit/                     # copied into src/ unchanged
 │       ├── app.html, app.css    # pre-paint classes and scroll reset; base styles (no colours or fonts)
 │       └── lib/
-│           ├── gl/              # sky.frag.glsl, Sky.js, bus.js, glsl.js, glsl/common.glsl
+│           ├── gl/              # sky.frag.glsl, Sky.ts, bus.ts, glsl.ts, glsl/common.glsl
 │           ├── motion/          # choreo, gsap, scroll, reveal, focus, cine
 │           ├── components/      # SkyCanvas, Cinema, Flag
-│           ├── audio/bell.js    # Web Audio ship's bell and surf
-│           └── state.svelte.js, time.js, flags.js
+│           ├── audio/bell.ts    # Web Audio ship's bell and surf
+│           └── state.svelte.ts, time.ts, flags.ts
 ├── preview-*.png                # from a build rolled by the skill
 └── About.md                     # this overview
 ```

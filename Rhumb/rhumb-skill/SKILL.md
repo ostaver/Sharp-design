@@ -37,15 +37,15 @@ It needs only Node and uses no network. With no `--seed` it picks a random one, 
 | File | What it holds |
 |---|---|
 | `src/tokens.css` | every colour token, the three font stacks, `--f-features`, rail clearance (`--rail-clear-start/end`) and the `prefers-contrast: more` overrides |
-| `src/lib/sky.config.js` | `skyConfig`: bearing, pixel size (`cssCell`), the sky palette (exactly matching the tokens), the sky layout and the scene |
-| `src/lib/chart.js` | `sections` (the line-up in page order: `id`, `n`, `type`, `label`, `time`, `icon`, `role`, `span`), `layout` (each section's variant and the chrome's), `coordinates` and `seed` |
+| `src/lib/sky.config.ts` | `skyConfig`, typed with `SkyOptions`: bearing, pixel size (`cssCell`), the sky palette (exactly matching the tokens), the sky layout and the scene |
+| `src/lib/chart.ts` | `sections`, typed as `ChartSection[]` (the line-up in page order: `id`, `n`, `type`, `label`, `time`, `icon`, `role`, `span`), `layout` (each section's variant and the chrome's), `coordinates` and `seed` |
 | `src/routes/+layout.svelte` | the font imports, then `../tokens.css`, then `../app.css` |
 | `static/favicon.svg` | the wind-rose mark on `--night`, with the needle in `--signal` on the bearing |
 | `rhumb.chart.json` | the whole chart, including `layout` (each section's variant), `clock`, `coordinates` and the seed |
 
 It also sets `theme-color` in `src/app.html` to `--night`, and swaps the Fontsource dependencies in `package.json` for the rolled fonts.
 
-- Never edit `tokens.css`, `sky.config.js` or `chart.js` by hand. If something must change, roll again.
+- Never edit `tokens.css`, `sky.config.ts` or `chart.ts` by hand. If something must change, roll again.
 - Read `rhumb.chart.json` before writing anything, and state the seed, signal, fonts, bearing and line-up back to the user.
 - Put the seed in the project README.
 
@@ -79,7 +79,7 @@ The tone is dry, exact and quietly confident. It borrows from ship's logs, chart
 - **Separators:** no boxes and no bands. Sections are divided by space and by the section head: a numbered mono label with a hairline that fades to nothing.
 - **Structure:** hairlines only, at three strengths. Grids share borders like a table (`border-top/left` on the list, `border-right/bottom` on each cell). Corners are square.
 - **Backgrounds:** sections are transparent over the fixed sky. When busy sky sits behind small type, add a local scrim: a gradient of `color-mix(in srgb, var(--night) 50–80%, transparent)`. Never use a flat panel colour.
-- **Section head** (every section except the hero): `[number in signal] [label] [rule fading out] [ship's time]`, using `n`, `label` and `time` from `chart.js`.
+- **Section head** (every section except the hero): `[number in signal] [label] [rule fading out] [ship's time]`, using `n`, `label` and `time` from `chart.ts`.
 - **Content:** move from words to instruments and back. A text-forward section should be followed by one that shows the product working (a terminal, gauges, a log).
 - **Data:** display it like instrument readouts. Numbers are tabular, units sit in signal at .55em, every figure has its own scale with a pip, and every label is mono uppercase.
 
@@ -185,24 +185,24 @@ Motion in Rhumb is **scroll-bound, long-decelerating and mechanical where it is 
 
 ### The kit (copy, don't rewrite)
 
-This skill folder holds `kit/`. Copy it into `src/`, keeping the paths (`kit/lib/motion/gsap.js` → `src/lib/motion/gsap.js`, `kit/app.css` → `src/app.css`, `kit/app.html` → `src/app.html`). Copy the files byte for byte and never edit them; the roll fills in everything that varies. If the kit folder or `roll.mjs` is missing, stop and ask for it. Do not rewrite the shader from memory.
+This skill folder holds `kit/`. Copy it into `src/`, keeping the paths (`kit/lib/motion/gsap.ts` → `src/lib/motion/gsap.ts`, `kit/app.css` → `src/app.css`, `kit/app.html` → `src/app.html`). Copy the files byte for byte and never edit them; the roll fills in everything that varies. If the kit folder or `roll.mjs` is missing, stop and ask for it. Do not rewrite the shader from memory.
 
 | Kit file | Gives you |
 |---|---|
 | `app.html` | pre-paint classes `js`, `rm` (reduced motion), `no-intro` (`?skip`), and `scrollRestoration = 'manual'` before the browser restores a mid-page offset |
 | `app.css` | reset, focus, `.label`, `.h-section`, `.lede`, `.sec-head`, `.wrap`, `.skiplink`, `.sr-only`, SplitText mask padding, `.x-fade`, Lenis rules, `#lvh-probe`, horizontal-overflow clipping on `main` and the footer, phone and reduced-motion and print rules. No colours or fonts |
-| `lib/gl/glsl.js`, `lib/gl/glsl/common.glsl` | `#include` resolver, full-screen vertex shader, `hasWebGL2()`, PCG hash, Bayer 2/4/8, value noise, simplex, fbm, rotations |
-| `lib/gl/sky/sky.frag.glsl`, `Sky.js`, `bus.js` | the sky renderer and `skyBus.sky` (a shared handle to it) |
+| `lib/gl/glsl.ts`, `lib/gl/glsl/common.glsl` | `#include` resolver, full-screen vertex shader, `hasWebGL2()`, PCG hash, Bayer 2/4/8, value noise, simplex, fbm, rotations |
+| `lib/gl/sky/sky.frag.glsl`, `Sky.ts`, `bus.ts` | the sky renderer and `skyBus.sky` (a shared handle to it) |
 | `lib/components/SkyCanvas.svelte` | mounts the sky from `skyConfig` on the shared GSAP ticker; resize, visibility and the CSS fallback without WebGL2 |
-| `lib/components/Cinema.svelte`, `lib/motion/cine.js` | vignette, stepped film grain, 2.39:1 letterbox bars, the dive subtitle (`subtitle` prop) |
-| `lib/motion/choreo.js` | scroll → sky state, ship's clock, active section, `ui.day`, `ui.scrolled`, `ui.foot`; exports `paperFront()` |
-| `lib/motion/gsap.js` | plugins (ScrollTrigger, SplitText, ScrambleText, DrawSVG, CustomEase), eases `helm` and `haul`, the `SCRAMBLE` glyphs |
-| `lib/motion/scroll.js` | Lenis on the GSAP ticker: `startScroll` (which also puts every load back at the top, deep links excepted), `scrollTo`, `lockScroll`, `stopScroll` |
-| `lib/motion/reveal.js`, `lib/motion/focus.js` | the `data-r` reveal vocabulary; finishing a reveal when keyboard focus lands in it |
-| `lib/state.svelte.js` | the shared `ui` rune store (`ready section clock sound day scrolled foot menu gl reduced`) |
-| `lib/time.js` | `fmtTime(min)`, `watchName(min)`, `bellsAt(min)` |
-| `lib/audio/bell.js` | Web Audio ship's bell `strike(n)`, surf `setSea(0\|1)`, `setSound(on)` |
-| `lib/flags.js`, `lib/components/Flag.svelte` | International Code of Signals A–Z as SVG: `<Flag letter="K" size={22} />` |
+| `lib/components/Cinema.svelte`, `lib/motion/cine.ts` | vignette, stepped film grain, 2.39:1 letterbox bars, the dive subtitle (`subtitle` prop) |
+| `lib/motion/choreo.ts` | scroll → sky state, ship's clock, active section, `ui.day`, `ui.scrolled`, `ui.foot`; exports `paperFront()` |
+| `lib/motion/gsap.ts` | plugins (ScrollTrigger, SplitText, ScrambleText, DrawSVG, CustomEase), eases `helm` and `haul`, the `SCRAMBLE` glyphs |
+| `lib/motion/scroll.ts` | Lenis on the GSAP ticker: `startScroll` (which also puts every load back at the top, deep links excepted), `scrollTo`, `lockScroll`, `stopScroll` |
+| `lib/motion/reveal.ts`, `lib/motion/focus.ts` | the `data-r` reveal vocabulary; finishing a reveal when keyboard focus lands in it |
+| `lib/state.svelte.ts` | the shared `ui` rune store (`ready section clock sound day scrolled foot menu gl reduced`) |
+| `lib/time.ts` | `fmtTime(min)`, `watchName(min)`, `bellsAt(min)` |
+| `lib/audio/bell.ts` | Web Audio ship's bell `strike(n)`, surf `setSea(0|1)`, `setSound(on)` |
+| `lib/flags.ts`, `lib/components/Flag.svelte` | International Code of Signals A–Z as SVG: `<Flag letter="K" size={22} />` |
 
 ### Signature feature 1: the dithered sky
 
@@ -215,7 +215,7 @@ Scene layers, back to front: grain on the ground; stars with a Milky Way band an
 
 `skyConfig` also rolls the scene, so each build's sky differs: `layout.planet` (the corner the planet rises from), `layout.planetScale`, `layout.globe` (the side the globe sits on), and `scene.grid` (graticule spacing), `scene.loxodromes`, `scene.stars` (density), `scene.meteorEvery`, `scene.band` (the Milky Way's slope and height) and `scene.tilt` (the globe's tilt).
 
-`sky.state` is the contract. `choreo.js` writes it every frame from section positions, and the Preloader writes `intro`:
+`sky.state` is the contract. `choreo.ts` writes it every frame from section positions, and the Preloader writes `intro`:
 
 | key | meaning | written by |
 |---|---|---|
@@ -226,13 +226,13 @@ Scene layers, back to front: grain on the ground; stars with a Milky Way band an
 | `dawn` | ordered-dither dawn bands climb from the bottom | from role `dawn` to landfall |
 | `paper` | the paper front sweeps up and resolves the sky into paper | role `landfall` |
 
-Roles and times come from `chart.js`. Each section element must have the `id` from `chart.js`, and the footer must be `<footer class="foot">`. If an id is missing, the sky reads 0 for that section and misbehaves silently; choreo logs a warning when this happens.
+Roles and times come from `chart.ts`. Each section element must have the `id` from `chart.ts`, and the footer must be `<footer class="foot">`. If an id is missing, the sky reads 0 for that section and misbehaves silently; choreo logs a warning when this happens.
 
 **Guardrails (already in the kit):** DPR is capped at 3, and the buffer is about a quarter of the CSS pixel count. Rendering is skipped while the tab is hidden, while the opaque footer covers the view, or while the context is lost, and a context restore rebuilds the program. There is no `powerPreference`, and the frame delta is clamped to 60ms. Under reduced motion time freezes: scroll still moves the scene, but nothing drifts. Without WebGL2, `.sky.off` shows a CSS gradient limb on the rolled side and the paper fallback. The page must stay complete without the canvas.
 
 ### Signature feature 2: the ship's clock
 
-The whole page reads as one night. `choreo.js` interpolates `ui.clock` (minutes) between section keys. A section's time lands 0.3vh before its top. The log runs its span across its pin. Landfall's time lands as the paper finishes.
+The whole page reads as one night. `choreo.ts` interpolates `ui.clock` (minutes) between section keys. A section's time lands 0.3vh before its top. The log runs its span across its pin. Landfall's time lands as the paper finishes.
 
 - **Nav clock** (centred, or beside the brand when `layout.chrome.navClock` is `left`): `HH:MM` from `fmtTime(ui.clock)`, the watch name from `watchName()`, and eight square pips in four pairs lit by `bellsAt()`. Give it `role="img"` and an `aria-label` such as "Ship's time 21:30, First watch, 3 bells". Starts before 20:00 read "Last dog watch", which is correct.
 - **Section heads** print the same times. The log's head shows its span (`21:00 → 06:00`).
@@ -242,7 +242,7 @@ The whole page reads as one night. `choreo.js` interpolates `ui.clock` (minutes)
 
 - **Preloader:** a fixed `--night` screen holding a 120px compass rose with `layout.preloader.points` points (4, 8 or 16). The points draw from their midpoints (`drawSVG: '50% 50%'` → full, `.9s`, stagger .04), then fill. The ring draws and 32 ticks blink on. The needle swings onto the bearing over 1.8s, while a readout `Taking a bearing 000°` counts to the bearing. Give `svgOrigin` in both halves of the tween, or GSAP moves the needle off centre: `tl.fromTo(needle, { rotation: bearing + 167, svgOrigin: '60 60' }, { rotation: bearing, svgOrigin: '60 60', duration: 1.8, ease: 'elastic.out(1, 0.34)' }, 0.3)`. Loading is real: `Promise.all([document.fonts.ready, two rAFs, a 900ms floor])`. On exit the rose scales to .18 and fades, the curtain lifts in eight hard steps, and scroll unlocks the moment the curtain is up. The exit runs after an `await`, outside any `gsap.context`, so address the preloader's own elements by `bind:this` refs, never by selector strings (a bare `.rose` would also catch the nav's mark):
 
-```js
+```ts
 // .pre { --lift: 0; clip-path: inset(0 0 calc(var(--lift) * 100%) 0); }
 const exit = gsap.timeline({ delay: Math.max(0, 1.55 - intro.time()) });
 exit.to(root, { '--lift': 1, duration: 0.72, ease: 'steps(8)' }, 0.2)
@@ -261,8 +261,8 @@ if (sky) exit.fromTo(sky.state, { intro: 0 }, { intro: 1, duration: 2.2, ease: '
 
 The paper is the sky's own dither, not a CSS fade. Landfall is a `280vh` section (240vh ≤640px) with a sticky `100svh` stage. Inside the stage, `.rose-wrap { position: absolute; inset: 0; overflow: clip; pointer-events: none }` holds the rose, so the mask and the front share the viewport's coordinates. While the section is near (a ScrollTrigger `top bottom` → `bottom top`, `onToggle`), a ticker callback reads the front and inks each block of text at the moment the front passes it. Run the callback once more when `near` turns off, so a jump past the section leaves the final state.
 
-```js
-import { paperFront } from '$lib/motion/choreo.js';
+```ts
+import { paperFront } from '$lib/motion/choreo';
 const tick = () => {
   const sky = skyBus.sky;
   const front = sky ? paperFront(sky.state.paper) : ui.day ? 2 : -1;  // viewport heights from the bottom
@@ -310,7 +310,7 @@ Most state is driven by tweening **CSS custom properties** that styles read: `--
 - `data-r="label"`: mono text decodes through `SCRAMBLE` (`·:+×/\|<>-=_#°`).
 - `data-r="clip"` / `"term"`: a panel is drawn open from its top edge (`inset(0 0 100% 0)` → `inset(0)`, 1.3s, `haul`).
 - `data-delay` adds seconds of delay, used to stagger stats (`i * .1`).
-- Do not hide `[data-r]` in CSS. reveal.js sets every start state itself, so the prerendered HTML stays complete if a script fails. Elements that a component's own intro hides (the hero's `[data-in]`) are hidden only under `:global(.js:not(.rm):not(.no-intro))`.
+- Do not hide `[data-r]` in CSS. reveal.ts sets every start state itself, so the prerendered HTML stays complete if a script fails. Elements that a component's own intro hides (the hero's `[data-in]`) are hidden only under `:global(.js:not(.rm):not(.no-intro))`.
 
 **Motion rules:**
 
@@ -319,7 +319,7 @@ Most state is driven by tweening **CSS custom properties** that styles read: `--
 - **Stepped motion** is for machines: the curtain (`steps(8)`), blinking status dots (`steps(1)`), the grain (`0.9s steps(1)` across six offsets) and terminal carets.
 - Pins are **CSS sticky**: a tall section with a `position: sticky; top: 0; height: 100svh` stage, and a ScrollTrigger from `top top` to `bottom bottom` scrubbing a paused timeline (`scrub: true`, or `.4` for terminals). Never use `pin: true`; it fights Lenis and the choreo measurements. No ancestor may set `overflow: hidden` or `auto`; the body uses `overflow-x: clip`.
 - Duration bands: micro .2–.6s, reveals 1–1.3s, focus pulls 1.7–1.9s, drawings 1.6–2.4s.
-- **Reduced motion** (`html.rm` and `ui.reduced`, both set before first paint and before children mount): no Lenis, no preloader, no letterbox, no grain animation, no scrub, no loops, no blur. reveal.js shows everything at once. Pinned sections become `height: auto` with a static stage; choreo keeps a short dive so the page still opens on the planet, and squeezes the paper sweep into landfall's real height so the page still reaches day. The night log becomes a vertical list, the terminal is fully printed, counters show their final values, and the sky renders frozen in time. The kit's global CSS clamps every remaining animation to `.001ms`.
+- **Reduced motion** (`html.rm` and `ui.reduced`, both set before first paint and before children mount): no Lenis, no preloader, no letterbox, no grain animation, no scrub, no loops, no blur. reveal.ts shows everything at once. Pinned sections become `height: auto` with a static stage; choreo keeps a short dive so the page still opens on the planet, and squeezes the paper sweep into landfall's real height so the page still reaches day. The night log becomes a vertical list, the terminal is fully printed, and the dive subtitle is always visible.
 
 ---
 
@@ -362,7 +362,7 @@ Contact (email or booking) lives in the footer link roll and the landfall action
 
 ## Layout sections (approved roster)
 
-`chart.js` fixes which sections exist, their order, labels, ids, numbers and times (`sections`), and each one's variant (`layout`). Build exactly that. Every section has its `id`, `position: relative; z-index: 1`, and an inner container with the rail clearance. Every section except the hero has a section head and `aria-labelledby` pointing to its h2; the hero is labelled by its h1.
+`chart.ts` fixes which sections exist, their order, labels, ids, numbers and times (`sections`), and each one's variant (`layout`). Build exactly that. Every section has its `id`, `position: relative; z-index: 1`, and an inner container with the rail clearance. Every section except the hero has a section head and `aria-labelledby` pointing to its h2; the hero is labelled by its h1.
 
 - **Hero** (`type: hero`, role `hero`). 205vh with a sticky stage. **Variants:** `copy` (`left`/`right`: the copy column hugs that side, and the planet rises from the opposite corner), `lines` (2 or 3 h1 lines), `helm` (whether the rotating "At the helm" readout appears). It holds the eyebrow (a 6px square dot in `--ok` blinking `2.4s steps(1)` plus a mono status such as `v0.9 — sea trials`); the h1; a lede (max 44ch); the strike line; the command bar (max 540px); the optional helm readout (a serif italic name rotating every 2.6s via ScrambleText while on screen, an `NN/NN` index, `aria-hidden` visuals and an sr-only list); a bottom chrome bar with the maker mark and a small legal chip; and the post-dive log line. Put a radial `--night` scrim behind the copy (an ellipse at 58% 56% centred on the copy, 80% → 52% → transparent).
   When the hero un-pins (≤700px tall), the post-dive log line stops being absolutely positioned and becomes a normal block under the stage.
@@ -375,7 +375,7 @@ Contact (email or booking) lives in the footer link roll and the landfall action
 - **Signals** (`type: signals`): testimonials. **Variants:** `quote` (the quote's side), `quotes` (3–5), `dwell` (seconds per quote). The grid is `4fr` for the h2 and hoists and `7fr` for the quote, in whichever order `quote` gives. The **flag hoists** are the controls. Each hoist is a `button[aria-pressed]` holding the quoter's two initials as signal flags on a 1px halyard. Idle hoists are lowered, dimmed and desaturated (`translateY(14px); opacity: .45; saturate(.35)`), and the active one flies. A 1px signal progress bar fills over the dwell, paused on hover or focus and off screen. The quote is set at `clamp(1.55rem, 2.75vw, 2.7rem)`, weight 440, line-height 1.16, with a hanging opening quote (`text-indent: -.42em`, reset to 0 on the split word masks). Swap words out (`yPercent: -110`, .45s, `power3.in`) and in (`yPercent: 110`, `helm`), and hoist the byline flags with `back.out(1.6)`. Below a hairline, the **crews** sentence names 5–8 customers in serif italic separated by muted commas and "and". Under reduced motion there is no timer and quotes swap instantly.
 - **Charter** (`type: charter`): pricing. **Variants:** `form`, `tiers`, `featured` (the 0-based index of the featured tier; never the first). `columns` places the tiers in ruled columns (one top rule across, a 1px rule between columns, no boxes), stacking at ≤960px. `ledger` places them as ruled rows: name and tag | price | clauses | CTA, stacking each row's cells at ≤960px. Both sit on a dark scrim (`--night` at 74% → 50%), because the dawn bands climb behind them. Each tier has `ART. I/II/III/IV` in mono, the name as an h3, the price in the serif with a mono period (`seat / month`), a tag line, `§1–§4` clauses with dashed separators, and a signature-line CTA. The featured tier is ruled in signal, gets an italic serif note ("most chartered"), and carries the page's one filled button.
 - **Landfall** (`type: landfall`, role `landfall`). Described under Signature feature 4. **Variants:** `rose` (the rose's side), `aside` (whether the serif italic aside appears). It holds the head, the title in two lines (the second in signal, inking to the day accent), the optional aside, a lede, the command bar again in its compact form (switching to paper tokens under `[data-inked]` or `.day`), and one secondary link.
-- **Footer** (end credits), `<footer class="foot" aria-label="Site">`, opaque `--paper`, `z-index: 2`, `min-height: 100svh` (so that at the bottom of the page it fills the view and the sky stops drawing). **Variant:** `layout.footer.columns` (3–5 link columns). It holds a mono head row (the brand mark linking to the top, "End of the watch", a fading ink rule, and the landfall time in `--day-accent`); a `5fr / 7fr` body with the serif italic closing line in `--day-accent` plus one sentence; the link roll (h2 mono labels with an ink hairline, links at weight 440 with an underline that grows from the left); then the **end card**, pushed to the bottom. The end card is a gradient of `--paper` → `--paper-2` → mixes of `--paper-2` with `--day-accent-2` → `--day-accent` → `--ink`, with an overlay grain (`var(--grain)` 180px, opacity .55, masked off at the top seam, `isolation: isolate` on the card). Over it sits the brand's wordmark in `--paper`, `aria-hidden`, weight 560, letter-spacing −.065em, line-height .74, sized with container units (`container-type: inline-size` on its parent). Fit it to the gutters for the rolled sans and your brand's length: start from `font-size: min(32cqw, 60vh)` for seven lowercase letters, then tune the `cqw` value until `scrollWidth <= clientWidth` at both 390px and 1440px. Last is a mono colophon: `© year company` | `coordinates` from `chart.js` (if the brief names a real place, its real coordinates may replace them) | `Drawn in code`. The footer reveals itself like credits: rules draw, the columns come up one by one, and the wordmark rises (2.2s `helm`).
+- **Footer** (end credits), `<footer class="foot" aria-label="Site">`, opaque `--paper`, `z-index: 2`, `min-height: 100svh` (so that at the bottom of the page it fills the view and the sky stops drawing). **Variant:** `layout.footer.columns` (3–5 link columns). It holds a mono head row (the brand mark linking to the top, "End of the watch", a fading ink rule, and the landfall time in `--day-accent`); a `5fr / 7fr` body with the serif italic closing line in `--day-accent` plus one sentence; the link roll (h2 mono labels with an ink hairline, links at weight 440 with an underline that grows from the left); then the **end card**, pushed to the bottom. The end card is a gradient of `--paper` → `--paper-2` → mixes of `--paper-2` with `--day-accent-2` → `--day-accent` → `--ink`, with an overlay grain (`var(--grain)` 180px, opacity .55, masked off at the top seam, `isolation: isolate` on the card). Over it sits the brand's wordmark in `--paper`, `aria-hidden`, weight 560, letter-spacing −.065em, line-height .74, sized with container units (`container-type: inline-size` on its parent). Fit it to the gutters for the rolled sans and your brand's length: start from `font-size: min(32cqw, 60vh)` for seven lowercase letters, then tune the `cqw` value until `scrollWidth <= clientWidth` at both 390px and 1440px. Last is a mono colophon: `© year company` | `coordinates` from `chart.ts` (if the brief names a real place, its real coordinates may replace them) | `Drawn in code`. The footer reveals itself like credits: rules draw, the columns come up one by one, and the wordmark rises (2.2s `helm`).
 
 Global layers in every build: SkyCanvas, Preloader, Cinema, Nav, Rail, the skip link and `<div id="lvh-probe" aria-hidden="true">`.
 
@@ -395,7 +395,7 @@ The output is a **SvelteKit 2 project (Svelte 5 runes)** that prerenders to a st
     "dev": "vite dev --port 5175 --strictPort",
     "build": "vite build",
     "preview": "vite preview --port 4175 --strictPort",
-    "check": "svelte-kit sync && svelte-check"
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json"
   },
   "devDependencies": {
     "@sveltejs/adapter-static": "^3.0.10",
@@ -422,8 +422,13 @@ The roll adds the three Fontsource packages. Add `name` and `description` per bu
 // svelte.config.js
 import adapter from '@sveltejs/adapter-static';
 export default { kit: { adapter: adapter({ pages: 'build', assets: 'build', strict: true }), paths: { relative: true } } };
+```
 
-// vite.config.js
+Keep `svelte.config.js` in JavaScript: it follows SvelteKit's framework config convention. `roll.mjs` is the other exception, a directly executable Node CLI. Application modules, authored `content.ts`, route modules and Vite config use TypeScript; every Svelte component script uses `lang="ts"`.
+
+```ts
+
+// vite.config.ts
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 export default defineConfig({
@@ -432,17 +437,17 @@ export default defineConfig({
   build: { target: 'es2022', chunkSizeWarningLimit: 700 }
 });
 
-// src/routes/+layout.js
+// src/routes/+layout.ts
 export const prerender = true;
 ```
 
-`jsconfig.json`: `{ "extends": "./.svelte-kit/tsconfig.json", "compilerOptions": { "allowJs": true, "checkJs": false, "moduleResolution": "bundler", "skipLibCheck": true, "strict": false } }`. `.gitignore`: `node_modules/ build/ .svelte-kit/ .DS_Store *.log`.
+`tsconfig.json`: `{ "extends": "./.svelte-kit/tsconfig.json", "compilerOptions": { "allowJs": true, "checkJs": false, "allowImportingTsExtensions": true, "moduleResolution": "bundler", "skipLibCheck": true, "strict": true, "noEmit": true } }`. `allowJs` permits the framework config exception; app code stays TypeScript. Import the rune store as `$lib/state.svelte.ts` explicitly so it cannot resolve as a Svelte component. `.gitignore`: `node_modules/ build/ .svelte-kit/ .DS_Store *.log`.
 
 **Project manifest:**
 
 ```
 project/
-├── package.json, svelte.config.js, vite.config.js, jsconfig.json, .gitignore — as above
+├── package.json, svelte.config.js, vite.config.ts, tsconfig.json, .gitignore — as above
 ├── rhumb.chart.json                — ROLL
 ├── README.md                       — author: what it is, how to run, the seed and the chart's choices
 ├── static/favicon.svg              — ROLL
@@ -450,23 +455,23 @@ project/
 └── src/
     ├── app.html, app.css           — KIT (the roll patches app.html's theme-color)
     ├── tokens.css                  — ROLL
-    ├── routes/+layout.js           — as above
+    ├── routes/+layout.ts           — as above
     ├── routes/+layout.svelte       — ROLL
     ├── routes/+page.svelte         — author from the bootstrap below
     └── lib/
-        ├── chart.js, sky.config.js                      — ROLL
-        ├── content.js              — author: site, hero, and the copy for each section in chart.js
-        ├── state.svelte.js, time.js, flags.js, gl/…, motion/…, audio/bell.js — KIT
+        ├── chart.ts, sky.config.ts — ROLL
+        ├── content.ts              — author: site, hero, and the copy for each section in chart.ts
+        ├── state.svelte.ts, time.ts, flags.ts, gl/…, motion/…, audio/bell.ts — KIT
         └── components/
             ├── SkyCanvas.svelte, Cinema.svelte, Flag.svelte — KIT
             ├── Preloader, Nav, Rail, Mark, Icon, Footer     — author
-            └── one component per entry in chart.js          — author
+            └── one component per entry in chart.ts          — author
 ```
 
 **Page bootstrap (`src/routes/+page.svelte`):**
 
 ```svelte
-<script>
+<script lang="ts">
   import { onMount } from 'svelte';
   import SkyCanvas from '$lib/components/SkyCanvas.svelte';
   import Preloader from '$lib/components/Preloader.svelte';
@@ -474,15 +479,15 @@ project/
   import Nav from '$lib/components/Nav.svelte';
   import Rail from '$lib/components/Rail.svelte';
   import Footer from '$lib/components/Footer.svelte';
-  // import one component per section type in chart.js
-  import { sections } from '$lib/chart.js';
-  import { site, hero } from '$lib/content.js';
-  import { skyConfig } from '$lib/sky.config.js';
-  import { ui } from '$lib/state.svelte.js';
-  import { gsap, ScrollTrigger } from '$lib/motion/gsap.js';
-  import { startScroll, stopScroll, scrollTo } from '$lib/motion/scroll.js';
-  import { createChoreo } from '$lib/motion/choreo.js';
-  import { revealOnFocus } from '$lib/motion/focus.js';
+  // import one component per section type in chart.ts
+  import { sections } from '$lib/chart';
+  import { site, hero } from '$lib/content';
+  import { skyConfig } from '$lib/sky.config';
+  import { ui } from '$lib/state.svelte.ts';
+  import { gsap, ScrollTrigger } from '$lib/motion/gsap';
+  import { startScroll, stopScroll, scrollTo } from '$lib/motion/scroll';
+  import { createChoreo } from '$lib/motion/choreo';
+  import { revealOnFocus } from '$lib/motion/focus';
 
   // Decided before any child mounts, so every section reads the same answer.
   if (typeof window !== 'undefined') ui.reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -493,7 +498,7 @@ project/
     const choreo = createChoreo();
     const tick = () => choreo.update();
     gsap.ticker.add(tick);
-    let t;
+    let t: ReturnType<typeof setTimeout> | undefined;
     const refresh = () => { clearTimeout(t); t = setTimeout(() => ScrollTrigger.refresh(), 60); };
     document.fonts?.ready.then(refresh);
     document.fonts?.addEventListener?.('loadingdone', refresh);
@@ -530,22 +535,22 @@ project/
 
 **Component conventions:**
 
-- Each section component receives its entry from `chart.js` as a prop and reads its variant straight from the module: `import { layout } from '$lib/chart.js'; const v = layout.night;`. Module constants are not reactive, so this avoids Svelte's `state_referenced_locally` warning; if you derive anything from a prop, use `$derived`. Never re-decide a variant.
+- Each section component uses `<script lang="ts">` and receives its entry from `chart.ts` as a typed prop: `import type { ChartSection } from '$lib/motion/choreo'; interface Props { section: ChartSection } let { section }: Props = $props();`. Read its variant straight from the module: `import { layout } from '$lib/chart'; const v = layout.night;`. Module constants are not reactive, so this avoids Svelte's `state_referenced_locally` warning; if you derive anything from a prop, use `$derived`. Never re-decide a variant.
 - Write all GSAP inside `onMount` → `const ctx = gsap.context(() => { … }, root)`, and clean up with `ctx.revert()`. Desktop and mobile branches go through `gsap.matchMedia()` with conditions that mirror the CSS breakpoints exactly (for example `(min-width: 861px) and (prefers-reduced-motion: no-preference)` for the night track).
 - Pinned sections need `.rm`-scoped CSS that sets `height: auto` and a non-sticky stage, plus their mobile rules.
 - **A pinned stage must fit the screen.** A sticky stage taller than the viewport clips its lower part with no way to scroll it into view, which on a short screen (a phone with its browser bars up, a phone on its side, a 1366×660 laptop window) hides the install box, the terminal steps or the night log's cards. Never give a stage a `min-height` larger than the viewport (no `min-height: 640px` on a `100svh` stage). Give each pin a height floor below which it stops pinning: the hero un-sticks below 700px tall (`position: relative; height: auto; min-height: 100svh`, so the copy scrolls), the hand-off pins from 660px tall and the night from 640px tall. The GSAP `matchMedia` condition and the CSS must use the same threshold, and the unpinned branch must play its animation on entry (the hand-off's mobile timeline) rather than on scrub. Between the floor and about 820px tall, compact the stage instead (hide the lede, tighten margins and padding). Size display type by height as well as width where it shares a stage with controls (`clamp(2.6rem, min(8.2vw, 12.5vh), 8.4rem)` on landfall's title for `max-height: 760px`), and hide the lede at `max-height: 520px`.
 - `bind:this` targets that sit inside `{#if}` or `{#each}` are declared with `$state()` (the Preloader's `root`, rose and needle, for one), or `npm run check` warns. Read prop-derived arrays such as `span` straight from the module (`sections.find((s) => s.role === 'log').span`), not by destructuring a prop. Call `reveal(root)` only where the component contains `[data-r]`.
 - Anything driven per frame goes on `gsap.ticker`, never a separate `requestAnimationFrame`. Read layout once per frame and write after. Skip work when nothing changed (cache the last string or number).
 - **Breakpoints:** 860px is the *phone* breakpoint (nav menu, no blur, no grain, night log and Bearing stack). The rail hides below 1024px. Sections have their own *layout* breakpoints: Hand-off and the landfall rose at 900px, Charter at 960px, the Instruments grid at 1100 and 620px. The kit kills `backdrop-filter` and the grain on ≤860px and on coarse pointers, so every panel must read on a dark ground without blur.
-- Copy lives in `content.js`. The nav, rail and menu read `sections` from `chart.js`. Components never hard-code brand strings.
+- Copy lives in `content.ts`. The nav, rail and menu read `sections` from `chart.ts`. Components never hard-code brand strings.
 
 **Construction method:**
 
 1. Scaffold the folder by hand (do not run `sv create`). Write `package.json`, the config files and `.gitignore`.
 2. Copy `kit/` into `src/` byte for byte.
 3. Run `node <skill>/roll.mjs --out <project>`. Read `rhumb.chart.json` and report the seed, signal, day ink, fonts, bearing, clock, line-up and every layout variant.
-4. Write `content.js`: `site`, `hero`, then the copy for each section in the chart, in voice, with times and bearing that match the chart.
-5. Write the global components (Mark, Icon, Preloader, Nav, Rail, Footer), then one component per section in `chart.js`, honouring each variant, then `+page.svelte`.
+4. Write `content.ts`: `site`, `hero`, then the copy for each section in the chart, in voice, with times and bearing that match the chart.
+5. Write the global components (Mark, Icon, Preloader, Nav, Rail, Footer), then one component per section in `chart.ts`, honouring each variant, then `+page.svelte`; use `<script lang="ts">` throughout.
 6. Run `npm install`, then `npm run build`. It must finish with no errors and **no warnings** (an unused-selector warning means a `:global()` is missing) and write `build/index.html`. Run `npm run check` and fix every error.
 7. Run `npm run dev` and walk the night at 1440×900: the preloader lifts and scroll is free once the curtain is up, the planet boots on its rolled side, the dive closes and opens the bars, each pin scrubs, the clock advances and the rail follows, the log strikes bells (when on), the dawn climbs, the text inks, the rose prints, the footer wordmark fits, and the footer covers the sky (`skyBus.sky.covered` is true at the bottom). Reload mid-page: it must start at the top. Repeat at 390×844 with touch emulation: native touch scrolling must work, `innerWidth` must stay 390 and `document.documentElement.scrollWidth` must equal it. Repeat with reduced motion on: no dead scroll, the page opens on the planet, and landfall still reaches paper and inks the text.
 8. Repeat the walk at short sizes: 932×430 (a phone on its side), 375×553 (a small phone with its bars up) and 1366×660 (a laptop window). Every pinned stage must fit its viewport or have stopped pinning, the hero's install box and the landfall install line must be reachable by scrolling, and the night log's lowest card must not be cut by the bottom edge. Check that `document.documentElement.style.overflow` is empty once the preloader is gone and after closing the menu. Measure it, don't eyeball it: at mid-pin, every sticky stage must satisfy `stage.scrollHeight <= stage.clientHeight`, and every control inside it must have `getBoundingClientRect().bottom <= innerHeight`.

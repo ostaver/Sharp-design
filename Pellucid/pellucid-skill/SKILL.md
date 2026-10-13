@@ -1,6 +1,6 @@
 ---
 title: design-pellucid-optical-objects
-description: A light, optical, chromatic design language for object makers, material brands, and studios whose product is how something looks through, around, or inside it. Builds a small static site (HTML/CSS/JS folder) around a live WebGL liquid-glass raymarcher (bundled in kit/glass.js) that refracts the page's own typography, driven by GSAP ScrollTrigger, SplitText, and Lenis.
+description: A light, optical, chromatic design language for object makers, material brands, and studios whose product is how something looks through, around, or inside it. Builds a vanilla TypeScript site with Vite around a live WebGL liquid-glass raymarcher (bundled in kit/glass.ts), driven by GSAP ScrollTrigger, SplitText, and Lenis.
 ---
 
 # Pellucid
@@ -17,7 +17,7 @@ Never:
 
 - **Reproduce the reference copy.** The brand name "Pellucid", the hero words (PELLUCID / REFRACT / DISPERSE / RESOLVE), edition names (Halo, Orbis, Chiasm, Glint, Meridian), the section headings ("Five editions, cast this season.", "Tune the glass. Watch the world bend.", "Sand to signal in four stages.", "Measured, not described.", "Let light in."), the Bench default text ("Hold it to the light"), Rotterdam addresses, specs and taglines all belong to the reference build. Invent all copy from the user's brief.
 - **Reproduce the reference layout.** Reorder sections, vary the count, vary hero shape order and phase count. Never repeat a section type.
-- **Rewrite the glass renderer.** It ships as `kit/glass.js` in this skill and is copied byte for byte, never rewritten. Custom raymarch maths is the main source of broken builds.
+- **Rewrite the glass renderer.** It ships as `kit/glass.ts` in this skill and is copied byte for byte, never rewritten. Custom raymarch maths is the main source of broken builds.
 
 ---
 
@@ -25,16 +25,16 @@ Never:
 
 Each of these broke a real Pellucid build. A build that violates any of them is broken no matter how it looks. Treat this list as the delivery gate.
 
-1. **`js/glass.js` is a byte-for-byte copy of `kit/glass.js`.** Do not "simplify" the shader or retype it from memory. If you ever add a 2D star/flank SDF elsewhere, the carving circles must pass through the tips without crossing the arms: for tips at (1,0) and (0,1) the circle centre (c,c) needs c ≥ 1. A smaller c severs the arms, leaving a half-size object with floating needle specks.
+1. **`src/glass.ts` is a byte-for-byte copy of `kit/glass.ts`.** Vite compiles this TypeScript source to browser JavaScript; never rename TS to JS or load raw TS as a classic script. Do not "simplify" the shader or retype it from memory. If you ever add a 2D star/flank SDF elsewhere, the carving circles must pass through the tips without crossing the arms: for tips at (1,0) and (0,1) the circle centre (c,c) needs c ≥ 1. A smaller c severs the arms, leaving a half-size object with floating needle specks.
 2. **No `atan()` in any procedural colour term** on a plate or caustic. Its ±π wrap draws a hard seam. Use `e.x / (length(e) + 1e-4)` or similar continuous terms.
 3. **Plates are painted only after fonts load.** Await `document.fonts.load()` for every exact weight/stretch the canvases use (e.g. `'condensed 700 100px "Family"'`), raced against a 2.5 s timeout. Canvas otherwise measures the fallback font and mis-sizes every word.
 4. **Plates match their canvas.** Resize and repaint a plate inside the renderer's `onResize(cssW, cssH)` so its aspect equals the canvas aspect. Repaint on change only, behind a dirty check, then call `glass.markPlate()`. Never re-upload unconditionally every frame.
 5. **Plate words never collide with live DOM text.** When a section has both, compute the word block's centre and height from DOM measurements: from the bottom of an inner element (e.g. the eyebrow) to the top of the copy block, not from a padded wrapper and never from fixed fractions. Derive the glass `offsetY`/`size` from the same numbers. On phones, reserve the gap with padding (`34svh`) and measure from inside it.
-6. **The intro veil can never trap the page.** It displays only under `.js`. It carries a CSS failsafe (`animation: veil-failsafe .6s 8s forwards` → `opacity:0; visibility:hidden`) and is removed immediately when GSAP is missing or `prefers-reduced-motion` is set.
+6. **The intro veil can never trap the page.** It displays only under `.js`. It carries a CSS failsafe (`animation: veil-failsafe .6s 8s forwards` → `opacity:0; visibility:hidden`), so a module-loading failure cannot trap the page, and is removed immediately when `prefers-reduced-motion` is set.
 7. **Phones can always scroll.** Hero and closing canvases use `touch-action: pan-y` and ignore touch drags. Only the Bench canvas takes `touch-action: none` + `touchDrag: true`.
 8. **WebGL failure degrades to the plate.** If `glass.ok` is false, add `.no-webgl` and mount the plate canvas itself as a static image. Pass the same fallback as `onLost` so a lost context (the renderer stops itself on `webglcontextlost`) ends in the plate too, never a blank canvas. The page must still read.
-9. **GPU budget.** Keep at most 3 live `Glass` instances plus 1 transient snapshot context. Leave `autoPause` on (IntersectionObserver + `visibilitychange`). Cap DPR at 1.5 for canvases and 1.25 for full-screen plates.
-10. **Snapshots render under the veil.** Gallery stills (`Glass.snapshot`) are generated while the intro veil covers the page, never after the reveal (they block for a moment).
+9. **GPU budget.** Keep at most 3 live `PellucidGlass` instances plus 1 transient snapshot context. Leave `autoPause` on (IntersectionObserver + `visibilitychange`). Cap DPR at 1.5 for canvases and 1.25 for full-screen plates.
+10. **Snapshots render under the veil.** Gallery stills (`PellucidGlass.snapshot`) are generated while the intro veil covers the page, never after the reveal (they block for a moment).
 11. **Essential copy lives in normal flow.** Headings, lede, specs, contact and alt text exist in the DOM with no JS. A canvas-drawn word always has an `sr-only` DOM twin (e.g. the hero `<h1>`).
 12. **Verify at 1440×900 and 390×844** with no horizontal overflow (`documentElement.scrollWidth === innerWidth`). Also verify with `prefers-reduced-motion: reduce`.
 
@@ -139,28 +139,37 @@ Rules: no third family. Animate the width axis (`font-stretch`) as a signature, 
 
 Motion is optical and continuous: things *bend*, *roll*, *resolve*. The scroll drives the light.
 
-**Stack (pinned, verified live):**
+**Stack: npm modules with their real bundled types.** Install `gsap@3.15.0` and `lenis@1.3.26`; do not introduce ambient CDN globals. In `index.html`, load the Vite entry:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/gsap.min.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/ScrollTrigger.min.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/SplitText.min.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/CustomEase.min.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js" defer></script>
-<script src="js/glass.js" defer></script>
-<script src="js/main.js" defer></script>
+<script type="module" src="/src/main.ts"></script>
+```
+
+At the top of `src/main.ts`:
+
+```ts
+import "./style.css";
+import "lenis/dist/lenis.css";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { SplitText } from "gsap/SplitText";
+import { CustomEase } from "gsap/CustomEase";
+import Lenis from "lenis";
+import { PellucidGlass } from "./glass";
+import type { GlassParams, GlassShape, SnapshotJob } from "./glass";
+
+gsap.registerPlugin(ScrollTrigger, SplitText, CustomEase);
 ```
 
 Easing: `CustomEase.create("lens", "0.76,0,0.24,1")` for morphs and veils, `expo.out` for reveals, `power3` for quickTo. `back.out` is allowed only on the focal point pop. No elastic.
 
 ### Signature 1: the glass renderer (prescriptive)
 
-`window.PellucidGlass`: a two-pass WebGL renderer. Pass 1 draws the *plate* (a 2D canvas you paint) plus a soft shadow and spectral caustic. Pass 2 raymarches a glass SDF that refracts the plate with RGB dispersion, frost, fresnel reflection of a softbox studio, and thin-film iridescence.
+`PellucidGlass` is a named module export: a two-pass WebGL renderer. Pass 1 draws the *plate* (a 2D canvas you paint) plus a soft shadow and spectral caustic. Pass 2 raymarches a glass SDF that refracts the plate with RGB dispersion, frost, fresnel reflection of a softbox studio, and thin-film iridescence. It does not install a browser global.
 
-```js
+```ts
 const g = new PellucidGlass(canvas, {
-  plate: plateCanvas,          // 2D canvas the glass refracts (required for content)
+  plate: plate.c,              // Plate toolkit's 2D canvas (required for content)
   dprCap: 1.5,
   params: { shapeA: "torus", shapeB: "torus", morph: 0, size: 56, depth: 44, speed: 40,
             tint: [1,1,1], chromatic: 28, frost: 0, iri: .22, caustic: 1,
@@ -170,10 +179,10 @@ const g = new PellucidGlass(canvas, {
   dragTarget: canvas, interactive: true, autoPause: true,
 });
 g.ok            // false → WebGL unavailable, mount the plate instead
-g.set({...})    // write params (GSAP can tween g.p directly)
+g.set({ chromatic: 40 }) // write params (GSAP can tween g.p directly)
 g.markPlate()   // after repainting the plate
 g.yawDeg        // live readout
-PellucidGlass.snapshot([{ plate, params, yaw, pitch }], w, h) // → JPEG dataURLs
+PellucidGlass.snapshot([{ plate: plate.c, params: { shapeA: "torus" }, yaw: 0, pitch: 0 }], 960, 720) // → JPEG dataURLs
 ```
 
 - Shapes: `"torus" | "sphere" | "cross" | "glint"`. Morph by setting `shapeA`, `shapeB`, and tweening `morph` 0→1. All shapes are normalised to half-extent 1, so morphs never pop in size.
@@ -181,31 +190,40 @@ PellucidGlass.snapshot([{ plate, params, yaw, pitch }], w, h) // → JPEG dataUR
 - `offsetX/Y` are % of the half-frame. For plate point (px, py): `offsetY = (1 − 2·py/h)·100`.
 - `chromatic` 20–60 normal, 90–160 for a "dispersion" moment. `frost` 0–10 on type plates (legibility), up to 60 on the Bench. `iri` 0.15–0.55.
 
-**The file ships with this skill as `kit/glass.js`. Copy it byte for byte to `js/glass.js`; never edit it.** If `kit/glass.js` is missing, stop and ask for the whole `pellucid-skill/` folder. Do not rewrite the renderer from memory.
+**The file ships with this skill as `kit/glass.ts`. Copy it byte for byte to `src/glass.ts`; never edit it.** If `kit/glass.ts` is missing, stop and ask for the whole `pellucid-skill/` folder. Do not rewrite the renderer from memory.
 
 ### Signature 2: plates toolkit (prescriptive)
 
-Put this at the top of `js/main.js`, inside the IIFE, and paint every plate with it:
+Put this toolkit verbatim in `src/main.ts` after the imports; no IIFE is needed for a module. It is TypeScript source, not a standalone browser script:
 
-```js
+```ts
 const DISPLAY = '"Bricolage Grotesque", "Arial Narrow", sans-serif'; // match chosen display
 const BODY = '"Geist", system-ui, sans-serif';
-const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
-const lerp = (a, b, t) => a + (b - a) * t;
-const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+const clamp = (v: number, a: number, b: number): number => Math.min(b, Math.max(a, v));
+const lerp = (a: number, b: number, t: number): number => a + (b - a) * t;
+const smooth = (a: number, b: number, x: number): number => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
 
 class Plate {
-  constructor(maxDpr) { this.c = document.createElement("canvas"); this.x = this.c.getContext("2d"); this.maxDpr = maxDpr || 1.5; this.w = this.h = 2; this.d = 1; }
-  size(w, h) { this.d = Math.min(devicePixelRatio || 1, this.maxDpr); this.w = Math.max(2, w); this.h = Math.max(2, h);
+  readonly c = document.createElement("canvas");
+  readonly x: CanvasRenderingContext2D;
+  readonly maxDpr: number;
+  w = 2; h = 2; d = 1;
+  constructor(maxDpr = 1.5) {
+    const context = this.c.getContext("2d");
+    if (!context) throw new Error("Pellucid plates require a 2D canvas context");
+    this.x = context; this.maxDpr = maxDpr;
+  }
+  size(w: number, h: number): void { this.d = Math.min(devicePixelRatio || 1, this.maxDpr); this.w = Math.max(2, w); this.h = Math.max(2, h);
     this.c.width = Math.round(this.w * this.d); this.c.height = Math.round(this.h * this.d); }
-  begin() { const x = this.x; x.setTransform(this.d, 0, 0, this.d, 0, 0); x.globalAlpha = 1; x.textAlign = "left"; x.textBaseline = "alphabetic"; return x; }
+  begin(): CanvasRenderingContext2D { const x = this.x; x.setTransform(this.d, 0, 0, this.d, 0, 0); x.globalAlpha = 1; x.textAlign = "left"; x.textBaseline = "alphabetic"; return x; }
 }
-function aurora(x, w, h, base, blobs) {          // blobs: [{x,y,r,c:"rgba(…,a)"}] in 0–1 units
+interface AuroraBlob { x: number; y: number; r: number; c: string }
+function aurora(x: CanvasRenderingContext2D, w: number, h: number, base: string, blobs: readonly AuroraBlob[]): void {
   x.fillStyle = base; x.fillRect(0, 0, w, h); const m = Math.max(w, h);
   for (const b of blobs) { const g = x.createRadialGradient(b.x * w, b.y * h, 0, b.x * w, b.y * h, b.r * m);
     g.addColorStop(0, b.c); g.addColorStop(1, b.c.replace(/[\d.]+\)$/, "0)")); x.fillStyle = g; x.fillRect(0, 0, w, h); }
 }
-function grid(x, w, h, step, line, mark) {       // hairline grid centred on the plate + "+" marks every 4 cells
+function grid(x: CanvasRenderingContext2D, w: number, h: number, step: number, line: string, mark?: string): void {
   x.save(); x.lineWidth = 1; x.strokeStyle = line; x.beginPath();
   const ox = (w / 2) % step, oy = (h / 2) % step;
   for (let gx = ox; gx < w; gx += step) { x.moveTo(Math.round(gx) + .5, 0); x.lineTo(Math.round(gx) + .5, h); }
@@ -217,18 +235,18 @@ function grid(x, w, h, step, line, mark) {       // hairline grid centred on the
     x.stroke(); }
   x.restore();
 }
-function font(x, size, weight, stretch, family, tracking) {
+function font(x: CanvasRenderingContext2D, size: number, weight = 700, stretch: CanvasFontStretch = "normal", family = DISPLAY, tracking = 0): void {
   x.font = `${weight || 700} ${size}px ${family || DISPLAY}`;
   if ("fontStretch" in x) x.fontStretch = stretch || "normal";
   if ("letterSpacing" in x) x.letterSpacing = `${(tracking || 0) * size}px`;
 }
-function fitSize(x, text, maxW, maxH, weight, stretch, tracking) {
+function fitSize(x: CanvasRenderingContext2D, text: string, maxW: number, maxH: number, weight = 700, stretch: CanvasFontStretch = "normal", tracking = 0): number {
   font(x, 100, weight, stretch, DISPLAY, tracking); const m = x.measureText(text);
   const cap = m.actualBoundingBoxAscent + m.actualBoundingBoxDescent || 72;
   return Math.min(100 * maxW / Math.max(m.width, 1), 100 * maxH / cap);
 }
-function centerBaseline(x, text, cy) { const m = x.measureText(text); return cy + (m.actualBoundingBoxAscent - m.actualBoundingBoxDescent) / 2; }
-function wrapFit(x, text, maxW, maxH, weight, stretch) {      // largest size whose word-wrap fits the box
+function centerBaseline(x: CanvasRenderingContext2D, text: string, cy: number): number { const m = x.measureText(text); return cy + (m.actualBoundingBoxAscent - m.actualBoundingBoxDescent) / 2; }
+function wrapFit(x: CanvasRenderingContext2D, text: string, maxW: number, maxH: number, weight = 700, stretch: CanvasFontStretch = "normal"): { size: number; lines: string[]; lh: number } {
   const words = text.trim().split(/\s+/).filter(Boolean); if (!words.length) return { size: 0, lines: [], lh: 0 };
   for (let size = Math.floor(maxH); size > 12; size = Math.floor(size * .93)) {
     font(x, size, weight, stretch, DISPLAY, -.02); const lines = []; let line = "";
@@ -246,12 +264,12 @@ Plate content vocabulary: aurora ground → hairline grid (`rgba(ink,.055)`, mar
 
 State `{ t: 0→(phases−1), intro: 0→1, pop: 0→1 }`. The scroll scrubs `t`; the ticker maps it to the glass and repaints the plate only when `t` or `intro` changed.
 
-```js
+```ts
 const WORDS = [/* 3–4 uppercase verbs/nouns from the brief */], SHAPES = [/* e.g. "torus","sphere","cross","glint" in any order */];
 const LOOK = [/* per phase: { offsetX, offsetY, size, tint:[r,g,b], chromatic, frost, iri, depth } */];
 const last = WORDS.length - 1;
 // odometer: words roll only in the middle of each segment
-const rollIndex = (t) => { const i = Math.min(Math.floor(t), last - 1); return i + smooth(.36, .64, t - i); };
+const rollIndex = (t: number): number => { const i = Math.min(Math.floor(t), last - 1); return i + smooth(.36, .64, t - i); };
 function update() {
   const t = clamp(state.t, 0, last), i = Math.min(Math.floor(t), last - 1), m = smooth(.2, .8, t - i);
   const A = LOOK[i], B = LOOK[i + 1], fitScale = Math.min(1, innerWidth / innerHeight * 1.15), sway = innerWidth < 720 ? .35 : 1;
@@ -271,7 +289,7 @@ function update() {
 
 Two porcelain halves (with the grid, meeting at the seam) cover the page. Three 2px lines (R `#FF3B6B`, G `#19D9A0`, B `#3B6BFF`, `mix-blend-mode: multiply`) sit on the seam, plus a label counting a real optical value (e.g. `n = 1.000 → 1.517`).
 
-```js
+```ts
 gsap.timeline()
   .fromTo(".veil__line", { scaleX: 0 }, { scaleX: 1, duration: 1.15, stagger: .07, ease: "expo.inOut" })
   .to(".veil__label", { autoAlpha: 1, duration: .6 }, .35)
@@ -299,8 +317,8 @@ Every card image is a `PellucidGlass.snapshot` still (720×900): a per-object pl
 
 A live instance (`touchDrag: true`, `touch-action: none`) in a 28px-radius rig with frosted corner tags (`Live · WebGL`, current form, `Drag to turn`, `θ` readout), next to an instrument panel. The panel has a segmented Form radio set (4 shapes), a segmented Backdrop set (Type / Stripes / Halftone), a text input refracted live (`wrapFit` into 86% × 62% of the plate), ranges (Dispersion 0–160, Frost 0–100, Thickness 12–70, Scale 30–85, Spin 0–200), 6 tint swatches, and Randomise / Reset buttons.
 
-```js
-function morphTo(g, shape) {                     // shape change = SDF morph, never a swap
+```ts
+function morphTo(g: PellucidGlass, shape: GlassShape): void { // shape change = SDF morph, never a swap
   const p = g.p; if (p.morph > .5) p.shapeA = p.shapeB;
   if (p.shapeA === shape) { p.shapeB = shape; p.morph = 0; return; }
   p.shapeB = shape; p.morph = 0;
@@ -361,21 +379,30 @@ Use 6–9, in any order after the hero. The veil, hero stage, and night closing 
 
 ## Architecture & performance
 
-Output shape: a **hand-rolled static folder**. No framework, no bundler, no npm. Classic `defer` scripts only (no ES modules), so it also opens from `file://`.
+Output shape: a **Vite vanilla TypeScript project**, with no UI framework. Author `.ts` modules, then deploy the built `dist/` folder over HTTP(S); opening source or build output through `file://` is not supported.
 
 ```
 project/
-├── index.html      — author per build (semantic markup, head, SVG <symbol>s, sections)
-├── css/style.css   — author per build from the tokens and patterns above
-├── js/glass.js     — copy byte-for-byte from kit/glass.js (never rewrite)
-└── js/main.js      — plates toolkit VERBATIM + choreography authored per build
+├── index.html      — semantic markup and /src/main.ts module entry
+├── package.json    — dependencies and dev/build/preview scripts
+├── package-lock.json — lock resolved dependencies
+├── tsconfig.json   — strict TypeScript, DOM libraries, noEmit
+└── src/
+    ├── style.css   — tokens and patterns above
+    ├── glass.ts    — byte-for-byte kit/glass.ts copy
+    └── main.ts     — verbatim typed plates toolkit + authored choreography
 ```
+
+Start with `npm create vite@latest project -- --template vanilla-ts`, then `npm install` and `npm install --save-exact gsap@3.15.0 lenis@1.3.26`. Use Node.js 20.19+ or 22.12+ supported by Vite. Remove starter demo assets/code. Keep `"strict": true`, `"noEmit": true`, `"moduleResolution": "bundler"` and DOM/ES libraries in `tsconfig.json`; keep the build script `tsc && vite build`. This ensures a real type-check, not merely Vite's transpilation.
+
+**TS-first authoring:** use the renderer's exported `GlassParams`, `GlassShape`, and `SnapshotJob` for phase data, shape lists, and still jobs. Annotate parameter-bearing helpers; narrow queried DOM elements using `instanceof` or typed selectors with null checks before use. Use actual package types, never `any`, fake ambient declarations, or inline object casts. Remaining motion snippets below are choreography sketches, not complete modules; implement them with typed state and real DOM references in `src/main.ts`. Keep code behavior and shader maths unchanged.
+
 Build order:
 
 1. Pick the brand, copy, section roster, fonts (verify 200), ground hue, aurora palette, hero words, shapes and looks.
-2. Copy `kit/glass.js` byte-for-byte to `js/glass.js`. Never rewrite or modify it.
-3. Write `index.html`, then `css/style.css`. The base CSS must show everything (hidden states come from JS).
-4. Write `js/main.js` in this order:
+2. Copy `kit/glass.ts` byte-for-byte to `src/glass.ts`. Never rewrite or modify it.
+3. Write `index.html`, then `src/style.css`. The base CSS must show everything (hidden states come from module code).
+4. Write `src/main.ts` in this order:
    1. Helpers and the plates toolkit.
    2. Hero.
    3. Gallery data and snapshots.
@@ -391,21 +418,21 @@ Build order:
    13. `boot()`.
 5. `boot()`:
 
-   ```js
+   ```ts
    await fontsReady()    // invariant 3
-   registerPlugin(ScrollTrigger, SplitText, CustomEase); CustomEase.create("lens", …); ScrollTrigger.config({ ignoreMobileResize: true })
+   CustomEase.create("lens", "0.76,0,0.24,1"); ScrollTrigger.config({ ignoreMobileResize: true })
    smoothScroll(); const heroTick = hero(); const benchTick = bench(); closing(); clock(); anchors()
-   if (gsap) { heroScroll(); textMotion(); gallery(); figure(); specs(); navState(); magnetic() }
-   gsap.ticker.add(() => { heroTick(now); benchTick?.(now) })   // rAF loop if GSAP is missing
+   heroScroll(); textMotion(); gallery(); figure(); specs(); navState(); magnetic()
+   gsap.ticker.add(() => { const now = performance.now(); heroTick(now); benchTick?.(now) })
    intro(); ScrollTrigger.refresh()
    ```
 
-   Guard every GSAP call. If GSAP failed to load, add `.no-gsap`, keep the glass running, and show all steps and phases.
-6. Serve and check: `python -m http.server 5173` (or `npx serve`). Walk every invariant at 1440×900, at 390×844, and with reduced motion. The console must be clean.
+   npm imports make GSAP available at module startup; do not test nonexistent CDN globals. Keep reduced-motion and no-WebGL fallbacks: show all steps/phases and remove the veil immediately when reduced motion is requested.
+6. Review: run `npm run build` (strict TypeScript followed by Vite), then `npm run preview -- --host 127.0.0.1 --port 5173`. Walk every invariant at 1440×900, at 390×844, and with reduced motion. Check intro completion, hero morph/dispersion, snapshot gallery, Bench controls/drag, closing, touch scrolling, WebGL-disabled/lost-context plate fallback, and a clean console. Use `npm run dev` for authoring; deploy only `dist/` to a static HTTP(S) host.
 
-**Integrity:** only `fonts.googleapis.com`, `cdnjs.cloudflare.com`, and `cdn.jsdelivr.net`, with pinned versions. No analytics, trackers, or external images.
+**Integrity:** runtime external requests only to Google Fonts (`fonts.googleapis.com` / `fonts.gstatic.com`). GSAP and Lenis are pinned npm dependencies bundled locally; commit the lockfile. No analytics, trackers, or external images.
 
-**Budget:** under 90KB of own code (excluding CDNs). The hero plate is at most 1.25 DPR and every canvas at most 1.5 DPR.
+**Budget:** under 90KB of own authored code (excluding bundled dependencies). The hero plate is at most 1.25 DPR and every canvas at most 1.5 DPR.
 
 ---
 

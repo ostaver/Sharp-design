@@ -1,14 +1,20 @@
 // A ship's bell and a little sea, synthesised with Web Audio. Silent until the visitor
 // switches sound on (that click is also the gesture browsers require).
 
-let ctx = null;
-let master = null;
-let enabled = false;
-let sea = null;
+interface AudioWindow {
+	AudioContext?: typeof AudioContext;
+	webkitAudioContext?: typeof AudioContext;
+}
 
-function boot() {
+let ctx: AudioContext | null = null;
+let master: GainNode | null = null;
+let enabled = false;
+let sea: { gain: GainNode } | null = null;
+
+function boot(): void {
 	if (ctx) return;
-	const AC = window.AudioContext || window.webkitAudioContext;
+	const win: AudioWindow = typeof window !== 'undefined' ? window : {};
+	const AC = win.AudioContext || win.webkitAudioContext;
 	if (!AC) return;
 	ctx = new AC();
 	const comp = ctx.createDynamicsCompressor();
@@ -19,16 +25,16 @@ function boot() {
 	master.connect(comp).connect(ctx.destination);
 }
 
-export function setSound(on) {
+export function setSound(on: boolean): void {
 	enabled = on;
 	if (on) boot();
-	if (!ctx) return;
+	if (!ctx || !master) return;
 	if (on) ctx.resume();
 	master.gain.setTargetAtTime(on ? 0.55 : 0, ctx.currentTime, 0.08);
 }
 
 // Partials of a small bronze bell: ratio to the strike tone, level, decay (s).
-const PARTIALS = [
+const PARTIALS: readonly (readonly [number, number, number])[] = [
 	[0.5, 0.3, 2.8],
 	[1.0, 1.0, 2.2],
 	[1.183, 0.55, 1.7],
@@ -41,7 +47,8 @@ const PARTIALS = [
 	[5.433, 0.05, 0.25]
 ];
 
-function ding(t, vel, f0) {
+function ding(t: number, vel: number, f0: number): void {
+	if (!ctx || !master) return;
 	const out = ctx.createGain();
 	out.gain.value = 0.11 * vel;
 	out.connect(master);
@@ -59,7 +66,7 @@ function ding(t, vel, f0) {
 	}
 	// the clapper: a very short, bright click
 	const n = ctx.createBufferSource();
-	const buf = ctx.createBuffer(1, ctx.sampleRate * 0.02, ctx.sampleRate);
+	const buf = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 0.02), ctx.sampleRate);
 	const ch = buf.getChannelData(0);
 	for (let i = 0; i < ch.length; i++) ch[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / ch.length, 3);
 	n.buffer = buf;
@@ -73,7 +80,7 @@ function ding(t, vel, f0) {
 }
 
 /** Strike `count` bells the way a watch is kept: in pairs, a breath between pairs. */
-export function strike(count = 2) {
+export function strike(count: number = 2): void {
 	if (!enabled || !ctx) return;
 	let t = ctx.currentTime + 0.03;
 	for (let i = 0; i < count; i++) {
@@ -83,8 +90,8 @@ export function strike(count = 2) {
 }
 
 /** A quiet surf under the footer: filtered noise breathing on a slow swell. */
-export function setSea(level) {
-	if (!ctx) return;
+export function setSea(level: number): void {
+	if (!ctx || !master) return;
 	if (!sea) {
 		const len = ctx.sampleRate * 4;
 		const buf = ctx.createBuffer(1, len, ctx.sampleRate);
