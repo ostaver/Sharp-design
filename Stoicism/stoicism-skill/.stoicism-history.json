@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "builds": [
+    {
+      "seed": "db43087a-f17d-4d92-9bc2-8f4f99c6c2b7",
+      "fingerprint": "{\"composition\":[[\"hero\",\"monument\"],[\"collection\",\"portico\"],[\"ending\",\"facade\"],[\"navigation\",\"chapters\"],[\"rhythm\",\"processional\"]],\"sections\":[\"hero\",\"press\",\"ascent\",\"colonnade\",\"finale\"]}",
+      "composition": {
+        "hero": "monument",
+        "collection": "portico",
+        "ending": "facade",
+        "navigation": "chapters",
+        "rhythm": "processional"
+      },
+      "sectionTypes": [
+        "hero",
+        "press",
+        "ascent",
+        "colonnade",
+        "finale"
+      ]
+    }
+  ]
+}

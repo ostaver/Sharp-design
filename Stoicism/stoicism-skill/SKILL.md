@@ -1,6 +1,6 @@
 ---
 title: design-stoicism-monument
-description: "Lavender risograph monumentalism for creative developers, design studios, architects, museums and cultural institutions. Classical architecture is printed live in riso inks: a procedural Doric temple in Three.js re-printed every frame onto a five-step ink ramp with stochastic stipple and a misregistered second drum, eroding into wind-blown grain as you scroll; every photograph on the page re-inked by the same shader on one shared OGL canvas; capitals drawn by scrubbed stroke; a playable print lab; a staircase timeline; and a finale where the temple's dust settles into a carved inscription. Every build is rolled by a seeded script that picks its paper hue, drum inks, fonts, temple, section line-up and layout variants. React 19 + TypeScript + Vite, Three.js, OGL, GSAP (ScrollTrigger, SplitText) and Lenis."
+description: "A risograph design language, not a temple-page template. Blue-violet papers, inscriptional type and two-ink imagery support five distinct hero families, three collection structures, three endings and three navigation systems. A history-aware seeded generator rejects known structural repeats and near-duplicates; a visual difference gate checks the result. React + TypeScript + Vite, shared OGL image press, optional Three.js temple and dust inscription, GSAP and Lenis."
 ---
 
 # Stoicism
@@ -9,45 +9,63 @@ You are designing in the Stoicism language. This is not a template to copy. It i
 
 ## Core conviction
 
-Stoicism is **a monument printed by hand**. Everything on the page is classical architecture or a photograph, and nothing is ever shown raw: a live WebGL temple and every picture are re-printed, sixty times a second, by one risograph press. The press has a **key ink** (a deep blue-violet called midnight), **four papers** of the same hue (periwinkle, lavender, mist, paper), and a **second drum** of pastel ink printed slightly out of register. The page is light lavender paper with two dark plates (the lab and the finale), and type set like inscriptions: Roman capitals, a book serif, and a printer's mono.
+Stoicism is **a monument printed by hand**, not one particular monument. Preserve the material: blue-violet papers, deep key ink, a misregistered pastel drum, tactile grain, inscriptional capitals, book serif and printer’s mono. Architecture supplies proportion, rhythm and weight; it does not require a literal temple on every screen.
 
-The aesthetic sits where an archaeological plate meets a riso zine: patient, weighty, tactile, a little wry. Scroll is a procession. You walk toward the temple, the wind takes the far end of it and the letters of the name, and at the end of the page the dust comes back and carves your visitor's name in stone. "Build it to stand. Print it by hand."
+The old full-screen temple, enormous bottom-edge name and carved contact facade are **one composition**, not the default scaffold. Repeating that silhouette with new names, photographs, fonts, ink or a mirrored camera is a failed iteration.
 
-**Nothing visual is hand-picked.** Each build runs `roll.mjs` once, which rolls the paper hue, drum inks, three fonts, the temple, the section line-up and order, and each section's layout variant from a random seed. You write the copy, choose the photographs and author the section components; the roll decides how they look and where they sit. Never hard-code a colour, a font or a layout choice the roll owns, and never reuse an earlier seed.
+**Variation has two owners.** The generator chooses a macro composition and its compatible section chart; the author chooses a subject-specific visual idea, imagery, content hierarchy and real interaction. Both are required. A different random seed is not evidence of a different design.
 
-Two things you must never do:
+Never clone a previous build’s component markup, authored CSS or reference persona. Preserve user-mandated identity, verified content and supplied assets; reinterpret their visual hierarchy instead of renaming the same layout. Reuse the supplied rendering/accessibility primitives, not a finished page. Preview images show material treatment only; do not use them as wireframes.
 
-- **Do not reproduce the reference copy.** The reference build was a portfolio for a fictional creative developer, *Ari Kallis* of Athens ("KALLIS", "I build monuments out of light, shaders & motion", "Let's raise something monumental", projects *Parthenon.gl*, *Hall of Casts*, *Oculus Records*). Its persona, names, lines and section titles belong to that page. Invent your own in the same voice.
-- **Do not override the chart.** If the roll puts the name on the right, three sections between hero and finale, pill-shaped images and the ink level on the left, build exactly that.
+**Do not override the accepted chart.** Implement `composition` before micro `layout` variants. A portico is not an editorial spread; a smaller temple is not a diptych. If available content cannot support a section, exclude it before rolling rather than fabricating projects, history or capabilities to fill it.
 
 Use Stoicism for people and institutions whose work should feel built rather than assembled: creative developers and studios, architects, museums, archives, galleries, festivals of theatre or music, publishers, type foundries, heritage brands. It is a poor fit for SaaS dashboards, fintech, e-commerce catalogues, or anything that needs full-colour photography.
 
 ---
 
-## The roll (do this first)
+## The roll (after the content inventory, before design)
 
-`roll.mjs` sits next to this file. Run it once per build, after scaffolding and copying the kit (see Construction method):
+1. Identify the site’s actual purpose, primary action, available media and useful content structures. A music publication might need listening selections and an editorial statement; it does not automatically need a studio-capabilities section, made-up history, print lab or email form.
+2. Select 2–5 eligible middle-section types from `manifesto,colonnade,orders,press,ascent`. Include `press` only when the visual tool serves the brief. The roll may select a subset of a larger eligible pool.
+3. Scaffold and copy the entire kit, then run:
 
 ```bash
-node <path-to>/stoicism-skill/roll.mjs --out <project>
+node <skill>/roll.mjs --sections manifesto,colonnade --out <new-project>
 ```
 
-It needs only Node and no network. With no `--seed` it picks a random one, so every run differs. `--seed <text>` reproduces an earlier roll and is only for repairing a build in progress. It writes:
+The generator needs only Node, no network. It writes:
 
-| File | What it holds |
+| File | Contract |
 |---|---|
-| `src/theme.ts` | `theme: Theme`: `seed`, `palette` (9 hex tokens), `ramp` (the 5 print inks every shader uses), `inks` (4 drum inks; `[0]` is the opening ink), `fonts` (family names), `temple` (`columns`, `mirror`) |
-| `src/chart.ts` | `sections: ChartSection[]` (page order: `id`, `type`, `n`, `numeral`, `label`, `ground`, `next`, `nav`), `layout: Layout` (every variant), `seed` |
-| `src/styles/tokens.css` | every colour token, `--ink-hi`, the three font stacks, `--display-advance`, `prefers-contrast: more` overrides |
-| `src/fonts.ts` | the Fontsource imports for the rolled faces and the Greek subset |
-| `public/favicon.svg` | the temple mark in key ink over the drum ink on a periwinkle tile |
-| `stoicism.chart.json` | the whole roll |
+| `src/theme.ts` | `Theme`: palette, five-step ramp, four inks, fonts and optional temple settings |
+| `src/chart.ts` | typed `sections`, `layout`, **`composition: Composition`**, and `seed` |
+| `src/styles/tokens.css` | palette, fonts, display advance and high-contrast overrides |
+| `src/fonts.ts` | self-hosted Fontsource imports |
+| `public/favicon.svg` | two-ink house mark |
+| `stoicism.chart.json` | schema version 2, eligible sections, complete roll and novelty comparisons |
 
-It also sets `theme-color` in `index.html` to the periwinkle paper and swaps the `@fontsource*` dependencies in `package.json` for the rolled faces (run `npm install` after).
+It also patches the HTML theme color and Fontsource dependencies. Install dependencies after rolling. Never manually edit generated modules. A fresh design needs a new output folder; an existing chart is protected from fresh-roll replacement.
 
-- Never edit `theme.ts`, `chart.ts`, `tokens.css` or `fonts.ts` by hand. If something must change, roll again.
-- Read `stoicism.chart.json` before writing anything, and state the seed, hue, drums, fonts, temple, line-up and layout back to the user.
-- Put the seed in the project README.
+### Persistent novelty history
+
+- Fresh `--out` builds reserve their structural fingerprint in **`.stoicism-history.json` next to `roll.mjs`**. Keep this ledger with the skill between sessions; do not delete or reset it to obtain a preferred result. `--history <path>` selects a shared ledger when several copies of the skill are in use. Independent ledgers cannot detect each other’s builds.
+- `node <skill>/roll.mjs --remember <old-project>/stoicism.chart.json` enrolls an existing build without changing that project. Legacy charts normalize to the old monument / portico / facade / chapters / processional composition.
+- `--against <prior-chart.json>` adds an explicit comparison, including an older build outside the ledger. Use it when the user supplies a previous site. It does not import that chart into the ledger.
+- Exact structural fingerprints are forbidden anywhere in saved history. Against the immediate prior build, **the hero must change and at least three active macro axes must change**. Against each of the four preceding builds, at least two active axes must change. Collection does not count if either build has no colonnade. Colors, fonts, names, left/right mirroring, item counts and unused options never count.
+- Candidate selection retries internally without weakening the thresholds. If no candidate passes, the command fails; expand the actual design vocabulary or content eligibility, not the similarity allowance.
+- Without `--out`, the command previews a candidate without reserving it. A preview is not a promise that the next fresh command uses that candidate.
+- `--seed <accepted-seed>` is **repair/reproduction only**, bypasses admission, and never reserves a new history entry. With an existing output chart its eligible pool is restored automatically. When reproducing into a different folder, supply the original `--sections` pool as well. The seed and eligible pool reproduce composition, sections, layout, theme and assets independently of later history; novelty mode/comparisons can differ.
+- Seeded repair is for schema-2 charts from this generator. Legacy charts can be enrolled and compared, but the new generator refuses to overwrite their projects; it cannot reproduce an older algorithm from a seed alone.
+
+Read the chart before authoring components. Report the seed, macro composition, changed axes versus prior builds, palette, fonts and selected sections. Put the seed, eligible pool and novelty comparison in the project README.
+
+### Visual difference gate — mandatory
+
+The ledger rejects known structural repeats; it cannot judge a finished screenshot or a build it has never seen. Before coding, describe the new **subject-specific visual thesis** and how the first screen and page journey differ from the last available build. Do not offer five cosmetic versions of the same layout.
+
+Before delivery, compare desktop first-screen and full-page/section screenshots against the previous build when available. Review composition with color and copy mentally removed: focal object, text mass, media silhouette, navigation placement, collection geometry, ending and scroll rhythm. At least three implemented macro changes must be clearly visible, not merely recorded in JSON. Check mobile separately; desktop variants must not all collapse into the same phone template.
+
+Record a concise “Difference from previous build” section in the project README: baseline seed (or “no prior visual available”), changed active axes, actual visual decisions and screenshots examined. Do not claim a global uniqueness guarantee or unseen visual comparison. If the screenshots still look like the same template, **the build fails this gate**: fix the authored interpretation of its accepted composition before delivery, without erasing history or rerolling for cosmetic differences.
 
 ---
 
@@ -60,8 +78,8 @@ The tone is calm, exact and quietly proud, with a little wit. It borrows from ar
 - State the proposition in the first line and prove it with a concrete fact: "180 sculptures", "under 40 KB", "2.3 million scans", "1:1". No round marketing numbers.
 - No superlatives, exclamation marks or "cutting-edge", "seamless", "next-level", "elevate".
 - Ledes are one or two sentences. Captions are `Fig. N — Title` plus one short line. Microcopy is mono, uppercase, separated by ` · ` (middle dot).
-- Speak in architecture and print. Projects are *columns*; capabilities are the three *orders*; a timeline is a *stair*; contact is an *inscription* or a *tablet*; the shader lab is the *press* or the *drum*; pictures are *plates*; a pulled image is a *print*.
-- Latin and Greek appear sparingly and always legibly: a Greek word in capitals on the hero rail and the pediment, Latin labels on the contact bays (`Scribe · write`, `Seqvere · follow` — stonecutters cut U as V), Roman numerals for chapters, years and the studio clock.
+- Use architecture and print as an editorial vocabulary, not mandatory labels for every domain. Records are records, articles are articles, exhibitions are exhibitions; a collection can inherit column proportions without being titled “Peristyle.” Greek, Latin and Roman numerals are optional accents, never required invented coordinates or historical claims.
+- The subject leads the imagery: musicians, instruments, sleeves, scores, stage spaces and sound-related photography for music; actual work for portfolios; artifacts for archives. Classical stock imagery is not a substitute for relevant content.
 - Headings are short and set in capitals; one heading may end in an italic serif phrase in the drum ink ("Set the first stone *with me.*").
 - Names feel cut in stone or printed on a colophon ("Agora Live", "Plaster & Pulse", "Weight & Lean", "Bottega Lumen"). Invent your own every build.
 - Approved vocabulary: column, capital, order, stylobate, peristyle, portico, plate, figure, drum, ink, register, misregistration, pull, print, proof, stipple, grain, chisel, inscription, tablet, quarried, procession, threshold.
@@ -71,29 +89,28 @@ The tone is calm, exact and quietly proud, with a little wit. It borrows from ar
 
 ## Composition
 
-**Not a recipe, but tendencies:**
+**Composition wins over decorative variation.**
 
-- **Hero:** a sticky full-screen WebGL temple with the name set enormous along the bottom edge on `layout.hero.side`, a four-line lede above it, a mono plate line across the top and a rule with the scroll cue and drum swatches at the foot. The monument stands on the other side.
-- **Rhythm:** the papers alternate (the chart guarantees no two adjacent sections share one) and two dark plates (the press and the finale) sit in the light page. Pinned or scrubbed sections (hero, colonnade, orders, ascent) alternate with free ones.
-- **Separators:** no rules between sections and no boxes. Each section hands over to the next with a **stochastic dither** of the next paper (`<Dither to={groundVar(section.next)} />`), the way a riso drum fades one ink into another.
-- **Spacing:** generous: 18–20vh above section heads, 10–14vh between blocks. Side margin is `--edge` (`--gutter` + 20px); on phones it is `--gutter`.
-- **Section heads:** a mono eyebrow `{numeral}. — {eyebrow}`, then a huge capital h2 whose words are `.riso` spans (they drift into register as they arrive), and a serif lede that anchors bottom-right of the head row on desktop.
-- **Content:** words alternate with built things: a statement, then a colonnade of work, then three drawn capitals, then a lab you can use, then a stair.
-- **Data:** shown as architecture, never as cards: work as columns, skills as the courses of a shaft, years as treads, contact as bays of a facade.
+- **Hero:** implement `composition.hero` from the families below. Only `monument` uses the temple-dominant, bottom-name composition.
+- **Rhythm:** `composition.rhythm` controls density and pinning. `processional` uses 16–20vh section breathing room and at most two desktop pinned passages; `editorial` uses 9–13vh with alternating text/media proportions and no required pin; `compact` uses 5–8vh, small section heads and a direct content index, no pinned passages. All retain `--edge`; phones use `--gutter`. A non-processional monument has a static 100lvh stage, not a 360vh dead scroll.
+- **Separators:** use the kit’s stochastic `<Dither to={groundVar(section.next)} />`. Internal publication rules are allowed; no shadowed cards or gratuitous panels.
+- **Section heads:** change hierarchy with rhythm. Huge heads belong to processional pauses, not every section. Editorial heads share a baseline with folio/lede; compact heads use a modest display label over useful content.
+- **Content:** chart selects only eligible structures. Treat `colonnade` as a collection data model, not a command to draw Greek columns. Do not manufacture timeline entries, clients or skills to satisfy a visual recipe.
+- **Papers:** honor each chart ground. Midnight is reserved for an included press and/or facade ending; colophon and split endings use light papers. There is no fixed two-dark-section template.
 
 **Refuse:**
 
 - Cards with shadows, glassmorphism, gradient blobs, neon, emoji, icon fonts, stock 3D renders.
 - Raw full-colour photographs. Every image goes through `<RisoImage>` or `<Plate>`; the only raw pictures are the small greyscale thumbnails in the press and the downloaded prints.
 - Logo walls, testimonial carousels, pricing tables, cookie banners.
-- A dark theme toggle. The page is lavender paper with two dark plates, always.
+- A theme toggle. The ink-and-paper system is one coherent light publication, with dark plates only when selected by the chart.
 - Literal colours in component CSS. Every colour is a token or a `color-mix()` of tokens.
 
 ---
 
 ## Color
 
-Stoicism is a **single-theme** system: light papers, two dark plates, no toggle.
+Stoicism is a **single-theme** system: blue-violet light papers with chart-selected dark passages, no toggle.
 
 **Commitment level: a riso print on lavender stock.** Everything is one blue-violet hue at different weights of ink, plus one pastel drum that catches highlights, misregisters type and fills the primary buttons.
 
@@ -103,8 +120,8 @@ All values come from `tokens.css`. These are the roll's rules (OKLCH), so you kn
 |---|---|---|
 | `--midnight` | the key ink: type, rules, the dark plates | L .24, the rolled hue |
 | `--indigo`, `--blue` | deep steps: risers, stylobate, button offsets | L .34 / .45 |
-| `--periwinkle`, `--peri-soft` | mid inks; `--peri-soft` is the hero and default paper | L .62 / .65 |
-| `--lavender`, `--mist`, `--paper` | light papers; `--paper` is the lightest stock (inner panels, treads) | L .78 / .88 / .93 |
+| `--periwinkle`, `--peri-soft` | mid inks and default stock; the hero ground comes from the chart | L .62 / .65 |
+| `--lavender`, `--mist`, `--paper` | light papers; `--paper` is the lightest stock | L .78 / .88 / .93 |
 | `--dust` | the finale's grains | L .92 |
 | `--ink-hi` | the second drum; `setInk()` rewrites it live | one of 12 pastel riso inks |
 | hue | every token above | **OKLCH 258°–300° only**: cornflower through periwinkle to iris. Chroma ×0.86–1.12 |
@@ -115,7 +132,7 @@ All values come from `tokens.css`. These are the roll's rules (OKLCH), so you kn
 - **The drum ink** (`--ink-hi`) appears in: the misregistered copy behind `.riso` type, button faces (`.btn--light`) and button offsets, the cursor's labelled ring, focus outlines on dark plates, `::selection`, swatches, lit treads, slider fills, crop marks, the finale's italic phrase, the scroll bar's offset.
 - Shaders never read CSS: they get the ramp from `theme.ramp` and the drum through `setInk()` / `subscribeInk()`. Keep the two in step by only ever changing ink through `setInk()`.
 - For alpha use `color-mix(in srgb, var(--midnight) 30%, transparent)`. Never `rgba()` or hex in components.
-- Section papers come from the chart: `{...groundProps(section.ground)}` on the `<section>` sets `data-ground` (and `data-dark` on midnight); `base.css` paints it. Only the ascent (a gradient from its paper through lavender to a drum-tinted foot) and the finale (radial glows over midnight) paint their own backgrounds.
+- Section papers come from the chart: `{...groundProps(section.ground)}` sets `data-ground` and `data-dark` where appropriate; `base.css` paints it. Optional ascent gradients and facade glows may extend their own ground; do not paint a light ending midnight or force every hero onto periwinkle.
 - Colour transitions are .3–.6s with `var(--ease-stone)`.
 - `prefers-contrast: more` comes from the rolled tokens (lighter papers) plus the kit (a quieter grain, a solid 3px focus outline). Check every label still reads.
 
@@ -134,10 +151,10 @@ Use them only through `var(--f-display)`, `var(--f-serif)`, `var(--f-mono)`. Cin
 
 **Scale (display):**
 
-- Hero name: `min(21vw, 420px, calc((100vw - 2 * var(--edge)) / (var(--len) * var(--display-advance) * 1.04)))`, line-height .74, letter-spacing −.015em, one span per letter. `--len` is the letter count, set inline. On phones `min(25vw, …)` with `--gutter`.
-- Section h2 (`.section-title`): `min(clamp(56px, 8.4vw, 168px), calc(var(--title-w) / (var(--len) * var(--display-advance) * 1.06)))`, where `--title-w` is the column the title lives in and `--len` its longest line. Never let a title overflow; never hand-hyphenate.
+- Monument hero name only: `min(21vw, 420px, calc((100vw - 2 * var(--edge)) / (var(--len) * var(--display-advance) * 1.04)))`, line-height .74, letter-spacing −.015em. Other families use their specified title proportions and a smaller brand masthead; never reuse this giant wordmark automatically.
+- Processional h2: up to `clamp(56px, 8.4vw, 168px)`; editorial: `clamp(36px, 5vw, 90px)`; compact: `clamp(28px, 3vw, 52px)`. Fit each to its actual column with `--len` and `--display-advance`; no overflow or hand-hyphenation.
 - Manifesto statement: `clamp(38px, 5.9vw, 112px)`, line-height 1.02, letter-spacing −.02em, max-width 15.5em, in the **display face but not uppercased** (sentence case where the face has lowercase).
-- Finale title: `clamp(52px, 9.4vw, 190px)` (13vw on phones), line-height .9, centred.
+- Facade finale title only: `clamp(52px, 9.4vw, 190px)`, line-height .9, centred. Colophon/split endings use a modest left-aligned statement, not this title.
 - Work titles: `clamp(30px, 2.6vw, 46px)`, `text-transform: none`. Order names: `clamp(28px, 2.5vw, 50px)`. Years on the stair: `clamp(34px, 3.4vw, 66px)`.
 
 **Serif:** body `clamp(17px, 1.15vw, 20px)`/1.45; ledes `clamp(20px, 1.6vw, 27px)`/1.2; small body (work blurbs, order leads, stair copy) 16–17px at **weight 500** so thin book faces stay legible on coloured paper. Italic for kinds, mottos, the hero's first name and the finale's phrase.
@@ -166,7 +183,7 @@ This skill folder holds `kit/`. Copy it into `src/` keeping the paths (`kit/lib/
 
 | Kit file | Gives you |
 |---|---|
-| `lib/types.ts` | `Theme`, `Ink`, `ChartSection`, `SectionType`, `Ground`, `Layout` |
+| `lib/types.ts` | `Theme`, `Ink`, `ChartSection`, `SectionType`, `Ground`, `Layout`, `Composition` |
 | `lib/motion.ts` | GSAP with ScrollTrigger, SplitText, `useGSAP`; ease `stone`; `startLenis`, `getLenis`, `onScroll`, `scrollTo`, `reducedMotion` |
 | `lib/ink.ts` | the second drum: `setInk`, `getInk`, `subscribeInk`, `useInk`, `hexToVec` |
 | `lib/noise.ts` | `bakeNoise()`: bakes `--noise` (paper stipple) and `--dither` (the hand-over tile). Call once before render |
@@ -192,21 +209,21 @@ This skill folder holds `kit/`. Copy it into `src/` keeping the paths (`kit/lib/
 - **Context loss:** the gallery prevents default, flips every `<RisoImage>` back to its `<img>`, and on restore rebuilds every program and texture from what it kept. Nothing to wire.
 - `<Plate plate={…} />` is the full-bleed figure: it opens from the centre (`uInset`) and settles out of a zoom as it scrolls in (`top 92%` → `top 18%`, scrub 1), its top and bottom edges dissolve into the page, and its caption (`Fig. N — Title` | note) rises. **It bleeds by `margin-inline: calc(var(--edge) * -1)`**, so its parent's side padding must be `var(--edge)` (redefine `--edge: var(--gutter)` on phones where the parent pads with the gutter).
 
-### Signature feature 2: the temple
+### Optional scene: the temple (monument hero only)
 
 `new TempleScene(canvas, { lite, columns: theme.temple.columns, mirror: theme.temple.mirror, onContextLost })` builds a procedural Doric peristyle: fluted columns with entasis on an instanced mesh, a three-step crepidoma, a grand stair, a dark cella, triglyphs, dentils, pediments, acroteria, rolling hills in fog, 7,000 dust motes (2,600 lite), a lone figure, shadow maps. It renders grey-scale into a target, then a post pass reprints it: luminance onto the ramp, crepuscular streaks from the sky glow, uneven ink laydown, the drum ink out of register on highlights, and a "sheet feeding through the drum" reveal.
 
 - API: `start()`, `stop()`, `resize()`, `setProgress(0..1)` (camera along the processional spline, the sun swings behind the temple, the far end erodes into grain, the figure climbs the stair), `setPointer(x, y)` (clip space, parallax), `setReveal(0..1)`, `setInk(hex)`, `dispose()`.
 - `mirror` puts the monument on the left (the roll sets it when the name sits right); the wind, sun, glow and figure mirror with it. On portrait screens the kit lifts the monument with a view offset so the lede and name sit below the stair.
-- Lifecycle (Hero): create in `useEffect` inside `try` (catch → printed fallback `<img>`), `setInk(getInk())`, `start()`, then announce readiness after two rAFs (`window.__stoaTemple = true; dispatchEvent(new Event('stoa:temple'))`, which the Preloader waits for). Stop it with an IntersectionObserver when the hero leaves the screen and on `visibilitychange`; `subscribeInk(s.setInk)`; `dispose()` on unmount. Pass `onContextLost: setFallback` to show the fallback while the GPU is gone (three.js restores itself and the kit restarts the loop).
+- Lifecycle: create in `useEffect` inside `try` (catch → actual printed fallback), set the active ink, start, then signal `window.__stoaHero = true; dispatchEvent(new Event('stoa:hero'))` after two frames. Pause off screen and while hidden, subscribe to ink, dispose on unmount. Show fallback on context loss; clear it on `webglcontextrestored` so the restored scene is visible again.
 
 ### Signature feature 3: the second drum
 
-`setInk(hex)` re-inks the temple, every image plane, the dust, the CSS `--ink-hi` and therefore all `.riso` type at once. The hero's foot has a radiogroup of the four `theme.inks` swatches; the press can ink the whole site from its own drum. Components read the current ink with `useInk()`.
+`setInk(hex)` re-inks every mounted image plane, optional temple/dust, CSS `--ink-hi` and `.riso` type. Place a labelled four-ink radiogroup in the selected hero’s masthead/caption/foot. A press, when selected, can apply its local drum to the whole site. Components use `useInk()`.
 
 **Two-drum type:** `<span className="riso" data-text="Word">Word</span>` prints the drum ink behind the key ink at `--mis-x`/`--mis-y` (default `.045em, −.03em`). Tween those variables to misregister; `SiteFx` drifts every `main h2 .riso` into register as it arrives. For a hover slip, set new values on hover; the kit transitions `::before`'s transform.
 
-### Signature feature 4: the dust inscription
+### Optional scene: the dust inscription (facade ending only)
 
 `new DustInscription(canvas, { count, font: theme.fonts.display, key: theme.palette.dust, ink: getInk(), onContextLost })` rasterises text off-screen, samples it stochastically, and springs a few thousand grains (7,200; 3,600 under 800px) to the letters, each printed twice (key ink, then the drum ink offset). API: `setText(text)` (upper-cases), `setAssemble(0..1)` (scrubbed: the wind brings the grains in from the east, right-hand letters first), `setPointer(x, y, on)` (grains flee the cursor), `strike(x, y, power)`, `gust()`, `setInk(hex)`, `resize()`, `start()`, `stop()`, `dispose()`.
 
@@ -228,15 +245,15 @@ The drawings are 320 units wide and come down onto x 32–288, so the shaft belo
 
 ### Signature feature 6: the chrome
 
-- **Preloader** (`<Preloader images top foot onDone />`): no counter. Two drums print the temple mark: the drum ink climbs the plate behind a stochastic stipple edge, then the key ink, while the plates drift into register. It waits on fonts, the temple's first frames and 3–4 images (capped at 9s), then lifts with a clip-path wipe and calls `onDone` (set `ready`). Skipped under reduced motion and with `?skip` in dev.
+- **Preloader** (`<Preloader images top foot onDone />`): two drums print the house mark, without a counter. It waits on fonts, the selected hero’s `stoa:hero` first-paint signal and opening images, capped at 9s. It must not require TempleScene on non-monument pages. Reduced motion and development `?skip` bypass it.
 - **Ink level** (`<InkLevel />`): the only scrollbar. The native one is hidden. Drag or click it; chapter ticks sit where each nav section begins, labelled on hover. Side from `layout.chrome.level`. App toggles `html.mid-dark` while a dark plate crosses mid-screen (the nav's measure loop does it).
 - **Cursor** (`<Cursor />`, fine pointers only): a dot, a drum-ink ghost and a lagging ring; `[data-cursor="Label"]` grows it into a labelled drum-ink disc; links get a dashed ring; `[data-dark]` flips its inks. It re-reads what is under it on scroll, so a resting pointer never keeps a stale label.
 - **Grain** (stepped drum shimmer, multiply), **RegMarks** (registration targets in the margins), **TempleMark** (the house mark; its drum layer slips on hover), **Dither** (the section hand-over), **SiteFx** (`ready`, `away`: magnetic `.btn`, the tab title changes to `away` while hidden, and section titles drift into register).
 
 ### Scroll and reveal
 
-- Scrubbed: the hero's whole timeline, plate doors, manifesto word ink-up, colonnade track, capitals and shafts, stair risers and the walker, facade drawing and dust assembly, marquee.
-- Fired once (`scrollTrigger: { start: 'top 80–88%' }`): press controls, facade bays, footer steps, finale characters, plate captions.
+- Scrub only where the selected composition calls for it: processional monument, processional portico, optional capitals/stair/facade, and plate doors. Do not pin editorial spreads or compact indexes.
+- Other entrances fire once near `top 80–88%`; reduced motion shows all content immediately. Animation is not a substitute for a different spatial layout.
 
 **Motion rules:**
 
@@ -261,65 +278,71 @@ The drawings are 320 units wide and come down onto x 32–288, so the shaft belo
 
 **Desktop (≥901px):**
 
-- A fixed header, `--nav-h` 72px, `z-index: 80`, a `1fr auto 1fr` grid: the TempleMark and the name in display capitals (links to the top), the chapter links (`<i>{numeral}.</i>{label}` in mono, an underline that draws from the left on hover and on the active chapter), and on the right the studio clock (`{city} {HH:MM:SS}`) and a pulsing status dot ("Taking commissions"). No CTA button.
-- Its ink is measured, not toggled: each frame (rAF-queued on scroll) the nav checks which `main [data-dark]` element sits under y = 36px and sets `data-theme="dark"` (text → `--mist`); it marks the chapter crossing mid-screen `is-active` with `aria-current`, toggles `html.mid-dark`, and hides itself on scroll down past 60vh (`translateY(-110%)`, never while it has `:focus-within`), showing again on scroll up.
-- Chapter labels and numerals come from `chart.ts` (`sections.filter(s => s.nav)`). Every link uses the kit's `scrollTo('#id')`.
+- Implement **`composition.navigation`**, not the same fixed header every time:
+  - **`chapters`:** a fixed 72px `1fr auto 1fr` header: small mark/name, chapter links, brief status/optional clock. Hide on downward scroll past 60vh and return upward, never while focused.
+  - **`masthead`:** a static publication head with a wide name/date row and a second ruled row of useful chapter links. It scrolls away with the opening. Do not shrink the same fixed header and call it a masthead.
+  - **`rail`:** a narrow sticky vertical chapter index on the side opposite the InkLevel, with the brand in an independent top corner. Reserve a real layout gutter so it does not overlap content; on narrower desktops, use a compact textual rail rather than rotate illegible labels.
+- Read active chapter and `html.mid-dark` from measured section bounds. Fixed/rail ink follows the ground under its actual position, not hardcoded y=36 for every mode. All variants use chart links and kit `scrollTo`, with `aria-current` for the active chapter. Status and action copy must suit the subject; do not invent commissions for a music journal.
 
 **Phones (≤900px):**
 
 - Links, clock and status hide; a "Menu" button (`aria-expanded`, `aria-controls="site-menu"`, ≥44px) with two drum-shadowed bars that cross into a ×.
-- The menu is a full-screen sheet of key ink (`role="dialog" aria-modal="true"`, `inert` and `aria-hidden` while closed, `data-dark`) fed down over the page (`clip-path: inset(0 0 100% 0)` → `inset(0)`, .9s `expo.inOut`), with huge display-capital chapter links (`.riso`) rising from masks and a mono foot (email, city clock, status). Lenis stops while open; Escape closes; Tab wraps between the links and the close button; focus moves to the first item on open and back to the button on close; it closes itself if the viewport grows past 900px. A link closes the menu, then scrolls after 380ms.
+- The phone menu is a full-screen key-ink dialog, inert/aria-hidden while closed; Lenis stops while open. Escape closes, Tab wraps, focus enters the first link and returns to the opener. Close when the viewport grows past 900px, and close before following a chapter link. Use a compact ruled index for masthead navigation, a numbered vertical list for rail, and display chapter links for chapters; retain the same accessibility behavior without duplicating one visual menu on all builds.
 
 ### Forms & contact
 
-There is no backend. Contact is the finale's **tablet**: a single "Carve your name" field whose value the dust carves live (spaces become `·`), and a "Send the tablet" submit that strikes the stone and opens a pre-written `mailto:` (subject and body name the visitor and a random tablet number). The status line under it is `aria-live`. Beside it, the email address as a `.riso` link with a "Copy address" ghost button (clipboard, falling back to `mailto:`), the social links, and the studio clock. Hovering a bay carves its Latin word into the stone (`SCRIBE·MIHI`, the social name with U cut as V, or the time in Roman numerals).
+No backend is implied. Choose the ending’s action from the actual brief: listen/read, visit an authorized destination, download an existing asset, or contact a supplied real address. Do not invent a working inbox or use a mailto form as a default publication feature. In a facade, optional name-carving updates the dust and an aria-live line; a mailto submit opens a draft and must say so, never claim delivery. Social links, copied addresses and resources must be real. Missing destinations should be omitted or transparently identified as demonstration content, not hidden behind fake success.
 
 ---
 
-## Layout sections (approved roster)
+## Layout sections and macro families
 
-`chart.ts` fixes which sections exist, their order, ids, numerals, labels, papers and hand-overs, and each one's variant (`layout`). The hero is always first and the finale always last; between them the roll places 3–5 of manifesto, colonnade, orders, press and ascent. Build exactly that. Render them in `App` from a `Record<SectionType, ComponentType<SectionProps>>`; every section component receives `{ section, ready }`, spreads `{...groundProps(section.ground)}` on its `<section id={section.id}>`, is labelled by its h2 (`aria-labelledby`), and ends with `{section.next && <Dither to={groundVar(section.next)} />}`.
+`chart.ts` owns section order, grounds, navigation and micro variants. `composition` owns the page silhouette. Hero is first and finale last; 2–5 eligible middle sections may appear. Author only selected components; a `Partial<Record<SectionType, ComponentType<SectionProps>>>` with an explicit error for an unmapped selected type is sufficient. Every section receives `{ section, ready }`, uses `groundProps`, an accessible heading, and the chart’s closing Dither.
 
-- **Hero** (`type: hero`). `height: 360vh` (300vh ≤900px) with a sticky `100lvh` stage holding the temple canvas and `.hero__ui` (`pointer-events: none` except buttons). **Variant:** `side` (`left`: name and lede left, monument right; `right`: everything mirrors: lede and name right-aligned, the vertical rail moves left, the caption right, the figure note left; the roll mirrors the temple to match). Top row: three mono reveals (a plate title, `{columns[0]} × {columns[1]} columns · procedural · live`, the coordinates). A vertical mono rail on the far side: the Greek word, a 90px rule, `Est. {year}`. Main: the lede (first name in italic at 1.2em, then three short lines, `white-space: nowrap`), then the h1 name (`aria-label` = full name; letters `aria-hidden`, each `.hero__letter-mask > .hero__letter.riso`). Absolute: a caption (`clamp(30px, 3.6vw, 62px)`, one italic phrase) and a figure note (`Fig. 1` + a line), both hidden. Foot: a rule, the scroll cue (a line drawing in and out) and the drum radiogroup.
-  - Intro when `ready`: reveal 0 → 1 over 2.4s `power2.inOut` (`scene.setReveal`), letters rise from `yPercent: 110` (stagger .07, 1.6s) while their drum converges from `--mis-x .4em` to `.045em`, mono and lede lines rise from masks, rules scale in, then the letter masks get `overflow: visible`.
-  - Scroll (one timeline, `start: 'top top', end: 'bottom bottom', scrub: true`, `onUpdate: self => scene.setProgress(self.progress)`):
+### Hero — `composition.hero`
 
-```ts
-const WIND = theme.temple.mirror ? -1 : 1; // the name erodes the way the wind blows on screen
-tl.to(q('.hero__letter'), {
-    x: (i) => `${WIND * ((WIND > 0 ? n - i : i + 1) * 4 + 18)}vw`, y: (i) => `${-6 - (WIND > 0 ? n - i : i + 1) * 3}vh`,
-    rotate: (i) => WIND * (8 + i * 3), opacity: 0, filter: 'blur(10px)',
-    stagger: { each: 0.035, from: WIND > 0 ? 'end' : 'start' }, ease: 'power2.in', duration: 0.3 }, 0.04)
-  .to(q('.hero__lede, .hero__side'), { opacity: 0, y: -40, duration: 0.2, ease: 'none' }, 0.02)
-  .fromTo(q('.hero__caption'), { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.2, ease: 'none' }, 0.46) // after the last letter has gone
-  .to(q('.hero__caption'), { opacity: 0, y: -60, duration: 0.2, ease: 'none' }, 0.72)
-  .fromTo(q('.hero__plate'), { opacity: 0 }, { opacity: 1, duration: 0.15, ease: 'none' }, 0.8);
-```
+These are different DOM/layout structures, not CSS skins on the old hero. `layout.hero.side` controls the leading text side within a family; it is not the family itself.
 
-  On phones the foot row stacks (`column-reverse`), so lift the caption to `bottom: calc(var(--gutter) + 132px)` and let it span the gutters, or it sits on the rule.
-- **Manifesto** (`type: manifesto`, not in the nav). Padding `18vh var(--edge)`. A mono head row over a key-ink rule (an h2 label such as "(Credo)", the role, "City → anywhere"); the statement in display (7–9 phrases), where phrases carrying an image get an inline **pill**: `<span className="manifesto__pill">` (0.8em × 2.4em, `vertical-align: −.06em`) holding a `<RisoImage shape="pill" bend={0.2} />`. The last phrase is an italic serif. Then an optional Plate, then a foot grid: an outlined folio numeral (`01`, the section's index; `-webkit-text-stroke` in key ink at 55%, its `.riso` drum layer at 55%) beside a mono signature and city/year, and an aside paragraph with one italic word. **Variants:** `pills` (1–3: only the first N image phrases become pills; later ones stay words), `plate` (the full-bleed figure), `numeral` (the folio). Motion: SplitText words ink up from opacity .14 (`top 80%` → `bottom 45%`, scrub); pills open with `scaleX` 0 → 1 from the left (never width, so the paragraph never reflows); the numeral drifts `yPercent` 18 → −12.
-- **Colonnade** (`type: colonnade`, id `works`): selected work as a pinned horizontal portico. `.colonnade__pin` is `100vh`, overflow hidden, with a giant outlined ghost of the label drifting behind (`30vw`, centred with margins) and a flex track (`width: max-content`, gap `clamp(48px, 5.5vw, 110px)`). The intro column (`min(34vw, 600px)`) has the eyebrow, the h2 (`The {label}`, fitted), a lede and a mono hint. Each **work** (`clamp(280px, 23vw, 400px)`) is a column: its Roman numeral centred above a 22px abacus SVG (slab, bevel, fillet; `scaleX` .3 → 1 as it enters), a link wrapping the `<RisoImage shape={layout.colonnade.shape}>` (`height: min(40vh, 520px)`, `cursor="View"`), and a body (mono client and year over a hairline, the title as a `.riso` display span, an italic kind, a 17px/500 blurb, mono stack chips). An end column: a two-line display question and the page's dark `.btn`. A status bar at the bottom: `Column {n} / {total}`, a progress rule, the current title. **Variants:** `count` (4–7 works), `shape` (`arch` | `pill`), `stagger` (alternate columns sit `translateY(4vh)`, the others `−3vh`). Hover (CSS): the capital rises `translate: 0 −7px`, the numeral's drum slips to `.14em, −.09em`, the title's drum from 0 to `.05em, −.035em`.
+| Family | Desktop composition | Phone interpretation |
+|---|---|---|
+| `monument` | Procedural TempleScene dominates a full-height stage; large bottom-edge name; text opposite monument. Only with processional rhythm: 360vh section (300vh phone), sticky 100lvh stage, scrubbed camera and eroding letters. Otherwise a static 100lvh stage with entrance reveal only. | Portrait temple lifted above a compact lede and fitted name; never cover primary text with the building. |
+| `diptych` | Two unequal adjoining panels, approximately 40/60. One has a 6–9vw multiline proposition and useful action; the other a portrait subject photograph through RisoImage. Name is a small masthead, not a giant bottom overlay. No temple. | A captioned portrait first, then the proposition/action; retain an offset folio in the side gutter rather than recreating the monument hero. |
+| `broadside` | A typographic opening like a printed poster: 12–17vw multiline subject headline, one narrow panoramic image strip, small publication name, generous unoccupied paper. No centered building or full-screen background image. | The headline wraps into 3–5 natural lines above a short panoramic strip and direct action; no forced full viewport or empty scrolling. |
+| `aperture` | One large arch/pill RisoImage window centered on bare paper, taking roughly 55% of the viewport width; a small title bridges a window edge and captions sit outside it. The subject is real content, not a temple placed inside a new frame. | Keep the window silhouette and outside caption; use a short inset title, not a bottom-edge brand wordmark. |
+| `index` | A publication masthead and ruled content index fill the first screen. One lead image takes about one third, with a large lead story/record title and 3–5 useful text links beside it. No theatrical scroll threshold. | Lead story and compact image first, then a visible numbered index. Readers can reach real content without scrolling past an animation. |
 
-```ts
-mm.add('(min-width: 901px) and (prefers-reduced-motion: no-preference)', () => {
-  const distance = () => track.scrollWidth - innerWidth;
-  const tween = gsap.to(track, { x: () => -distance(), ease: 'none', scrollTrigger: {
-    trigger: pin, start: 'top top', end: () => `+=${distance()}`, pin: true, scrub: 0.6, invalidateOnRefresh: true,
-    onUpdate: (self) => { /* set the index and the progress rule */ } } });
-  // each work's body rises (left 95% → 55%) and its abacus widens, on the track's own timeline:
-  // scrollTrigger: { trigger: card, containerAnimation: tween, start: 'left 95%', end: 'left 55%', scrub: true }
-});
-mm.add('(max-width: 900px)', () => { /* each work rises once at top 88% */ });
-```
+Every family has one h1, a first-screen explanation of the actual subject, a reachable primary action and four site ink swatches (in the masthead, caption or opening foot as appropriate). No hero is a contact form or decorative mock player.
 
-  On phones and under reduced motion the track stacks vertically (`height: auto`, padding `16vh var(--gutter)`, gap 12vh, images `110vw` tall on phones; a grid on reduced-motion desktops) and the ghost and status hide.
-- **Orders** (`type: orders`, id `craft`): three capabilities as the three classical orders, always Doric, Ionic, Corinthian left to right. A head (eyebrow, fitted two-line h2, lede bottom-right), then a 3-column grid aligned to the bottom: each order is a `<Capital>`, a fluted shaft (`margin: −2px 10% 0`, key-ink side borders, a repeating flute gradient over a periwinkle-to-mist cylinder, `scaleY` from the bottom), an inner paper panel (`Order I`, the name, an italic motto, a 17px/500 lead, six skills as dashed-ruled mono rows each ending in ✦, which rotates on hover), and a two-step key-ink and blue base. One scrubbed timeline per order (`top 85%` → `top 20%`, scrub .8): shaft, then the capital drawing, then the skills. **Variants:** `rise` (`stepped`: shafts 56/66/76vh, rising like the orders' proportions; `level`: all 64vh), `marquee` (a key-ink band below with the order names and other words in huge lavender display capitals, ✦ in the drum ink, scrubbed `xPercent` 0 → −50). Phones: one column, shafts unclamped.
-- **Press** (`type: press`, id `press`, always a dark plate): the shader handed to the visitor. A head, then a two-column body: the **frame** (a hairline box with drum-ink crop marks, a 4:5 sheet with `<RisoImage key={src} … onPlate={h => { h.item.lockInk = true; … }} cursor="Smear" />` that wipes open with scroll, a mono readout `Print Nº 0001 · Grain · Reg Δ · Density · ink code`) and the sticky **controls**: `01 — Master` (four greyscale thumbnails, `aria-pressed`), `02 — Drum settings` (sliders for grain 1–6px, misregistration 0–16px, density .6–2.2, with a drum-ink fill and a diamond thumb), `03 — Second drum` (the four inks), and two buttons: **Pull a print** (`.btn--light`) and **Ink the whole site** (ghost; disabled with "The site is in this ink" when it already is). Sliders write the plate's uniforms (`uGrain = grain × min(dpr, 1.6)`, `uMisreg`, `uDensity`, `uInk`). **Pull**: shake the sheet (6 × 80ms yoyo), jitter misregistration ±3, sweep `uPull` .001 → .999 over 1.3s, then `gallery.capture(handle)` and hang the JPEG on the **drying line**: a rule across the full bleed with pegs, up to six prints, newest first, dropping in with `elastic.out(1, .45)` to a random ±4° tilt; each print is a download link; a dashed ghost slot shows the next number. **Variant:** `frame` (`left` | `right`). Phones: one column, controls static, the rack scrolls sideways.
-- **Ascent** (`type: ascent`, id `ascent`): the chronicle as a staircase. Background: its paper → lavender at 55% → `color-mix(--ink-hi 70%, --lavender)` at the foot, with the noise. Head, then an `<ol>` bleeding edge to edge (`margin-inline: calc(var(--edge) * −1)`), one flex `li.step` per year: text (display year, a 500 serif title, 16px/500 copy; `opacity .35` until lit), a 12px paper tread (drum ink when lit) with a key-ink lip, and a riser `calc(var(--i) × clamp(46px, 8vh, 96px) + 60px)` tall in a blue-to-key gradient with noise (`scaleY` in as it enters). The first and last treads pad their text by `--edge` so it never touches the bleed. A walker figure (two-ink SVG) hops tread to tread on one scrubbed proxy (`top 70%` → `bottom 45%`, scrub .5): interpolate between the centres of the current and next tread with `power2.inOut` over the middle half of each step, lift it by `sin(e·π) × 28px`, light every tread up to `round(f)`. **Variant:** `steps` (4–7 years). Phones: a vertical list with a key-ink left rule; treads, risers and walker hide.
-- **Finale** (`type: finale`, id `contact`, always the last dark plate): midnight with a drum glow at the top and a blue glow at the foot, 46 stepped twinkling stars, noise. A mono meta row, then the centred title in two `.line`s (SplitText `words,chars`, characters rise from `yPercent: 110`, rotate 5), the second ending in the italic drum-ink phrase. An optional Plate. Then the **facade**, `min(1240px, 100%)`: the pediment SVG (raking cornices, tympanum rosette with petals, acroterion, volute wings; drawn by scrub `top 90%` → `top 30%`; the Greek word and year as mono text in the tympanum, hidden on phones), a dentil cornice, the **architrave** (`clamp(170px, 20vw, 290px)`, double rules, the dust canvas, four mono corners: `Inscriptio`, `Tablet Nº`, `Temple dust · N grains`, `Hover · Strike · Carve`; an sr-only `aria-live` line reads the stone), the frieze form (triglyph strips, the chisel field in display capitals with a dashed underline and drum caret, the submit), the status line, then three contact **bays** between four short columns (shafts `scaleY` in). **Variants:** `greeting` (the stone's resting word: `XAIPE`, `SALVE` or `AVE`; after sending it reads `GRATIAS`), `plate`. Phones: the frieze, bays and colonnade stack; shafts and triglyphs hide.
-- **Footer** (outside `<main>`, `<footer className="stylobate" aria-label="Site" data-dark>` on midnight): the temple stands on a three-stepped crepidoma, each step wider than the one above (`margin-inline: 12%`, `6%`, `0`), blue gradient with noise and a 3px drum-ink top edge. Step 1: a printer's control strip (two targets, ten swatches of key ink, periwinkle and drum at falling opacity, a mono line with the seed). Step 2: a four-item colophon (`<dl>`: typeset in the rolled faces, built with, photographs, tracking: none). Step 3: copyright, a "Back to the temple ↑" button with the TempleMark (dispatches `stoa:gust`, which the finale turns into `dust.gust()`, then `scrollTo(0, { duration: 3.2 })`), and "Made in {city}". Steps rise once as they enter.
+**Readiness contract:** after the selected hero’s fonts and opening media are ready (or the real fallback is shown), wait two animation frames, set `window.__stoaHero = true`, then dispatch `new Event('stoa:hero')`. For `monument`, do this after the scene first draws; for image/type families, do it after image load/error and `document.fonts.ready`. This signal must not wait for `ready`, because the Preloader waits for the hero. Never instantiate an invisible temple merely to release the loader.
 
-Global layers in every build, in this order: skip link, `<Preloader>`, `<Nav>`, `<main>`, `<Footer>`, `<RegMarks>`, `<InkLevel>`, `<Grain>`, `<Cursor>`, `<SiteFx>`.
+### Collection — `type: colonnade`, `composition.collection`
+
+Use actual records, articles, exhibitions or projects. `layout.colonnade.count` is a target, not permission to invent entries; if fewer verified entries exist, render those honestly and record that content limit. `shape` applies to featured images. `stagger` applies only to multi-column/portico arrangements, never offsets catalog row baselines.
+
+- **`portico`:** equal-width image-led columns with small abacus/numeral accents and titles below. Processional rhythm may use a desktop horizontal pinned track: `distance = Math.max(0, track.scrollWidth - innerWidth)`, `x = -distance`, `end = +=distance`, scrub, refresh on resize. Under editorial/compact rhythm use an unpinned grid, not a horizontal scroll trap. Phones stack columns; reduced-motion desktops use a grid.
+- **`editorial`:** unpinned, alternating wide spreads. Image and text occupy about 60/40 on one spread and 35/65 on the next; a lead paragraph and caption create reading rhythm. No equal-column card grid, abacus row, ghost title or horizontal track. Phones preserve image-caption-text ordering, with alternating caption alignment.
+- **`catalog`:** a compact ruled list with aligned number / title+kind / year / action columns. Only the lead or selected item has a modest adjacent RisoImage preview; do not turn every row into a tall image card. On phones title and action share a row, metadata falls beneath, and the preview remains small. All actions are real links/buttons, not hover-only controls.
+
+### Other eligible middle sections
+
+- **Manifesto** (`type: manifesto`, not in navigation): an actual editorial position. Use inline RisoImage pills up to `layout.manifesto.pills`, an optional full-width Plate and folio only when their flags are true. In compact rhythm use a brief statement, not an obligatory wall of 7–9 phrases. If animating text, SplitText words/characters only; reduced motion remains readable.
+- **Orders** (`type: orders`): three genuine capability/content layers using the kit’s Doric, Ionic and Corinthian capitals, drawn with `pathLength` and fixed stagger amount. Shafts use token-based fluting; `rise` controls level versus stepped proportions; `marquee` controls the optional band. Do not manufacture a consultant’s skills for an unrelated publication. Phone columns stack.
+- **Press** (`type: press`, dark): include only when a visual print tool supports the subject. Respect `layout.press.frame` in the desktop frame/controls grid. RisoImage `onPlate` exposes actual `uGrain`, `uMisreg`, `uDensity` and `uInk`; `lockInk` separates the local drum from `setInk` until “Ink the whole site.” Four grayscale source thumbnails, sliders (grain 1–6px, register 0–16px, density .6–2.2), ink buttons and working `gallery.capture(handle)` are required. Capture only when the entire sheet is visible and opened; the kit captures the viewport intersection as JPEG. Download a correctly named JPEG, or disclose an explicit PNG conversion. Keep up to six downloadable prints on a drying line; clear and status are accessible. Phone controls stack. This is not an audio tool, ticket checkout or product configurator.
+- **Ascent** (`type: ascent`): only a supported chronology or stepwise process. Use an ordered staircase with `layout.ascent.steps` as a target, actual dates/steps, legible tread text and token-colored risers. Processional rhythm may scrub riser growth and a walker; compact rhythm uses a shallow stepped index. Phones use a vertical ruled list. No fabricated founding years, audience counts or achievements.
+
+### Ending — `type: finale`, `composition.ending`
+
+- **`facade`:** the architectural ending on midnight. Pediment, dentils, dust architrave, optional name-carving field and contact bays. Use DustInscription only here, `layout.finale.greeting` for its resting word, and the optional Plate only if its flag is true. The dust assembles by scroll, with an accessible text fallback; reduced motion skips the assembly scrub. A real contact address is needed for a mailto action. A giant centered closing title belongs to this family only.
+- **`colophon`:** a light-paper, publication-like ending. A small closing statement sits beside a source/credit list, useful links and the actual primary next action. No pediment, dust canvas, carving form, stars, stepped bays or oversized two-line CTA. Keep the ending short enough to read as a final printed folio.
+- **`split`:** an open two-column closing spread on light paper: one captioned subject image and a left-aligned invitation/action on the other side, respecting `layout.hero.side`. On phones use an image-caption/action pairing. No facade, stars or giant centered name. `layout.finale.plate` controls the additional full-bleed plate, not the core split image.
+
+Only instantiate the scene components a selected family actually uses. Temple and dust parameters can exist unused in the roll; unused flags are not visual variation.
+
+### Footer and global layers
+
+Footer is outside `<main>` with `aria-label="Site"`. With a facade ending it may be a three-stepped stylobate on midnight; after colophon/split it is a low light-paper colophon rule, not a duplicate temple base. Include font/source credits, seed and no-tracking statement. The top button says “Back to top” or the subject-appropriate equivalent; dispatch `stoa:gust` only if dust exists.
+
+Global order: skip link, Preloader, Nav, main, Footer, RegMarks, InkLevel, Grain, Cursor, SiteFx. The kit controls material and access; the author controls the accepted composition.
 
 ---
 
@@ -440,7 +463,7 @@ if (root) createRoot(root).render(<App />);
 bakeNoise();
 startLenis();
 export interface SectionProps { section: ChartSection; ready: boolean }
-const COMPONENTS: Record<SectionType, ComponentType<SectionProps>> = { hero: Hero, manifesto: Manifesto, colonnade: Colonnade, orders: Orders, press: Press, ascent: Ascent, finale: Finale };
+const COMPONENTS: Partial<Record<SectionType, ComponentType<SectionProps>>> = { /* only the selected, implemented sections */ };
 
 export default function App() {
   const [ready, setReady] = useState(false);
@@ -454,7 +477,7 @@ export default function App() {
     <a className="skiplink" href="#main">Skip to content</a>
     <Preloader images={[/* the first plate and two images below the hero */]} top={[…, …]} foot="…" onDone={() => setReady(true)} />
     <Nav ready={ready} />
-    <main id="main" tabIndex={-1}>{sections.map((s) => { const S = COMPONENTS[s.type]; return <S key={s.id} section={s} ready={ready} />; })}</main>
+    <main id="main" tabIndex={-1}>{sections.map((s) => { const S = COMPONENTS[s.type]; if (!S) throw new Error(`Unimplemented section: ${s.type}`); return <S key={s.id} section={s} ready={ready} />; })}</main>
     <Footer />
     <RegMarks /><InkLevel /><Grain /><Cursor /><SiteFx ready={ready} away="◐ The second drum is drying… — Name" />
   </>);
@@ -463,7 +486,7 @@ export default function App() {
 
 **Component conventions:**
 
-- Copy lives in `content.ts`; section components read it and `chart.ts`/`theme.ts` and never hard-code brand strings. Read variants from the module (`const v = layout.colonnade`), never re-decide them.
+- Copy lives in `content.ts`. Authored sections import `composition` and `layout` from the chart and honor the selected modes. Start from a new layout sketch, not an earlier project’s components or CSS. Generated micro flags matter only where the selected macro family uses them.
 - Write all GSAP in `useGSAP(() => { … }, { scope: root, dependencies: […] })`; branch desktop/phone with `gsap.matchMedia()` using the same queries as the CSS. Revert SplitText in the returned cleanup.
 - Long-lived WebGL objects (the temple, the dust) live in `useEffect` with an empty or stable dependency list, guarded by `try`, paused off screen by an IntersectionObserver, and disposed on unmount.
 - Fit every big display line to its box with `--len` and `--display-advance`; rolled faces differ in width by 30%.
@@ -471,18 +494,19 @@ export default function App() {
 
 **Construction method:**
 
-1. Scaffold by hand (no `create vite`): `package.json`, `tsconfig.json`, `vite.config.ts`, `.gitignore`, `index.html`.
-2. Copy `kit/` into `src/` byte for byte.
-3. Run `node <skill>/roll.mjs --out <project>`. Read `stoicism.chart.json` and report the seed, hue, drums, fonts, temple, line-up and every variant.
-4. Choose the photographs: 6–12 CORS-enabled images of architecture, sculpture, interiors or landscape (Unsplash works: `https://images.unsplash.com/photo-<id>?auto=format&fit=crop&w=1600&q=80`). Check each returns 200 (`curl -sI`). Mark high-key ones with `gamma: 1.8–2`. A Plate wants a wide image with a strong silhouette.
-5. Write `content.ts`, then `sections/` (Nav, Footer, one component per type in the chart, honouring every variant), then `sections.css`, `App.tsx`, `main.tsx`.
-6. `npm install`, then `npm run build`: it must finish with no type errors and write `dist/index.html`.
-7. `npm run dev` and walk the page at 1440×900: the preloader prints and lifts, the temple reveals and the name settles into register, scrolling erodes the name before the caption arrives, every Dither hands over to the right paper, plates open, the colonnade pins and ends on its question, capitals draw completely, the press pulls a print onto the line, the stair lights tread by tread, the dust carves the greeting and your typed name, hovering a bay re-carves the stone, the footer button gusts the dust and climbs to the top. Swap the drum from the hero: everything re-inks. Repeat at 390×844 (no horizontal overflow: `document.documentElement.scrollWidth === innerWidth`), with `prefers-reduced-motion: reduce` (jump to the bottom: the contact bays and footer are visible), and across a live resize from desktop to phone and back (no console errors; the colonnade pins again).
-8. Optional: force context loss (`WEBGL_lose_context`) on `.riso-gallery` and `.hero__canvas`; images fall back to their `<img>` and the hero to its print, and both return on restore.
+1. Inventory real content and primary action. Select eligible sections and identify the latest available baseline; remember its chart if not already in history.
+2. Scaffold a new project and copy the kit byte for byte.
+3. Run `node <skill>/roll.mjs --sections <eligible-types> --out <new-project>`; use `--against` when comparing a supplied prior chart. Read the chart and explain the new visual thesis, five macro choices and changed active axes before authoring.
+4. Choose subject-relevant, licensed/CORS-enabled images, not the previous build’s image set or generic temples for every domain. Verify each URL. Prefer local assets for reproducibility. `gamma: 1.8–2` helps high-key pictures.
+5. Write content, selected section components and fresh authored styles. Branch on composition, not just color/side. Use the hero-ready contract even without a temple; instantiate optional scenes only when selected.
+6. Install dependencies, then `npm run build`; require a type-safe static `dist/`.
+7. Run the actual site at 1440×900 and 390×844; exercise the subject’s primary action, navigation/menu, ink switching, selected scene/press behavior and footer. Check no horizontal overflow, reduced motion, contrast and live desktop/phone resize. Non-selected scenes need no fabricated demos.
+8. Run the mandatory visual difference gate against available prior screenshots. Keep first-screen and representative section evidence, and record the implemented differences in README; do not declare novelty from a seed alone.
+9. For mounted WebGL scenes, exercise context loss/restore when feasible; verify real fallback media and recovery.
 
 **Integrity & privacy:** pin majors as above, never `@latest`. No analytics, trackers, cookies or third-party scripts. Fonts are self-hosted. Photographs are the only external requests; credit their source in the colophon.
 
-**Size and performance target:** about 1.1 MB of JS minified (three ≈ 575 KB, app ≈ 370 KB, motion ≈ 140 KB; ≈ 315 KB gzipped). DPR is capped (temple 1.75, lite 1.25; gallery 1.6; dust 2). The temple uses lite mode under 800px or ≤ 4 cores. The gallery and temple skip all GPU work off screen. If the budget is exceeded, cut in this order: (1) the press's drying line, (2) the ascent walker, (3) the colonnade's ghost and status. Never cut the temple, the gallery, the dust, the drum or the accessibility markup.
+**Performance:** import optional TempleScene/DustInscription only when the chosen families need them. About 1.1 MB minified JS is a ceiling for a full monument/facade build, not a target for a quiet editorial page. Keep kit DPR caps and pause scenes off screen. Preserve the shared image press, ink system and accessibility; do not add a hidden temple or dust field just to claim the same feature checklist.
 
 ---
 
@@ -534,24 +558,25 @@ Every build must satisfy all of these before it is complete.
 
 ## LLM directives: vary vs. freeze
 
-**Varied by the roll (never pick these yourself):**
+**Varied by the roll:**
 
-- The hue of every paper and the key ink (258°–300°), chroma and lightness drift; the four drum inks and which opens the site; the ramp's top step.
-- The display, serif and mono faces.
-- The temple's colonnade (6 × 13, 8 × 17 or 6 × 14) and which side it stands on.
-- Which 3–5 middle sections appear, their order, labels and papers.
-- Every variant: hero side; manifesto pills, plate and numeral; colonnade count, shape and stagger; orders rise and marquee; press frame side; stair steps; finale greeting and plate; the ink level's side.
+- Five macro axes in `composition`, checked against saved structural history.
+- Only eligible middle sections, their order and alternating grounds.
+- Paper hue (258°–300°), drum inks, three fonts and micro layout settings.
+- Temple settings and greeting values are available for the families that use them; they do not force those scenes into other families.
 
-**Varied by you, every build:**
+**Authored anew for every build:**
 
-- The persona or studio, the name set in the hero, the Greek word, the lede, every heading, label and line; the photographs and their captions; the works, clients, stacks; the orders' mottos and skills; the years; the preloader lines; the away title; the microcopy.
+- Subject-specific visual thesis, actual useful content, imagery and focal object, headline hierarchy, primary interaction and component/CSS composition.
+- Domain language rather than the previous site’s persona or obligatory architectural headings.
+- A truthful visual difference record. Do not reuse prior source/media and rename it; a fresh seed cannot certify reused markup.
 
-**Never vary:**
+**Frozen identity and engineering:**
 
-- One press: every image and the temple printed by the kit's shaders, with the rolled ramp and a misregistered drum. No raw full-colour imagery.
-- Light lavender papers with exactly two dark plates (press, finale); no theme toggle.
-- The three-font system: inscriptional capitals, a book serif, a printer's mono.
-- The stochastic dither between sections, the grain, the reg marks, the ink-level scrollbar, the custom cursor.
-- Classical architecture as the structure: columns for work, orders for craft, a stair for time, a facade and stylobate for contact and footer.
-- The kit copied byte for byte, one roll per build with a fresh seed, `stone` easing, scroll-bound motion.
-- React + TypeScript + Vite + Three.js + OGL + GSAP + Lenis, static output, self-hosted fonts, no tracking, and the accessibility, reduced-motion and context-loss baselines.
+- The shared risograph image treatment, blue-violet stock, pastel second drum and three-font roles.
+- Kit shaders/primitives copied unchanged; stochastic dither, grain and accessible chrome.
+- React + TypeScript + Vite, OGL, GSAP and Lenis; Three.js only if TempleScene is used. Static output, self-hosted fonts, no tracking.
+- Reduced-motion, contrast, keyboard, focus, mobile overflow and context-loss baselines.
+- History retained across fresh builds; explicit seed reuse only for repair. Never relax the gate, clear history or count cosmetic changes to pass.
+
+**Changed in this edition:** replaced a fixed temple-page recipe with five hero families, three collection/ending/navigation structures and three rhythms; added persistent structural admission, legacy build enrollment, content eligibility and visual comparison. The temple, print lab, dust facade, giant closing title and stepped footer are no longer universal requirements.

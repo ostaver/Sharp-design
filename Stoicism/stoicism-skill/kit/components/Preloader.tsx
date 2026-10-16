@@ -1,40 +1,40 @@
-import { useEffect, useRef, useState } from 'react';
-import { gsap, getLenis, reducedMotion } from '../lib/motion';
-import { theme } from '../theme';
+import { useEffect, useRef, useState } from "react";
+import { gsap, getLenis, reducedMotion } from "../lib/motion";
+import { theme } from "../theme";
 
 /** what the press is doing, keyed to how much ink has been laid (five lines, in order) */
 const defaultStages = (): string[] => [
-  'Mixing the inks',
+  "Mixing the inks",
   `Drum I — laying ${theme.inks[0].name.toLowerCase()}`,
-  'Drum II — laying the key ink',
-  'Bringing the plates into register',
-  'Registered. Pulling the first print',
+  "Drum II — laying the key ink",
+  "Bringing the plates into register",
+  "Registered. Pulling the first print",
 ];
 const stageFor = (p: number, stages: string[]): string =>
-  stages[p < 0.06 ? 0 : p < 0.42 ? 1 : p < 0.86 ? 2 : p < 1 ? 3 : 4] ?? '';
+  stages[p < 0.06 ? 0 : p < 0.42 ? 1 : p < 0.86 ? 2 : p < 1 ? 3 : 4] ?? "";
 
 const BAND = 140; // height of the stochastic ink edge, matches the baked dither tile
 
 const preloadImage = (src: string) =>
   new Promise<void>((res) => {
     const i = new Image();
-    i.crossOrigin = 'anonymous';
+    i.crossOrigin = "anonymous";
     i.onload = i.onerror = () => res();
     i.src = src;
     setTimeout(res, 7000);
   });
 
-/** Resolves once the hero temple has drawn its first frames (Hero dispatches 'stoa:temple'). */
-const templeReady = () =>
+/** Resolves when the selected hero has painted, whether it uses a temple, images or type. */
+const heroReady = () =>
   new Promise<void>((res) => {
-    if (window.__stoaTemple) return res();
-    window.addEventListener('stoa:temple', () => res(), { once: true });
+    if (window.__stoaHero) return res();
+    window.addEventListener("stoa:hero", () => res(), { once: true });
     setTimeout(res, 6000);
   });
 
 declare global {
   interface Window {
-    __stoaTemple?: boolean;
+    __stoaHero?: boolean;
   }
 }
 
@@ -67,30 +67,43 @@ export interface PreloaderProps {
 /*
   No counter. Two drums print the temple mark as the page loads: the highlight ink first,
   then the key ink, each climbing the plate behind a stochastic stipple edge while the plates
-  drift into register. Real loading (fonts, the temple's first frames, a few images) drives
+  drift into register. Real loading (fonts, the selected hero's first paint, a few images) drives
   it, capped so a stalled request never holds the page.
 */
-export default function Preloader({ images, top, foot, stages = defaultStages(), onDone }: PreloaderProps) {
+export default function Preloader({
+  images,
+  top,
+  foot,
+  stages = defaultStages(),
+  onDone,
+}: PreloaderProps) {
   const root = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
   const [done, setDone] = useState(false);
 
   useEffect(() => {
     // reduced motion skips the press; in dev, /?skip does too while iterating
-    if (reducedMotion || (import.meta.env.DEV && new URLSearchParams(location.search).has('skip'))) {
+    if (
+      reducedMotion ||
+      (import.meta.env.DEV && new URLSearchParams(location.search).has("skip"))
+    ) {
       setDone(true);
       onDone();
       return;
     }
     const el = root.current;
     if (!el) return;
-    document.body.classList.add('is-loading');
+    document.body.classList.add("is-loading");
     const q = gsap.utils.selector(el);
     const state = { real: 0, shown: 0 };
     let finished = false;
     const lenisWait = setTimeout(() => getLenis()?.stop(), 0);
 
-    const tasks: Promise<unknown>[] = [document.fonts?.ready ?? Promise.resolve(), templeReady(), ...images.map(preloadImage)];
+    const tasks: Promise<unknown>[] = [
+      document.fonts?.ready ?? Promise.resolve(),
+      heroReady(),
+      ...images.map(preloadImage),
+    ];
     let settled = 0;
     tasks.forEach((p) =>
       p.finally(() => {
@@ -99,17 +112,17 @@ export default function Preloader({ images, top, foot, stages = defaultStages(),
       }),
     );
 
-    const hi = el.querySelector<HTMLElement>('.preloader__plate--hi');
-    const key = el.querySelector<HTMLElement>('.preloader__plate--key');
-    const bar = el.querySelector<HTMLElement>('.preloader__bar b');
+    const hi = el.querySelector<HTMLElement>(".preloader__plate--hi");
+    const key = el.querySelector<HTMLElement>(".preloader__plate--key");
+    const bar = el.querySelector<HTMLElement>(".preloader__bar b");
     if (!hi || !key || !bar) return;
 
     // each drum lays its ink upward; the leading edge is a stochastic stipple, not a line
     const lay = (plate: HTMLElement, amount: number) => {
       const h = plate.offsetHeight;
       const y = h - Math.min(Math.max(amount, 0), 1) * (h + BAND);
-      plate.style.setProperty('--band-y', `${y}px`);
-      plate.style.setProperty('--solid-h', `${Math.max(0, h - (y + BAND))}px`);
+      plate.style.setProperty("--band-y", `${y}px`);
+      plate.style.setProperty("--solid-h", `${Math.max(0, h - (y + BAND))}px`);
     };
 
     const start = performance.now();
@@ -150,22 +163,38 @@ export default function Preloader({ images, top, foot, stages = defaultStages(),
       setProgress(1);
       gsap
         .timeline({ onComplete: () => setDone(true) })
-        .to(hi, { x: 2, y: -1.5, duration: 0.55, ease: 'back.out(3)' })
-        .to(q('.preloader__ghost'), { opacity: 0, duration: 0.3 }, '<')
-        .to(q('.preloader__plates'), { scale: 0.94, duration: 0.5, ease: 'power2.in' }, '<0.15')
+        .to(hi, { x: 2, y: -1.5, duration: 0.55, ease: "back.out(3)" })
+        .to(q(".preloader__ghost"), { opacity: 0, duration: 0.3 }, "<")
+        .to(
+          q(".preloader__plates"),
+          { scale: 0.94, duration: 0.5, ease: "power2.in" },
+          "<0.15",
+        )
         .add(() => {
-          document.body.classList.remove('is-loading');
+          document.body.classList.remove("is-loading");
           getLenis()?.start();
           onDone();
         })
-        .to(el, { clipPath: 'inset(0% 0% 100% 0%)', duration: 1.3, ease: 'expo.inOut' }, '+=0.05')
-        .to(q('.preloader__stage'), { yPercent: -30, duration: 1.3, ease: 'expo.inOut' }, '<');
+        .to(
+          el,
+          {
+            clipPath: "inset(0% 0% 100% 0%)",
+            duration: 1.3,
+            ease: "expo.inOut",
+          },
+          "+=0.05",
+        )
+        .to(
+          q(".preloader__stage"),
+          { yPercent: -30, duration: 1.3, ease: "expo.inOut" },
+          "<",
+        );
     }
 
     return () => {
       clearTimeout(lenisWait);
       gsap.ticker.remove(tick);
-      document.body.classList.remove('is-loading');
+      document.body.classList.remove("is-loading");
     };
     // runs once: the press only prints the first sheet
     // (images and onDone are read at mount)
@@ -178,7 +207,7 @@ export default function Preloader({ images, top, foot, stages = defaultStages(),
     <div
       className="preloader"
       ref={root}
-      style={{ clipPath: 'inset(0% 0% 0% 0%)' }}
+      style={{ clipPath: "inset(0% 0% 0% 0%)" }}
       role="progressbar"
       aria-label="Printing the site"
       aria-valuemin={0}
@@ -195,10 +224,16 @@ export default function Preloader({ images, top, foot, stages = defaultStages(),
           <div className="preloader__plate preloader__ghost" aria-hidden="true">
             <Mark />
           </div>
-          <div className="preloader__plate preloader__plate--hi" aria-hidden="true">
+          <div
+            className="preloader__plate preloader__plate--hi"
+            aria-hidden="true"
+          >
             <Mark />
           </div>
-          <div className="preloader__plate preloader__plate--key" aria-hidden="true">
+          <div
+            className="preloader__plate preloader__plate--key"
+            aria-hidden="true"
+          >
             <Mark />
           </div>
         </div>

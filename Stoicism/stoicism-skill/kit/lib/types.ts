@@ -36,10 +36,17 @@ export interface Theme {
   };
 }
 
-export type SectionType = 'hero' | 'manifesto' | 'colonnade' | 'orders' | 'press' | 'ascent' | 'finale';
+export type SectionType =
+  | "hero"
+  | "manifesto"
+  | "colonnade"
+  | "orders"
+  | "press"
+  | "ascent"
+  | "finale";
 
 /** a section's paper colour, named after its CSS token */
-export type Ground = 'periSoft' | 'mist' | 'lavender' | 'midnight';
+export type Ground = "periSoft" | "mist" | "lavender" | "midnight";
 
 export interface ChartSection {
   /** the element id; nav, ink level and anchors use it */
@@ -58,13 +65,22 @@ export interface ChartSection {
   nav: boolean;
 }
 
+/** Macro composition: these change the silhouette, not just decoration. */
+export interface Composition {
+  hero: "monument" | "diptych" | "broadside" | "aperture" | "index";
+  collection: "portico" | "editorial" | "catalog";
+  ending: "facade" | "colophon" | "split";
+  navigation: "chapters" | "masthead" | "rail";
+  rhythm: "processional" | "editorial" | "compact";
+}
+
 export interface Layout {
-  hero: { side: 'left' | 'right' };
+  hero: { side: "left" | "right" };
   manifesto: { pills: 1 | 2 | 3; plate: boolean; numeral: boolean };
-  colonnade: { count: number; shape: 'arch' | 'pill'; stagger: boolean };
-  orders: { rise: 'stepped' | 'level'; marquee: boolean };
-  press: { frame: 'left' | 'right' };
+  colonnade: { count: number; shape: "arch" | "pill"; stagger: boolean };
+  orders: { rise: "stepped" | "level"; marquee: boolean };
+  press: { frame: "left" | "right" };
   ascent: { steps: number };
   finale: { greeting: string; plate: boolean };
-  chrome: { level: 'left' | 'right' };
+  chrome: { level: "left" | "right" };
 }
