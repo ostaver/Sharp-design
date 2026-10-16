@@ -29,6 +29,13 @@
   flex: 1;
   position: relative;
 }
+.home-problem-cms {
+  overflow-x: clip;
+}
+.home-problem-sub .txt,
+.home-problem-item-sub .txt {
+  text-wrap: pretty;
+}
 .home-problem-list {
   height: 100%;
   display: flex;
@@ -64,7 +71,6 @@
   width: 100%;
   max-width: 20rem;
   color: var(--content--border);
-  will-change: opacity;
   align-self: center;
   transition-property: color;
   transition-duration: 0.4s;
@@ -143,7 +149,7 @@
   grid-column-gap: 0.4rem;
   padding-top: 2rem;
   padding-bottom: 2rem;
-  padding-left: 1.2rem;
+  padding-left: 1.6rem;
   display: none;
   position: relative;
 }
@@ -152,6 +158,14 @@
   width: 2rem;
   height: 0.2rem;
   transition: background-color 0.4s;
+  position: relative;
+  cursor: pointer;
+}
+/* the bar itself stays a hairline; its touch target is a full 44px tall */
+.home-problem-pagi-item::before {
+  content: "";
+  position: absolute;
+  inset: -22px -0.2rem;
 }
 .home-problem-pagi-item.active {
   background-color: var(--content--primary);
@@ -337,9 +351,6 @@
     transform: translateX(2rem);
   }
 }
-.home-problem-item-title-wrap {
-  transition: grid-template-rows 0.4s ease;
-}
 .home-problem-item-main:after {
   content: "";
   position: absolute;
@@ -417,7 +428,7 @@
     stroke-dashoffset: -15.88;
   }
 }
-@media (min-width: 768px) {
+@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
   .home-problem-item:hover .problem-draw {
     animation: problem-draw var(--draw-dur) var(--draw-ease) var(--draw-delay) both;
   }
@@ -428,14 +439,26 @@
       problem-dash-flow var(--dash-duration) linear var(--dash-delay) infinite;
   }
 }
-@media (max-width: 767px) {
-  .home-problem-item.swiper-slide-active .problem-draw {
+@media (max-width: 767px) and (prefers-reduced-motion: no-preference) {
+  .home-problem.is-revealed .home-problem-item.swiper-slide-active .problem-draw {
     animation: problem-draw var(--draw-dur) var(--draw-ease) var(--draw-delay) both;
   }
-  .home-problem-item.swiper-slide-active .problem-dash {
+  .home-problem.is-revealed .home-problem-item.swiper-slide-active .problem-dash {
     opacity: 0;
     animation:
       problem-dash-in 0.35s ease-in var(--dash-delay) forwards,
       problem-dash-flow var(--dash-duration) linear var(--dash-delay) infinite;
+  }
+}
+/* touch screens wide enough for the desktop grid have no hover to colour the illustrations */
+@media (hover: none) and (min-width: 992px) {
+  .home-problem-item-img-inner {
+    color: var(--content--primary);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-problem-item-img-inner,
+  .home-problem-item-head-title {
+    transition: none;
   }
 }

@@ -1,6 +1,7 @@
 import { gsap, ScrollTrigger, SplitText } from '../core/gsap.js';
 
 const FADE_OFFSET = 32;
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 /** Words start below their line mask; once they have slid in the split is reverted so text reflows naturally. */
 function textTween(el, at) {
@@ -42,7 +43,7 @@ function lineTween(el, at) {
  * a line mask, `{ fade: el }` rises 32px while fading in and `{ line: el }` draws itself from the left.
  */
 export function revealOnScroll(trigger, items, { start, step = 0.1, first = step } = {}) {
-  if (!trigger) return;
+  if (!trigger || reducedMotion.matches) return;
   const steps = items
     .filter(Boolean)
     .map((item, i) => {
@@ -63,7 +64,7 @@ export function revealOnScroll(trigger, items, { start, step = 0.1, first = step
 
 /** An image block settles from a 1.25x zoom while fading in. */
 export function revealImage(trigger, el, { start } = {}) {
-  if (!trigger || !el) return;
+  if (!trigger || !el || reducedMotion.matches) return;
   gsap.set(el, { scale: 1.25, autoAlpha: 0 });
   ScrollTrigger.create({
     trigger,

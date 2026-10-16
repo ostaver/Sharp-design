@@ -16,14 +16,21 @@ function sizeWipe(btn, bg) {
   bg.style.height = `${width / FRAME_RATIO}px`;
 }
 
+const HOVER_WIPE = window.matchMedia('(hover: hover) and (min-width: 992px)');
+
+/** Wires the wipe now and whenever a hover-capable, wide viewport appears later (resize, docked tablet + mouse). */
+export function initButtons(root = document) {
+  wireButtons(root);
+  HOVER_WIPE.addEventListener('change', () => wireButtons(root));
+}
+
 /**
  * `.btn-fill` hover: a pixel-dissolve wipe (mask-position walks a 20-frame sprite) fills the
  * button on enter and dissolves it with the page colour on leave, while the label/icon layers
  * slide through the `is-fill-*` state classes.
  */
-export function initButtons(root = document) {
-  const canHover = window.matchMedia('(hover: hover) and (min-width: 992px)').matches;
-  if (!canHover) return;
+function wireButtons(root) {
+  if (!HOVER_WIPE.matches) return;
 
   root.querySelectorAll('.btn-fill').forEach((btn) => {
     if (btn.dataset.fillReady) return;
@@ -51,6 +58,7 @@ export function initButtons(root = document) {
     };
 
     const enter = () => {
+      if (!HOVER_WIPE.matches) return;
       tween?.kill();
       btn.classList.remove('is-fill-exiting', 'is-fill-resetting');
       btn.classList.add('is-fill-active');

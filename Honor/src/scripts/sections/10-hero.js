@@ -1,6 +1,6 @@
 import { gsap, SplitText } from '../core/gsap.js';
 import { createCrosshair } from '../components/crosshair.js';
-import { loaderDone, prefersReducedMotion } from './00-loader.js';
+import { loaderOpening, prefersReducedMotion } from './00-loader.js';
 
 const DESKTOP = '(min-width: 992px)';
 const IMAGE_ASPECT = 1.99; // width / height of the hero image (2000x1007 crop)
@@ -245,7 +245,7 @@ function setupInteraction(wrap) {
 
 /* ------------------------------------------------------------------ intro */
 
-/** Hides what the intro reveals; returns the play() that runs it once the loader is gone. */
+/** Hides what the intro reveals; returns the play(onComplete) that runs it once the loader has opened. */
 function prepareIntro(hero) {
   const lines = findAll('.home-hero-content .line', hero);
   const horizontal = lines.filter((line) => line.classList.contains('line-horizital'));
@@ -253,29 +253,41 @@ function prepareIntro(hero) {
   const border = find('.home-hero-img .bg-border', hero);
   const tags = findAll('.home-hero-img-deco', hero);
   const work = find('.home-hero-work', hero);
-  const title = find('.home-hero-title .heading', hero);
-  const sub = find('.home-hero-sub .txt', hero);
-
-  const split = (el) => new SplitText(el, { type: 'lines,words', mask: 'lines', linesClass: 'heading-mask-line' });
-  const words = [title, sub].filter(Boolean).map((el) => split(el).words);
+  const cta = find('.home-hero-btn', hero);
+  const copy = [find('.home-hero-title .heading', hero), find('.home-hero-sub .txt', hero)].filter(Boolean);
 
   gsap.set(horizontal, { scaleX: 0, transformOrigin: 'left top' });
   gsap.set(vertical, { scaleY: 0, transformOrigin: 'left top' });
   gsap.set([border, ...tags], { opacity: 0 });
   gsap.set(work, { opacity: 0, y: 32 });
-  gsap.set(words.flat(), { yPercent: 110, opacity: 0 });
+  gsap.set(copy, { opacity: 0 });
+  gsap.set(cta, { opacity: 0 });
 
-  return () => {
+  return (onComplete) => {
+    // split only now: webfonts and the viewport are final, so the line breaks match what stays on screen
+    const splits = copy.map((el) => new SplitText(el, { type: 'lines,words', mask: 'lines', linesClass: 'heading-mask-line' }));
+    const [titleWords = [], subWords = []] = splits.map((split) => split.words);
+    gsap.set([...titleWords, ...subWords], { yPercent: 110, opacity: 0 });
+    gsap.set(copy, { clearProps: 'opacity' });
+
     const line = { duration: 1.2, ease: 'none', clearProps: 'transform' };
     const lift = { yPercent: 0, opacity: 1, duration: 0.8, ease: 'power2.out', stagger: 0.02 };
     return gsap
-      .timeline({ delay: 0.3 })
+      .timeline({
+        delay: 0.1,
+        onComplete: () => {
+          // unsplit text re-wraps on resize and keeps underlines/descenders unclipped
+          splits.forEach((split) => split.revert());
+          onComplete?.();
+        },
+      })
       .to(vertical, { ...line, scaleY: 1, stagger: 0.1 }, 0)
       .to(horizontal, { ...line, scaleX: 1, stagger: 0.1 }, 0)
       .to([border, ...tags], { opacity: 1, duration: 1, ease: 'power3.out', stagger: 0.1, clearProps: 'opacity' }, 0.1)
-      .to(words[0] || [], lift, 0.1)
-      .to(words[1] || [], lift, 0.4)
-      .to(work, { opacity: 1, y: 0, duration: 1, ease: 'power3.out', clearProps: 'all' }, 0.4);
+      .to(titleWords, lift, 0.1)
+      .to(subWords, lift, 0.4)
+      .to(work, { opacity: 1, y: 0, duration: 1, ease: 'power3.out', clearProps: 'all' }, 0.4)
+      .to(cta, { opacity: 1, duration: 0.8, ease: 'power2.out', clearProps: 'opacity' }, 0.6);
   };
 }
 
@@ -307,11 +319,7 @@ export function init() {
 
   const reduced = prefersReducedMotion();
   const play = reduced ? null : prepareIntro(hero);
-  loaderDone.then(() => {
-    const intro = play?.();
-    if (reduced) startMarquee(hero);
-    else intro.eventCallback('onComplete', () => startMarquee(hero));
-  });
+  if (play) loaderOpening.then(() => play(() => startMarquee(hero)));
 
   if (!wrap || !ruler) return;
   const resizeObserver = new ResizeObserver(() => layoutRuler(ruler));

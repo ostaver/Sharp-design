@@ -1,16 +1,16 @@
 import { gsap } from '../core/gsap.js';
 import { startScroll, stopScroll } from '../core/scroll.js';
-import { loaderDone, prefersReducedMotion } from './00-loader.js';
+import { loaderDone, loaderOpening, prefersReducedMotion } from './00-loader.js';
 
 const COMPACT = '(max-width: 991px)';
 const HIDE_AFTER = 1 / 3; // fraction of the viewport height scrolled before the bar may hide
 
-/** Fades the header contents in once the loader has left. */
+/** Fades the header contents in as the loader shutter opens. */
 function playIntro(header) {
   if (prefersReducedMotion()) return;
   const parts = header.querySelectorAll('.header-logo, .header-menu-item, .header-menu-btn .txt, .header-menu-btn-ic');
   gsap.set(parts, { opacity: 0 });
-  loaderDone.then(() =>
+  loaderOpening.then(() =>
     gsap.to(parts, { opacity: 1, duration: 1, ease: 'power2.out', stagger: 0.08, clearProps: 'opacity' }),
   );
 }
@@ -35,10 +35,25 @@ function setupCompactMenu(header) {
   const submenus = Array.from(panel.querySelectorAll('.header-menu-item.has-submenu'));
   const compact = window.matchMedia(COMPACT);
   const dropdownOf = (item) => item.closest('.header-menu-item-wrap')?.querySelector('.header-menu-dropdown');
+  let loaded = false;
+  loaderDone.then(() => {
+    loaded = true;
+    if (isOpen()) stopScroll();
+  });
+
+  const isOpen = () => button.classList.contains('active');
+
+  /** aria-expanded on the sub menu buttons only describes the accordion; on desktop they open on hover/focus. */
+  const syncSubmenuAria = () =>
+    submenus.forEach((item) => {
+      if (compact.matches) item.setAttribute('aria-expanded', String(item.classList.contains('active')));
+      else item.removeAttribute('aria-expanded');
+    });
 
   const setSubmenu = (item, open) => {
     const dropdown = dropdownOf(item);
     item.classList.toggle('active', open);
+    if (compact.matches) item.setAttribute('aria-expanded', String(open));
     if (!dropdown) return;
     gsap.killTweensOf(dropdown);
     if (open) {
@@ -55,18 +70,24 @@ function setupCompactMenu(header) {
   };
 
   const setMenu = (open) => {
+    if (open === isOpen()) return;
     button.classList.toggle('active', open);
+    button.setAttribute('aria-expanded', String(open));
     panel.classList.toggle('active', open);
-    if (open) stopScroll();
-    else {
-      startScroll();
+    header.classList.toggle('menu-open', open);
+    if (open) {
+      header.classList.remove('on-hide');
+      stopScroll();
+    } else {
+      if (loaded) startScroll();
       submenus.forEach((item) => item.classList.contains('active') && setSubmenu(item, false));
     }
   };
 
-  button.addEventListener('click', (event) => {
-    event.preventDefault();
-    if (compact.matches) setMenu(!button.classList.contains('active'));
+  syncSubmenuAria();
+
+  button.addEventListener('click', () => {
+    if (compact.matches) setMenu(!isOpen());
   });
 
   submenus.forEach((item) =>
@@ -82,18 +103,35 @@ function setupCompactMenu(header) {
     if (compact.matches && event.target.closest('a')) setMenu(false);
   });
 
+  // the dimmed page behind the panel is the header's own ::before: a click on it lands on the header element itself
+  header.addEventListener('click', (event) => {
+    if (event.target === header) setMenu(false);
+  });
+
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && button.classList.contains('active')) setMenu(false);
+    if (event.key !== 'Escape' || !isOpen()) return;
+    if (header.contains(document.activeElement)) button.focus();
+    setMenu(false);
+  });
+
+  // keyboard focus leaving the open panel closes it, so Tab never walks the page behind the dimmed overlay
+  header.addEventListener('focusout', (event) => {
+    if (isOpen() && event.relatedTarget && !header.contains(event.relatedTarget)) setMenu(false);
   });
 
   // leaving the compact layout must not strand inline styles or a locked scroll
   compact.addEventListener('change', () => {
-    if (compact.matches) return;
+    if (compact.matches) {
+      syncSubmenuAria();
+      return;
+    }
     setMenu(false);
     submenus.forEach((item) => {
       item.classList.remove('active');
+      gsap.killTweensOf(dropdownOf(item));
       gsap.set(dropdownOf(item), { clearProps: 'display,height' });
     });
+    syncSubmenuAria();
   });
 }
 

@@ -101,12 +101,20 @@
   bottom: var(--size--border);
   position: absolute;
 }
+.cta-deco-item-img-inner .img-basic.img-abs {
+  object-fit: cover;
+}
 .cta-deco-item-img-inner.on-mb {
   display: none;
 }
 .cta-main-item-btn-inner {
   color: var(--content--white);
   text-decoration: none;
+}
+/* the default brand ring would vanish on the brand-coloured fill */
+.cta-main-item-btn-inner:focus-visible {
+  outline-color: var(--content--primary);
+  outline-offset: 0.3rem;
 }
 @media screen and (max-width: 991px) {
   .cta-head.grid {
@@ -129,11 +137,6 @@
 @media screen and (max-width: 991px) {
   .cta-main-item-sub {
     margin-bottom: 2rem;
-  }
-}
-@media screen and (max-width: 991px) {
-  .cta-deco-item-img-inner {
-    padding: 1rem;
   }
 }
 @media screen and (max-width: 767px) {
@@ -232,7 +235,6 @@
 }
 @media screen and (max-width: 767px) {
   .cta-deco-item-img-inner {
-    padding: 0;
     display: none;
     inset: 0;
   }

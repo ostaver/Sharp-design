@@ -1,9 +1,9 @@
 import { gsap, ScrollTrigger } from '../core/gsap.js';
+import { scroller, scrollToY } from '../core/scroll.js';
 
 /**
- * Desktop: the two text blocks share one grid cell and stick to the vertical centre of the viewport
- * while the stacked images scroll past. The second block takes over once the second image
- * reaches the middle of the viewport.
+ * Desktop: the two text blocks share one grid cell and stick to the vertical centre of the scroller while the stacked
+ * images scroll past. The second block takes over once the second image reaches the middle of the scroller.
  */
 function initStickyBlocks(root) {
   const blocks = [...root.querySelectorAll('.home-platform-content-inner')];
@@ -12,10 +12,23 @@ function initStickyBlocks(root) {
 
   const centre = () => {
     blocks.forEach((block) => {
-      block.style.top = `${(window.innerHeight - block.offsetHeight) / 2}px`;
+      block.style.top = `${Math.max(0, (scroller.clientHeight - block.offsetHeight) / 2)}px`;
     });
   };
   const show = (index) => blocks.forEach((block, i) => block.classList.toggle('active', i === index));
+
+  // a block that takes keyboard focus while hidden brings itself in by scrolling its own image to the right place
+  const reveal = (index) => {
+    const imageTop = images[1].getBoundingClientRect().top - scroller.getBoundingClientRect().top;
+    scrollToY(scroller.scrollTop + imageTop - scroller.clientHeight * (index === 1 ? 0.45 : 0.7), { duration: 0.6 });
+  };
+  const focusHandlers = blocks.map((block, index) => {
+    const onFocus = () => {
+      if (!block.classList.contains('active')) reveal(index);
+    };
+    block.addEventListener('focusin', onFocus);
+    return onFocus;
+  });
 
   centre();
   ScrollTrigger.addEventListener('refresh', centre);
@@ -28,7 +41,10 @@ function initStickyBlocks(root) {
 
   return () => {
     ScrollTrigger.removeEventListener('refresh', centre);
-    blocks.forEach((block) => block.style.removeProperty('top'));
+    blocks.forEach((block, i) => {
+      block.removeEventListener('focusin', focusHandlers[i]);
+      block.style.removeProperty('top');
+    });
     show(0);
   };
 }
@@ -51,8 +67,7 @@ export function init() {
   const root = document.querySelector('.home-platform');
   if (!root) return;
 
-  gsap.matchMedia().add('(min-width: 992px)', () => {
-    initNumberEntrance(root);
-    return initStickyBlocks(root);
-  });
+  const mm = gsap.matchMedia();
+  mm.add('(min-width: 992px)', () => initStickyBlocks(root));
+  mm.add('(min-width: 992px) and (prefers-reduced-motion: no-preference)', () => initNumberEntrance(root));
 }

@@ -18,7 +18,8 @@ const approach = (value, target, rate, epsilon = 0.001) => {
  */
 export function init() {
   const host = document.querySelector('.cursor');
-  if (!host || !window.matchMedia('(hover: hover) and (pointer: fine) and (min-width: 992px)').matches) return;
+  if (!host || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  const desktop = window.matchMedia('(min-width: 992px)');
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const canvas = document.createElement('canvas');
@@ -107,6 +108,14 @@ export function init() {
 
   window.addEventListener('pointermove', (event) => {
     if (event.pointerType !== 'mouse') return;
+    if (!desktop.matches) {
+      // the layout dropped below the breakpoint after load: .cursor is hidden, so let the head go quietly
+      if (state.present) {
+        state.present = false;
+        wake();
+      }
+      return;
+    }
     target.x = event.clientX;
     target.y = event.clientY;
     if (!state.present) {

@@ -51,20 +51,6 @@
   position: relative;
   overflow: hidden;
 }
-.home-why-item-img.item-left.item-tb,
-.home-why-item-img.item-right.item-tb {
-  display: none;
-}
-.home-why-item-sticky-inner {
-  z-index: 2;
-  grid-column-gap: 0px;
-  grid-row-gap: 0px;
-  grid-template-rows: auto;
-  grid-template-columns: minmax(1px, 1fr) minmax(1px, 1fr);
-  grid-auto-columns: minmax(1px, 1fr);
-  display: grid;
-  position: relative;
-}
 .home-why-item-sticky-content {
   grid-column-gap: 2rem;
   background-color: var(--content--primary);
@@ -78,10 +64,6 @@
   transition-duration: 0.4s;
   transition-timing-function: ease;
   display: flex;
-}
-.home-why-item-sticky-content.active {
-  opacity: 1;
-  pointer-events: auto;
 }
 .home-why-sticky-item-ic {
   background-color: var(--content--brand);
@@ -118,15 +100,22 @@
 }
 .home-why-pagi-item {
   background-color: var(--content--border);
-  width: 2rem;
+  width: 3.6rem;
   height: 0.2rem;
   transition: background-color 0.4s;
+  position: relative;
+  cursor: pointer;
+}
+.home-why-pagi-item::before {
+  content: "";
+  position: absolute;
+  inset: calc(-1 * max(2.15rem, 22px)) -0.4rem;
 }
 .home-why-pagi-item.active {
   background-color: var(--content--primary);
 }
 .home-why-pagi {
-  grid-column-gap: 0.4rem;
+  grid-column-gap: 0.8rem;
   padding-top: 2rem;
   padding-bottom: 2rem;
   padding-left: 0;
@@ -141,102 +130,28 @@
   pointer-events: none;
   mix-blend-mode: multiply;
   width: 100%;
+  aspect-ratio: 1;
 }
-.home-why-item-img-deco-main {
-  z-index: 3;
-  pointer-events: none;
-  mix-blend-mode: multiply;
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  inset: 0%;
+.home-why-item-img-child-inner {
+  aspect-ratio: 900 / 555;
 }
-.home-why-item-img-deco-main.is-top {
-  z-index: 4;
-  pointer-events: auto;
-  mix-blend-mode: normal;
+.home-why-item-card.card-1 .home-why-item-card-inner {
+  aspect-ratio: 640 / 542;
 }
-.home-why-item-img-deco {
-  z-index: 2;
-  pointer-events: auto;
-  mix-blend-mode: multiply;
-  transform-origin: 0 100%;
-  padding: 1.6rem;
-  position: absolute;
+.home-why-item-card.card-2 .home-why-item-card-inner {
+  aspect-ratio: 640 / 412;
 }
-.home-why-item-img-deco.item1 {
-  width: 16.4rem;
-  padding-top: 2.4rem;
-  bottom: 53%;
-  left: 22%;
+.home-why-item-card.card-3 .home-why-item-card-inner {
+  aspect-ratio: 560 / 446;
 }
-.home-why-item-img-deco.item2 {
-  z-index: 22;
-  width: 21.6rem;
-  padding-top: 4.8rem;
-  display: flex;
-  bottom: 21%;
-  left: 46%;
+.home-why-item-img-box.box-1 .home-why-item-img-box-content {
+  aspect-ratio: 640 / 370;
 }
-.home-why-item-img-deco.item3 {
-  width: 16rem;
-  padding-top: 9rem;
-  bottom: 48%;
-  left: 29.5%;
+.home-why-item-img-box.box-2 .home-why-item-img-box-content {
+  aspect-ratio: 640 / 356;
 }
-.home-why-item-img-deco.item3.active.no-blend,
-.home-why-item-img-deco.no-blend {
-  mix-blend-mode: normal;
-}
-.home-why-item-img-deco-ic {
-  z-index: 2;
-  background-color: var(--content--white);
-  opacity: 0;
-  justify-content: center;
-  align-items: center;
-  width: 1.6rem;
-  height: 1.6rem;
-  transition: opacity 0.4s;
-  display: flex;
-  position: absolute;
-  top: 0.8rem;
-  right: 0.8rem;
-  overflow: hidden;
-}
-.home-why-item-img-deco-ic-inner {
-  width: 0.7rem;
-}
-.home-why-item-img-deco-inner {
-  z-index: 2;
-  grid-column-gap: 0.4rem;
-  grid-row-gap: 0.4rem;
-  opacity: 0;
-  color: var(--content--white);
-  isolation: isolate;
-  flex-flow: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  margin-top: auto;
-  transition-property: opacity;
-  transition-duration: 0.4s;
-  transition-timing-function: ease;
-  display: flex;
-  position: relative;
-}
-.home-why-item-img-deco-bg {
-  background-color: var(--content--brand);
-  opacity: 0.72;
-  pointer-events: none;
-  width: 1.6rem;
-  height: 1.6rem;
-  transition:
-    top 0.4s,
-    right 0.4s,
-    height 0.4s,
-    width 0.4s;
-  position: absolute;
-  top: 0.8rem;
-  right: 0.8rem;
+.home-why-item-img-box.box-3 .home-why-item-img-box-content {
+  aspect-ratio: 1;
 }
 .home-why-item-card {
   pointer-events: none;
@@ -258,20 +173,6 @@
   flex-flow: column;
   display: flex;
   box-shadow: 0.6rem 0.6rem #0000000f;
-}
-.home-why-item-card.bg-global.is-checking {
-  z-index: 5;
-  width: 16.4rem;
-  bottom: 1.6rem;
-  left: 6.4rem;
-  right: auto;
-}
-.home-why-item-card.bg-global.item-3 {
-  z-index: 5;
-  width: 14rem;
-  bottom: 4.3rem;
-  left: 3.6rem;
-  right: auto;
 }
 .home-why-item-card.card-2 {
   z-index: 5;
@@ -301,77 +202,6 @@
 .home-why-item-card.card-3.bg-global {
   box-shadow: none;
   border-width: 0;
-}
-.home-why-item-card-head {
-  padding-bottom: var(--size--border);
-  background-image: linear-gradient(69deg, #282828, #aaa);
-  flex: none;
-}
-.home-why-item-card-head-inner {
-  background-color: var(--content--primary);
-  padding: 0.8rem 1.2rem;
-}
-.home-why-item-card-title {
-  color: var(--content--white);
-}
-.home-why-item-card-body {
-  grid-row-gap: 1.2rem;
-  flex-flow: column;
-  flex: 1;
-  justify-content: flex-end;
-  padding: 1.2rem;
-  display: flex;
-  overflow: hidden;
-}
-.home-why-item-card-body.is-checking {
-  padding: 0;
-}
-.home-why-item-card-sub {
-  background-color: #00000014;
-  padding: 0.8rem 1.2rem;
-}
-.home-why-item-card-sub.item-user {
-  border: var(--size--border) solid var(--content--border);
-}
-.home-why-item-card-sub.item-my-chat {
-  grid-row-gap: 0.4rem;
-  background-color: #e0e0d7;
-  flex-flow: column;
-  margin-left: auto;
-  display: flex;
-}
-.home-why-item-card-content {
-  width: 18.4rem;
-  margin-bottom: 1.2rem;
-}
-.home-why-item-card-content-label {
-  color: var(--content--brand);
-  margin-bottom: 0.4rem;
-}
-.home-why-item-card-content-title {
-  color: var(--content--primary);
-  margin-bottom: 0.4rem;
-}
-.home-why-item-card-sub-text p {
-  text-transform: uppercase;
-  margin-bottom: 0.4rem;
-  font-size: 1rem;
-  line-height: 1.1em;
-}
-.home-why-item-card-sub-text li {
-  font-size: 0.8rem;
-  line-height: 1.2em;
-  list-style-type: square;
-}
-.home-why-item-card-sub-text ul {
-  margin-bottom: 0;
-  padding-left: 1.2rem;
-}
-.home-why-item-card-footer {
-  height: 0.6rem;
-  padding-bottom: var(--size--border);
-  background-color: var(--content--primary);
-  flex: none;
 }
 .home-why-item-img-main {
   justify-content: center;
@@ -410,21 +240,6 @@
   position: absolute;
   bottom: 3%;
   right: 2%;
-}
-.home-why-item-card-text {
-  padding: 0.8rem 0.9rem 1rem;
-}
-.home-why-item-card-text ul {
-  padding-left: 1.2rem;
-  padding-right: 0.9rem;
-}
-.home-why-item-card-text li {
-  letter-spacing: 0;
-  text-transform: uppercase;
-  margin-bottom: 0.4rem;
-  font-size: 0.8rem;
-  line-height: 1.3em;
-  list-style-type: square;
 }
 .home-why-item-img-point {
   z-index: 4;
@@ -520,13 +335,12 @@
   height: 100%;
   position: absolute;
   inset: 0%;
-  transform: scale(0);
+  opacity: 0;
 }
 .home-why-item-img-box-content {
   z-index: 3;
   perspective-origin: 100% 0;
   position: relative;
-  transform: scale(0);
 }
 .home-why-item-card-dots {
   z-index: 5;
@@ -547,7 +361,7 @@
 .home-why-item-img-box-ic {
   z-index: 2;
   background-color: var(--content--white);
-  opacity: 0;
+  opacity: 1;
   justify-content: center;
   align-items: center;
   width: 1.6rem;
@@ -571,6 +385,7 @@
 .home-why-item-img-box-ic-bg {
   z-index: 2;
   background-color: var(--content--brand);
+  opacity: 0;
   justify-content: center;
   align-items: center;
   width: 1.6rem;
@@ -643,25 +458,19 @@
   }
 }
 @media screen and (max-width: 991px) {
+  .home-why-item.grid > .line.line-horizital.left.right.line-brand.home-why-item-line {
+    z-index: 1;
+  }
+}
+@media screen and (max-width: 991px) {
   .home-why-item-img.item-left {
     margin-left: 3.2rem;
     display: block;
   }
 }
 @media screen and (max-width: 991px) {
-  .home-why-item-img.item-left.item-tb {
-    width: 100%;
-    display: block;
-  }
-}
-@media screen and (max-width: 991px) {
   .home-why-item-img.item-right {
     margin-right: 3.2rem;
-    display: block;
-  }
-}
-@media screen and (max-width: 991px) {
-  .home-why-item-img.item-right.item-tb {
     display: block;
   }
 }
@@ -713,12 +522,6 @@
   .home-why-main-wrap {
     padding-top: 12.4rem;
     padding-bottom: 4rem;
-  }
-}
-@media screen and (max-width: 991px) {
-  .home-why-item-card.bg-global {
-    width: 28rem;
-    height: 36dvh;
   }
 }
 @media screen and (max-width: 991px) {
@@ -788,7 +591,7 @@
   .home-why-item-sticky {
     z-index: 10;
     width: 100%;
-    margin-top: auto;
+    margin-top: 1.6rem;
   }
 }
 @media screen and (max-width: 767px) {
@@ -800,7 +603,6 @@
 }
 @media screen and (max-width: 767px) {
   .home-why-item-sticky.item-right {
-    margin-top: 1.6rem;
     padding-right: 0;
     top: auto;
   }
@@ -810,6 +612,7 @@
     grid-column-gap: 0rem;
     width: 100%;
     height: auto;
+    align-content: start;
     clip-path: unset;
     flex: none;
     padding: 1.2rem;
@@ -884,32 +687,6 @@
   }
 }
 @media screen and (max-width: 767px) {
-  .home-why-item-card.bg-global {
-    width: 24.5rem;
-    height: 30.6rem;
-    bottom: 2.5rem;
-    right: 50%;
-    transform: translate(50%);
-  }
-}
-@media screen and (max-width: 767px) {
-  .home-why-item-card-head-inner {
-    padding: 0.6rem 1rem;
-  }
-}
-@media screen and (max-width: 767px) {
-  .home-why-item-card-body {
-    padding: 1rem;
-  }
-}
-@media screen and (max-width: 767px) {
-  .home-why-item-card-sub.item-user,
-  .home-why-item-card-sub.item-my-chat {
-    width: 16rem;
-    padding: 0.6rem 1rem;
-  }
-}
-@media screen and (max-width: 767px) {
   .home-why-item-img-box-ic {
     width: 1rem;
     height: 1rem;
@@ -935,7 +712,6 @@
 }
 
 /* --- inline custom CSS (from page embeds) --- */
-.home-why-item-img-deco.active .home-why-item-img-deco-bg,
 .home-hero-img-deco.active .home-hero-img-deco-bg {
   width: 100%;
   height: 100%;
@@ -945,14 +721,9 @@
   animation: unset;
   /* animation-play-state: paused; */
 }
-.home-why-item-img-deco.active .home-why-item-img-deco-inner,
-.home-why-item-img-deco.active .home-why-item-img-deco-ic,
 .home-hero-img-deco.active .home-hero-img-deco-inner,
 .home-hero-img-deco.active .home-hero-img-deco-ic {
   opacity: 1;
-}
-.home-why-sticky-item:nth-child(2n + 1) {
-  grid-column: 2/3;
 }
 .home-why-main-devider {
   transform: translateX(calc(-50% - (max(1px, 0.1rem) / 2)));
@@ -968,11 +739,24 @@
   }
 }
 
-/* behavior */
+/* behavior
+   The markup is the finished composition (also what reduced-motion users see). 60-why.js adds
+   .is-live to .home-why-item-img while its row is on screen: the 5s loop then plays from frame 0
+   and rewinds once the row leaves, so every row always starts at the beginning when it appears. */
 .home-why-item-img {
   --why-cycle: 5s;
   --why-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --why-ease-in: cubic-bezier(0.64, 0, 0.78, 0);
+}
+
+/* Everything layered over the photo waits for it: the overlays fade in as the row's image is revealed. */
+@media (prefers-reduced-motion: no-preference) {
+  .home-why-item-img > :not(.home-why-item-img-inner) {
+    transition: opacity 0.8s ease;
+  }
+  .home-why-item-img:not(.is-shown) > :not(.home-why-item-img-inner) {
+    opacity: 0;
+  }
 }
 
 /* boxes: bg + image grow out of the top-right corner, the corner icon swaps from solid to cross */
@@ -986,10 +770,21 @@
   --box-delay: 0.4s;
 }
 .home-why-item-img-box-bg,
-.home-why-item-img-box-content,
-.home-why-item-img-box-ic,
-.home-why-item-img-box-ic-bg,
+.home-why-item-img-box-content {
+  transform-origin: top right;
+}
+.home-why-item-img-box-ic-bg {
+  opacity: 0;
+}
 .home-why-item-img-box-ic-boder {
+  opacity: 0;
+  pointer-events: none;
+}
+.home-why-item-img.is-live .home-why-item-img-box-bg,
+.home-why-item-img.is-live .home-why-item-img-box-content,
+.home-why-item-img.is-live .home-why-item-img-box-ic,
+.home-why-item-img.is-live .home-why-item-img-box-ic-bg,
+.home-why-item-img.is-live .home-why-item-img-box-ic-boder {
   backface-visibility: hidden;
   will-change: transform, opacity;
   animation-duration: var(--why-cycle);
@@ -998,24 +793,17 @@
   animation-iteration-count: infinite;
   animation-fill-mode: both;
 }
-.home-why-item-img-box-bg,
-.home-why-item-img-box-content {
-  opacity: 0;
-  transform-origin: top right;
+.home-why-item-img.is-live .home-why-item-img-box-bg,
+.home-why-item-img.is-live .home-why-item-img-box-content {
   animation-name: why-box-reveal;
 }
-.home-why-item-img-box-ic {
-  opacity: 0;
-  transform: scale(0.75);
+.home-why-item-img.is-live .home-why-item-img-box-ic {
   animation-name: why-icon-reveal;
 }
-.home-why-item-img-box-ic-bg {
+.home-why-item-img.is-live .home-why-item-img-box-ic-bg {
   animation-name: why-icon-swap;
 }
-.home-why-item-img-box-ic-boder {
-  opacity: 0;
-  transform: scale(0.92);
-  pointer-events: none;
+.home-why-item-img.is-live .home-why-item-img-box-ic-boder {
   animation-name: why-icon-pulse;
 }
 
@@ -1123,11 +911,9 @@
 }
 
 /* row 4: markers pop in one after another, the dashed network fades in once they are all there */
-.home-why-item-img-point {
-  opacity: 0;
-  transform: scale(0.4);
+.home-why-item-img.is-live .home-why-item-img-point {
   will-change: transform, opacity;
-  animation: why-point var(--why-cycle) linear calc(var(--i) * 0.06s) infinite;
+  animation: why-point var(--why-cycle) linear calc(var(--i) * 0.06s) infinite both;
 }
 .home-why-item-img-point.item-1 {
   --i: 0;
@@ -1166,12 +952,13 @@
   --i: 11;
 }
 .home-why-item-img-line .line {
-  opacity: 0;
   stroke: var(--content--brand);
   stroke-dasharray: 4 4;
+}
+.home-why-item-img.is-live .home-why-item-img-line .line {
   will-change: opacity, stroke-dashoffset;
   animation:
-    why-line-fade var(--why-cycle) linear calc(var(--i) * 0.03s) infinite,
+    why-line-fade var(--why-cycle) linear calc(var(--i) * 0.03s) infinite both,
     why-dash 0.8s linear infinite;
 }
 .home-why-item-img-line .line-1 {
@@ -1269,26 +1056,38 @@
 }
 
 /* row 3: the active child runs loading -> check, a spinner keeps turning on the pending one */
+.home-why-item-img .is-loading {
+  color: var(--content--primary);
+}
 .is-loading svg {
   display: block;
   transform-origin: center;
+}
+.home-why-item-img.is-live .is-loading svg {
   animation: why-spin 1s linear infinite;
 }
 .home-why-item-img-child.active .is-loading {
-  animation: why-loading var(--why-cycle) linear infinite;
+  opacity: 0;
 }
 .home-why-item-img-child.active .is-check {
-  animation: why-check var(--why-cycle) linear infinite;
+  transform: scale(1);
 }
 .home-why-item-img-child.active::before {
   content: "";
   position: absolute;
   inset: 0;
   z-index: 2;
-  border: 0.2rem solid var(--content--border);
-  border-radius: inherit;
   pointer-events: none;
-  animation: why-child-border var(--why-cycle) linear infinite;
+}
+.home-why-item-img.is-live .home-why-item-img-child.active .is-loading {
+  animation: why-loading var(--why-cycle) linear infinite both;
+}
+.home-why-item-img.is-live .home-why-item-img-child.active .is-check {
+  animation: why-check var(--why-cycle) linear infinite both;
+}
+.home-why-item-img.is-live .home-why-item-img-child.active::before {
+  box-shadow: 0 0 0 0.2rem var(--content--border);
+  animation: why-child-border var(--why-cycle) linear infinite both;
 }
 
 @keyframes why-spin {
@@ -1336,34 +1135,25 @@
   74%,
   98%,
   100% {
-    inset: -0.2rem;
-    border-width: 0.2rem;
-    border-color: var(--content--border);
+    box-shadow: 0 0 0 0.2rem var(--content--border);
   }
   80%,
   92% {
-    inset: -0.4rem;
-    border-width: 0.4rem;
-    border-color: var(--content--brand);
+    box-shadow: 0 0 0 0.4rem var(--content--brand);
   }
 }
 
 /* row 3: the "checking" card slides in, its three dots pulse until the check lands */
-.home-why-item-card.card-2 {
-  opacity: 0;
-  transform: translateY(0.75rem);
+.home-why-item-img.is-live .home-why-item-card.card-2 {
   will-change: opacity, transform;
-  animation: why-card-reveal var(--why-cycle) linear infinite;
+  animation: why-card-reveal var(--why-cycle) linear infinite both;
 }
-.home-why-item-card-dots {
-  opacity: 0;
-  animation: why-dots-visibility var(--why-cycle) linear infinite;
+.home-why-item-img.is-live .home-why-item-card-dots {
+  animation: why-dots-visibility var(--why-cycle) linear infinite both;
 }
-.home-why-item-card.card-2 .home-why-item-card-dot {
-  opacity: 0.25;
-  transform: scale(0.75);
+.home-why-item-img.is-live .home-why-item-card.card-2 .home-why-item-card-dot {
   will-change: opacity, transform;
-  animation: why-dot 1.2s ease-in-out calc(var(--i) * 0.2s) infinite;
+  animation: why-dot 1.2s ease-in-out calc(var(--i) * 0.2s) infinite both;
 }
 .home-why-item-card.card-2 .home-why-item-card-dot:nth-child(1) {
   --i: 0;
@@ -1419,17 +1209,5 @@
   45% {
     opacity: 0.7;
     transform: scale(1);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .home-why-item-img *,
-  .home-why-item-img *::before {
-    animation: none !important;
-  }
-  .home-why-item-img-point,
-  .home-why-item-img-line .line {
-    opacity: 1;
-    transform: none;
   }
 }

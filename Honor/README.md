@@ -29,7 +29,6 @@ npm run build    # production build into dist/
 ## Layout of this repo
 
 ```
-original/        raw copy of the source site (HTML, Webflow CSS, inline CSS embeds, app bundle) for reference
 index.html       page shell, composes the partials
 vite.config.js   dev server + tiny <include src="..."> HTML partial plugin
 src/
@@ -38,16 +37,17 @@ src/
   styles/        decompiled CSS split into base/, components/, sections/
   scripts/
     core/        gsap registration, Lenis scroller
-    components/  button wipe, ink-mask reveal, text-reveal
+    components/  button wipe, ink-mask reveal, scroll reveals, crosshair
     sections/    one module per behavior, run in filename order (00-loader first)
-  assets/        generated placeholders and decorative patterns
+  assets/        photos, generated placeholders and decorative patterns
 ```
 
 ## Notes
 
-- The page scrolls inside `.main-inner` (Lenis wrapper). In dev, `window.__lenis` is exposed for scripted scrolling.
+- The page scrolls inside `.main-inner`, not the window. Lenis smooths the wheel; touch and keyboard scrolling are native, so `.main-inner` is a real `overflow-y: auto` box with a hidden scrollbar (`base/utilities.css`). Phones and tablets scroll with the finger and ScrollTrigger follows. In dev, `window.__lenis` is exposed for scripted scrolling.
+- Layout is proportional: `html { font-size }` is viewport-relative (`base/reset.css`), everything is in `rem`, and the breakpoints are 991 / 767 / 479.
+- Motion respects `prefers-reduced-motion`: no loader, no reveals, no ink masks, static map story, finished wordmark.
 - Webflow variant hashes were turned into readable `v-<name>` modifier classes; per-element `#w-node-*` grid placement rules live in `styles/base/grid-placement.css`.
 - Only the homepage is cloned; navigation links point to `#`.
 - The build uses a relative base (`./`), so `dist/` works from any subfolder (it is published at `/honor/` in the Flare Design showcase). Every pattern, including those referenced from CSS custom properties (`--bg-img`, `--bg-grid`, `--ph-mask-image`), lives in `src/assets/patterns/` and is fingerprinted by Vite.
-- `original/` is reference material only; nothing in `src/` imports from it.
 - The footer wordmark is a hand-built SVG (`src/partials/svg/footer-wordmark.html`): hairline letter outlines with drafting marks, drawn on scroll with GSAP DrawSVG; under a pointer (or a finger) the solid letters are inked in through an `feTurbulence` displaced mask, the same technique as the original.

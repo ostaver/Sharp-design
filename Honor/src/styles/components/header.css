@@ -224,18 +224,21 @@
     border-left-width: var(--size--border);
     border-left-color: var(--content--border);
     pointer-events: none;
+    visibility: hidden;
     clip-path: inset(0 0 100%);
     width: calc(100% + 1px);
-    transition-property: all;
-    transition-duration: 0.4s;
-    transition-timing-function: ease;
+    transition:
+      clip-path 0.4s cubic-bezier(0.23, 1, 0.32, 1),
+      visibility 0s linear 0.4s;
   }
 }
 @media screen and (max-width: 991px) {
   .header-menu.bg-global.active {
     opacity: 1;
+    visibility: visible;
     pointer-events: auto;
     clip-path: inset(0);
+    transition-delay: 0s;
   }
 }
 @media screen and (max-width: 991px) {
@@ -286,12 +289,18 @@
 }
 @media screen and (max-width: 991px) {
   .header-menu-btn {
+    width: 100%;
     height: 100%;
     color: var(--content--terriary);
     justify-content: flex-start;
     align-items: center;
     padding: 1.2rem;
+    text-align: left;
     text-decoration: none;
+    background-color: transparent;
+    border: 0;
+    cursor: pointer;
+    transition: color 0.4s;
     display: flex;
     position: relative;
   }
@@ -425,20 +434,21 @@
 .header-menu-item.active .header-menu-item-ic.bot {
   transform: translate(calc(100% + 1.2rem), calc(100% + 1.2rem));
 }
-@media only screen and (min-width: 991px) {
+@media only screen and (min-width: 992px) {
   .header-menu-dropdown-item:last-child {
     border-bottom: unset;
   }
 }
-@media only screen and (min-width: 991px) {
+@media only screen and (min-width: 992px) {
   .header-menu-dropdown {
     transition:
       opacity 0.4s ease,
       grid-template-rows 0.4s ease;
   }
 }
-@media only screen and (min-width: 991px) {
-  .header-menu-item-wrap:hover .header-menu-dropdown {
+@media only screen and (min-width: 992px) {
+  .header-menu-item-wrap:hover .header-menu-dropdown,
+  .header-menu-item-wrap:has(:focus-visible) .header-menu-dropdown {
     grid-template-rows: 1fr;
     opacity: 1;
     pointer-events: all;
@@ -453,9 +463,19 @@
 
 /* --- inline custom CSS (from page embeds) --- */
 @media only screen and (max-width: 991px) {
-  .header-menu-btn.active .header-menu-btn-ic-line:first-child,
+  .header-menu-btn-ic-line {
+    transition-property: transform, opacity;
+    transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  .header-menu-btn.active .header-menu-btn-ic-line:first-child {
+    transform: translateY(calc(var(--size--border) + 0.2rem)) rotate(45deg);
+  }
+  .header-menu-btn.active .header-menu-btn-ic-line:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0);
+  }
   .header-menu-btn.active .header-menu-btn-ic-line:last-child {
-    transform: scale(0);
+    transform: translateY(calc(-1 * (var(--size--border) + 0.2rem))) rotate(-45deg);
   }
 }
 @media only screen and (max-width: 991px) {
@@ -486,12 +506,38 @@
   }
 }
 @media (hover: hover) and (min-width: 992px) {
-  .header-menu-item-wrap:hover .header-menu-item .header-menu-item-ic.top {
+  .header-menu-item-wrap:hover .header-menu-item .header-menu-item-ic.top,
+  .header-menu-item-wrap:has(:focus-visible) .header-menu-item .header-menu-item-ic.top {
     transform: translate(0, 0);
   }
 }
 @media (hover: hover) and (min-width: 992px) {
-  .header-menu-item-wrap:hover .header-menu-item .header-menu-item-ic.bot {
+  .header-menu-item-wrap:hover .header-menu-item .header-menu-item-ic.bot,
+  .header-menu-item-wrap:has(:focus-visible) .header-menu-item .header-menu-item-ic.bot {
     transform: translate(calc(100% + 1.2rem), calc(100% + 1.2rem));
+  }
+}
+
+/* compact menu: the page behind the open panel is dimmed and click-through closes it */
+@media screen and (max-width: 991px) {
+  .header::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-color: color-mix(in srgb, var(--content--primary) 24%, transparent);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+  .header.menu-open::before {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .header.menu-open .header-inner {
+    transform: none;
+  }
+  .header-menu-btn:hover,
+  .header-menu-btn.active {
+    color: var(--content--primary);
   }
 }

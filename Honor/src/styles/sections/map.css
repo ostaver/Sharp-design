@@ -71,7 +71,6 @@
   flex: none;
   width: 55.65rem;
   height: 100%;
-  transition: width 0.4s;
   display: flex;
 }
 .home-map-inner {
@@ -157,9 +156,8 @@
   grid-auto-columns: 1fr;
   padding: 1.2rem;
   transition:
-    width 0.4s,
-    transform 0.4s,
-    opacity 0.4s;
+    width 0.6s cubic-bezier(0.23, 1, 0.32, 1),
+    opacity 0.4s cubic-bezier(0.23, 1, 0.32, 1);
   display: grid;
   position: absolute;
 }
@@ -205,7 +203,7 @@
   border: var(--size--border) solid var(--content--border);
   opacity: 0;
   width: 28rem;
-  transition: opacity 0.4s;
+  transition: opacity 0.5s cubic-bezier(0.23, 1, 0.32, 1);
   position: absolute;
   bottom: 3.2rem;
   left: 3.2rem;
@@ -239,7 +237,7 @@
   grid-template-rows: auto;
   grid-template-columns: minmax(1px, 1fr);
   grid-auto-columns: minmax(1px, 1fr);
-  transition: height 0.4s;
+  transition: height 0.6s cubic-bezier(0.23, 1, 0.32, 1);
   display: grid;
   overflow: hidden;
 }
@@ -254,7 +252,7 @@
   flex: none;
   width: 0;
   height: 100%;
-  transition: width 0.4s;
+  transition: width 0.9s cubic-bezier(0.23, 1, 0.32, 1);
   display: flex;
   overflow: hidden;
 }
@@ -263,13 +261,12 @@
   pointer-events: none;
   grid-area: 1/1/2/2;
   padding: 1.2rem;
-  transition-property: opacity;
-  transition-duration: 0.4s;
-  transition-timing-function: ease;
+  transition: opacity 0.2s ease-out;
 }
 .home-map-intro-content-item.active {
   opacity: 1;
   pointer-events: auto;
+  transition: opacity 0.5s cubic-bezier(0.23, 1, 0.32, 1) 0.15s;
 }
 .home-map-main-img-main {
   width: 100%;
@@ -284,7 +281,7 @@
 @media screen and (max-width: 991px) {
   .home-map-main-stick {
     flex: 0 auto;
-    height: 500dvh;
+    height: max(500dvh, 420vw);
     overflow: visible;
   }
 }
@@ -514,7 +511,7 @@
   display: block;
 }
 .home-map-number {
-  transition: opacity 0.4s ease;
+  transition: opacity 0.4s cubic-bezier(0.23, 1, 0.32, 1);
   cursor: pointer;
 }
 .home-map-number-wrap.active .home-map-number {
@@ -527,7 +524,7 @@
 .home-map-number-box {
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.4s ease;
+  transition: opacity 0.4s cubic-bezier(0.23, 1, 0.32, 1);
 }
 .home-map-main-img.active .home-map-main-img-inner,
 .home-map-main-img.active .home-map-intro {
@@ -551,4 +548,124 @@
 }
 .home-map-intro-content-item {
   align-self: start;
+}
+
+/* --- polish --- */
+
+/* the fixed header sits on top of the stage: keep the plan and the panel label clear of it */
+@media (min-width: 992px) {
+  .home-map-main-stick-inner {
+    padding-top: 4rem;
+  }
+  .home-map-content-label-wrap {
+    padding-top: 8.4rem;
+  }
+}
+
+/* markers: the badge scales with the plan on small screens, the hit area is sized in JS */
+.home-map-number-badge {
+  --base: 1;
+  --lift: 1;
+  transform: scale(calc(var(--base) * var(--lift)));
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.home-map-number:active .home-map-number-badge {
+  --lift: 0.94;
+}
+@media (hover: hover) {
+  .home-map-number-wrap.hover .home-map-number-badge {
+    --lift: 1.12;
+  }
+}
+@media (max-width: 991px) {
+  .home-map-number-badge {
+    --base: 1.5;
+  }
+}
+@media (max-width: 767px), (max-height: 500px) {
+  .home-map-number-badge {
+    --base: 2.2;
+  }
+}
+.home-map-main-img-sub-hover.focus {
+  outline: max(2px, 0.2rem) solid var(--content--brand);
+  outline-offset: 0.4rem;
+}
+.home-map-number-wrap.active .home-map-number:focus-visible {
+  outline: none;
+}
+
+/* checklist rows answer the pointer */
+.home-map-content-item {
+  transition: background-color 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.home-map-content-item-ic-inner svg {
+  transition: stroke 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+@media (hover: hover) {
+  .home-map-content-item:hover {
+    background-color: color-mix(in srgb, var(--content--brand) 5%, transparent);
+  }
+  .home-map-content-item:hover .home-map-content-item-ic-inner svg {
+    stroke: var(--content--brand);
+  }
+}
+
+/* short landscape screens: the intro card would cover the plan, so the plan takes the space beside it */
+@media (max-width: 991px) and (orientation: landscape) {
+  .home-map-main-img {
+    padding-left: 34rem;
+  }
+}
+
+/* reduced motion: nothing is pinned or scrubbed, the finished story is laid out as static content */
+@media (prefers-reduced-motion: reduce) {
+  .home-map-main,
+  .home-map-main-stick,
+  .home-map-inner {
+    height: auto;
+  }
+  .home-map-inner,
+  .home-map-main-stick-inner {
+    position: static;
+  }
+  .home-map-main-stick-inner {
+    height: auto;
+    min-height: var(--size--max-screen-height);
+  }
+  .home-map-content {
+    flex: 1;
+  }
+  .home-map-content-wrap,
+  .home-map-intro-content,
+  .home-map-main-img-sub-hover,
+  .home-map-number-badge {
+    transition: none;
+  }
+  .home-map-main-inner {
+    grid-template-rows: auto auto minmax(0, 1fr);
+  }
+  .home-map .home-map-main-inner > .home-intel-inner {
+    grid-row: 1/2 !important;
+    padding: 8rem 3.2rem 1.2rem;
+  }
+  .home-map .home-map-main-inner > .home-intel-inner + .home-intel-inner {
+    grid-row: 2/3 !important;
+    padding: 0 3.2rem 4rem;
+  }
+  .home-map .home-map-main-img {
+    grid-row: 3/4 !important;
+    min-height: 76rem;
+  }
+  @media (max-width: 991px) {
+    .home-map .home-map-main-img {
+      min-height: 62rem;
+    }
+  }
+  .home-map-main-img-inner,
+  .home-map-intro {
+    opacity: 1;
+  }
 }

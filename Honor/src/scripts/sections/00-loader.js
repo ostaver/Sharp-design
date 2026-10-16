@@ -6,10 +6,16 @@ const MIN_DURATION = 3.2; // seconds the loader always plays
 const MAX_WAIT = 9; // seconds before stalled assets stop holding the loader
 const HOLD_AT_FULL = 0.4; // seconds the counter rests on 100%
 const EXIT_DURATION = 1.6;
+const OPENING_AT = 0.5; // seconds into the exit when the page intro may begin
 const BAR_REST_COLOR = '#b3b3af';
 
+let markOpening;
 let markDone;
-/** Resolves once the overlay is gone and the page intro (header, hero, cookie banner) may play. */
+/** Resolves once the shutter has (almost) opened: the header and hero intro start here, not after the tail of the ease. */
+export const loaderOpening = new Promise((resolve) => {
+  markOpening = resolve;
+});
+/** Resolves once the overlay is gone and scrolling is unlocked. */
 export const loaderDone = new Promise((resolve) => {
   markDone = resolve;
 });
@@ -69,7 +75,7 @@ function playIntro(loading) {
 
   gsap
     .timeline()
-    .to(strokes, { strokeDashoffset: 0, duration: 1.3, ease: 'power1.out', stagger: { amount: 3, from: 'start' } }, 0)
+    .to(strokes, { strokeDashoffset: 0, duration: 1.3, ease: 'power1.out', stagger: { amount: 1.7, from: 'start' } }, 0)
     .to(titleSplit.lines, { yPercent: 0, opacity: 1, duration: 0.5, ease: 'power2.out', stagger: 0.08 }, 0)
     .to(progressText, { opacity: 1, duration: 0.6, ease: 'power2.out' }, 0)
     .to(rows, { opacity: 1, duration: 0.25, ease: 'power3.out', stagger: 0.2 }, 0);
@@ -105,7 +111,7 @@ function trackPointer(loading) {
 }
 
 /** The loading bar splits: its halves sweep to the hero image edges while the overlay opens like a shutter. */
-function playExit(loading, onComplete) {
+function playExit(loading, onOpening, onComplete) {
   const find = (selector) => loading.querySelector(selector);
   const main = find('.loading-main');
   const barOrigin = find('.loading-progress').getBoundingClientRect().top;
@@ -121,6 +127,7 @@ function playExit(loading, onComplete) {
 
   gsap
     .timeline({ onComplete })
+    .call(onOpening, null, OPENING_AT)
     .to(find('.item-top'), { y: image.top - barOrigin, backgroundColor: BAR_REST_COLOR, duration: EXIT_DURATION, ease: 'expo.out' }, 0)
     .to(find('.item-bot'), { y: image.bottom - barOrigin, backgroundColor: BAR_REST_COLOR, duration: EXIT_DURATION, ease: 'expo.out' }, 0)
     .to(shutter, { open: 1, duration: EXIT_DURATION, ease: 'expo.out', onUpdate: renderShutter }, 0)
@@ -131,11 +138,17 @@ export function init() {
   const loading = document.querySelector('.loading');
   if (!loading || prefersReducedMotion()) {
     loading?.classList.add('loaded');
+    markOpening();
     markDone();
     return;
   }
 
   stopScroll();
+  // nothing behind the overlay may take focus (or announce itself) until it has opened
+  const page = Array.from(document.querySelectorAll('.header, .main-inner'));
+  page.forEach((el) => {
+    el.inert = true;
+  });
   playIntro(loading);
   const stopPointer = trackPointer(loading);
 
@@ -159,8 +172,11 @@ export function init() {
     render();
     stopPointer();
     gsap.delayedCall(HOLD_AT_FULL, () =>
-      playExit(loading, () => {
+      playExit(loading, markOpening, () => {
         loading.classList.add('loaded');
+        page.forEach((el) => {
+          el.inert = false;
+        });
         startScroll();
         markDone();
       }),

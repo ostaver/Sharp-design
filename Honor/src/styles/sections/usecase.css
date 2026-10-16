@@ -1,4 +1,7 @@
 .home-usecase {
+  --usecase-dur: 0.45s;
+  --usecase-ease: cubic-bezier(0.65, 0, 0.35, 1);
+  --usecase-fade: 0.6s;
   position: relative;
 }
 .home-usecase-img {
@@ -16,24 +19,71 @@
   position: relative;
   overflow: hidden;
 }
+.home-usecase-img-list {
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+  grid-template-rows: auto;
+  grid-template-columns: minmax(1px, 1fr);
+  grid-auto-columns: minmax(1px, 1fr);
+  height: 100%;
+  mix-blend-mode: multiply;
+  display: grid;
+}
+
+/* Cross-fade: the chosen photo fades in on top while the previous one stays opaque underneath and
+   is only dropped once it is fully covered, so the picture never dips towards the paper colour.
+   Multiply is applied to the whole stack, not per photo, so stacked photos never multiply each other. */
 .home-usecase-img-item {
   opacity: 0;
-  mix-blend-mode: multiply;
+  z-index: 0;
   grid-area: 1/1/2/2;
   justify-content: center;
   align-items: center;
   width: 100%;
   height: 100%;
-  transition-property: transform, opacity;
-  transition-duration: 0.4s, 0.4s;
-  transition-timing-function: ease, ease;
+  transition:
+    opacity 0s linear var(--usecase-fade),
+    transform 0s linear var(--usecase-fade);
   display: flex;
   position: relative;
   transform: scale(1.04);
 }
 .home-usecase-img-item.active {
   opacity: 1;
+  z-index: 1;
+  transition:
+    opacity var(--usecase-fade) ease,
+    transform 1.4s cubic-bezier(0.22, 1, 0.36, 1);
   transform: scale(1);
+}
+
+/* The photos are portrait but shown in wide frames on tablet / phone: pick the band that holds the subject. */
+.home-usecase-img-item .img-basic.img-abs.img-cover {
+  object-position: 50% var(--focus-y, 50%);
+}
+.home-usecase-img-item:nth-child(1) {
+  --focus-y: 80%;
+}
+.home-usecase-img-item:nth-child(2) {
+  --focus-y: 25%;
+}
+.home-usecase-img-item:nth-child(3) {
+  --focus-y: 60%;
+}
+.home-usecase-img-item:nth-child(4) {
+  --focus-y: 0%;
+}
+.home-usecase-img-item:nth-child(5) {
+  --focus-y: 15%;
+}
+.home-usecase-img-item:nth-child(6) {
+  --focus-y: 8%;
+}
+.home-usecase-img-item:nth-child(7) {
+  --focus-y: 25%;
+}
+.home-usecase-img-item:nth-child(8) {
+  --focus-y: 55%;
 }
 .home-usecase-content {
   flex-flow: column;
@@ -63,45 +113,49 @@
   display: flex;
 }
 .home-usecase-faq-item {
-  cursor: pointer;
   padding: 2.4rem 3.2rem 2.4rem 15.4rem;
   position: relative;
 }
+.home-usecase-faq-item .line.top {
+  display: none;
+}
+.home-usecase-faq-item:first-child .line.top {
+  display: block;
+}
+.home-usecase-faq-item-head {
+  margin: 0;
+  font: inherit;
+}
+
+/* The whole row is the button: its ::after stretches over the row's padding and open text. */
 .home-usecase-faq-item-title-wrap {
   grid-column-gap: 1.6rem;
+  appearance: none;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
   justify-content: flex-start;
   align-items: center;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: left;
   display: flex;
 }
-.home-usecase-faq-item-numb {
-  color: var(--content--disable);
-  flex: none;
-  align-self: flex-start;
-  margin-top: 0.4rem;
-  margin-right: 1.6rem;
-  transition: color 0.4s;
+.home-usecase-faq-item-title-wrap::after {
+  content: "";
+  position: absolute;
+  inset: 0;
 }
-.home-usecase-faq-item-title {
-  color: var(--content--primary);
-  flex: 1;
+.home-usecase-faq-item-title-wrap:focus-visible {
+  outline: none;
 }
-.home-usecase-faq-item-ic {
-  width: 2rem;
-  color: var(--content--border);
-  flex: none;
-  align-self: center;
-  margin-top: 0.1rem;
-  transition: color 0.4s;
-  display: flex;
-}
-.home-usecase-faq-item-sub-wrap {
-  padding-top: 1.6rem;
-  padding-left: 6.4rem;
-  display: none;
-}
-.home-usecase-faq-item-sub {
-  padding-top: 0.8rem;
-  display: none;
+.home-usecase-faq-item-title-wrap:focus-visible::after {
+  outline: max(2px, 0.2rem) solid var(--content--brand);
+  outline-offset: -0.2rem;
 }
 .home-usecase-faq-item-title-inner {
   flex: 1;
@@ -109,78 +163,110 @@
   align-items: center;
   display: flex;
 }
-.home-usecase-faq-item-tag {
-  color: var(--content--disable);
-  padding: 0.2rem 0.4rem;
+.home-usecase-faq-item-title {
+  color: var(--content--primary);
+  flex: 1;
 }
-.home-usecase-img-list {
-  grid-column-gap: 0px;
-  grid-row-gap: 0px;
-  grid-template-rows: auto;
-  grid-template-columns: minmax(1px, 1fr);
-  grid-auto-columns: minmax(1px, 1fr);
-  height: 100%;
+.home-usecase-faq-item-title .heading {
+  display: block;
+}
+.home-usecase-faq-item-ic {
+  width: 2rem;
+  color: var(--content--border);
+  flex: none;
+  align-self: center;
+  margin-top: 0.1rem;
+  transition: color var(--usecase-dur) var(--usecase-ease);
+  display: flex;
+}
+.home-usecase-faq-item-ic .path-vertical {
+  transition-duration: var(--usecase-dur);
+  transition-timing-function: var(--usecase-ease);
+}
+.home-usecase-faq-item.active .home-usecase-faq-item-ic {
+  color: var(--content--primary);
+}
+.home-usecase-faq-item.active .path-vertical {
+  transform: scale(0);
+}
+
+/* Accordion panel: the grid row animates 0fr -> 1fr, so it is driven by CSS alone (same clock as the icon)
+   and is interruptible; visibility keeps the closed text out of the accessibility tree. */
+.home-usecase-faq-item-sub {
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition:
+    grid-template-rows var(--usecase-dur) var(--usecase-ease),
+    visibility 0s linear var(--usecase-dur);
   display: grid;
 }
-.home-usecase-faq-item-ic-wrap {
-  color: var(--content--border);
-  justify-content: flex-start;
-  align-items: center;
-  transition: color 0.4s;
-  display: flex;
+.home-usecase-faq-item.active .home-usecase-faq-item-sub {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  transition-delay: 0s;
+}
+.home-usecase-faq-item-sub-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+.home-usecase-faq-item-sub .txt {
+  padding-top: 0.8rem;
+  opacity: 0;
+  transition: opacity 0.2s linear;
+}
+.home-usecase-faq-item.active .home-usecase-faq-item-sub .txt {
+  opacity: 1;
+  transition: opacity 0.35s linear 0.12s;
+}
+@media (hover: hover) {
+  .home-usecase-faq-item:hover .home-usecase-faq-item-ic {
+    color: var(--content--primary);
+  }
+  .home-usecase-faq-item:not(:last-child):hover .line.line-dash.line-horizital.bot.left.right.home-usecase-faq-item-line-hover {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-usecase-img-item,
+  .home-usecase-img-item.active,
+  .home-usecase-faq-item-ic,
+  .home-usecase-faq-item-ic .path-vertical,
+  .home-usecase-faq-item-sub,
+  .home-usecase-faq-item-sub .txt {
+    transition-duration: 0s;
+    transition-delay: 0s;
+  }
 }
 @media screen and (max-width: 991px) {
   .home-usecase-img.bg-global {
     min-height: auto;
     margin-right: 0;
   }
-}
-@media screen and (max-width: 991px) {
   .home-usecase-img-item {
-    height: 80rem;
+    height: min(80rem, 70dvh);
   }
-}
-@media screen and (max-width: 991px) {
   .home-usecase-content {
     min-height: 0;
     margin-left: 0;
   }
-}
-@media screen and (max-width: 991px) {
   .home-usecase-title-wrap {
     flex: 0 auto;
     margin-left: 0;
     padding: 6.4rem 2.4rem 2.4rem;
   }
-}
-@media screen and (max-width: 991px) {
   .home-usecase-title {
     max-width: 36rem;
   }
-}
-@media screen and (max-width: 991px) {
   .home-usecase-faq-list {
     min-height: 0;
   }
-}
-@media screen and (max-width: 991px) {
   .home-usecase-faq-item {
     padding: 1.6rem 2.4rem;
   }
-}
-@media screen and (max-width: 991px) {
   .home-usecase-faq-item-title-wrap {
     grid-column-gap: 1.2rem;
   }
-}
-@media screen and (max-width: 991px) {
-  .home-usecase-faq-item-numb {
-    margin-top: 0.3rem;
-    margin-right: 0;
-  }
-}
-@media screen and (max-width: 991px) {
-  .home-usecase-faq-item-sub {
+  .home-usecase-faq-item-sub .txt {
     padding-top: 1.2rem;
   }
 }
@@ -188,75 +274,25 @@
   .home-usecase-img.bg-global {
     margin-right: 0;
   }
-}
-@media screen and (max-width: 767px) {
   .home-usecase-img-item {
     height: 25.6rem;
   }
-}
-@media screen and (max-width: 767px) {
   .home-usecase-content {
     margin-left: 0;
   }
-}
-@media screen and (max-width: 767px) {
   .home-usecase-title-wrap {
     padding: 6.4rem 1.6rem 2.4rem;
   }
-}
-@media screen and (max-width: 767px) {
   .home-usecase-label {
     margin-bottom: 1.2rem;
   }
-}
-@media screen and (max-width: 767px) {
   .home-usecase-faq-item {
     padding: 2rem 1.6rem;
   }
-}
-@media screen and (max-width: 767px) {
   .home-usecase-faq-item-title-wrap {
     grid-column-gap: 0.8rem;
   }
-}
-@media screen and (max-width: 767px) {
-  .home-usecase-faq-item-numb {
-    margin-top: 0.2rem;
-    margin-bottom: 0;
-  }
-}
-@media screen and (max-width: 767px) {
-  .home-usecase-faq-item-sub {
+  .home-usecase-faq-item-sub .txt {
     padding-top: 0.8rem;
-    display: none;
   }
-}
-@media screen and (max-width: 767px) {
-  .home-usecase-faq-item-tag {
-    flex: none;
-  }
-}
-
-/* --- inline custom CSS (from page embeds) --- */
-.home-usecase-faq-item .line.top {
-  display: none;
-}
-.home-usecase-faq-item:first-child .line.top {
-  display: block;
-}
-.home-usecase-faq-item.active .home-usecase-faq-item-numb {
-  color: var(--content--brand) !important;
-}
-.home-usecase-faq-item.active .path-vertical {
-  transform: scale(0);
-}
-.home-usecase-faq-item:hover .home-usecase-faq-item-numb {
-  color: var(--content--brand);
-}
-.home-usecase-faq-item:hover .home-usecase-faq-item-ic {
-  color: var(--content--black);
-}
-.home-usecase-faq-item:not(:last-child):hover
-  .home-usecase-faq-item-line-hover {
-  opacity: 1 !important;
 }

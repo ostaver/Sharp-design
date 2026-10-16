@@ -11,22 +11,28 @@
             <div class="footer-form-label"><div class="txt txt-font-mono txt-14 mb-txt-12">Commodo</div></div>
             <div class="footer-form-inner">
               <div class="footer-form w-form">
-                <form id="footer-form" name="wf-form-Footer-Form" method="get" class="footer-form-main">
+                <form id="footer-form" name="wf-form-Footer-Form" method="get" class="footer-form-main" novalidate>
                   <div class="footer-form-title">
                     <div class="txt txt-16 mb-txt-14">
                       Duis aute irure in reprehenderit voluptate?<br />Velit esse cillum fugiat nulla pariatur.
                     </div>
+                    <div class="footer-form-error txt txt-font-mono txt-12 mb-txt-12" id="footer-form-error" role="alert">Ipsum dolor sit amet</div>
                   </div>
                   <div class="input-wrap footer-form-input-wrap">
                     <input
                       class="txt txt-16 input footer-form-input w-input"
-                      autocomplete="off"
+                      autocomplete="email"
+                      autocapitalize="off"
+                      spellcheck="false"
+                      inputmode="email"
+                      enterkeyhint="send"
                       maxlength="256"
                       name="email"
                       placeholder="Enter your email"
                       type="email"
                       id="email"
                       aria-label="Email address"
+                      aria-describedby="footer-form-error"
                       required=""
                     /><button type="submit" aria-label="Subscribe" class="input-submit footer-form-input-submit">
                       <div class="input-submit-ic">
@@ -35,7 +41,7 @@
                     </button>
                   </div>
                 </form>
-                <div class="footer-form-success w-form-done">
+                <div class="footer-form-success w-form-done" tabindex="-1">
                   <div class="footer-form-success-inner">
                     <div class="footer-form-success-title"><div class="heading h6 mb-h5">Sint occaecat cupidatat!</div></div>
                     <div class="footer-form-success-sub">
@@ -45,7 +51,6 @@
                     </div>
                   </div>
                 </div>
-                <div class="w-form-fail"><div>Ipsum dolor sit amet consectetur adipiscing elit sed.</div></div>
               </div>
             </div>
             <div class="line line-vertical left top"></div>
@@ -53,7 +58,7 @@
         </div>
         <div id="w-node-_35b68888-015e-8c8e-2f22-bde4cb8c5a57-4ef3318a" class="footer-body">
           <div class="footer-content-item">
-            <div id="w-node-ec209fda-4140-b2bf-5394-7c1f4ef331af-4ef3318a" class="footer-menu">
+            <nav id="w-node-ec209fda-4140-b2bf-5394-7c1f4ef331af-4ef3318a" class="footer-menu" aria-label="Footer">
               <div class="footer-menu-item item-right">
                 <div class="footer-menu-item-label"><div class="txt txt-font-mono txt-14 mb-txt-12">Do eiusmod</div></div>
                 <div class="footer-menu-item-link-wrap item-top">
@@ -88,7 +93,7 @@
                 </div>
                 <div class="line line-vertical left top"></div>
               </div>
-            </div>
+            </nav>
             <div class="line line-horizital bot left right footer-content-item-line"></div>
           </div>
           <div class="footer-content-item item-bot">
@@ -139,9 +144,6 @@
           <div class="line line-vertical left top"></div>
           <div class="footer-logo-inner full">
             <div class="ic-embed w-embed"><include src="svg/logo-footer"></include></div>
-          </div>
-          <div class="footer-logo-inner sketch">
-            <img src="/src/assets/photos/footer-sketch.jpg" alt="Brown concrete building" class="img-basic img-fill" loading="lazy" />
           </div>
         </div>
         <div class="line line-horizital bot left right"></div>

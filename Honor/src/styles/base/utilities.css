@@ -667,9 +667,21 @@
 .lenis.lenis-smooth [data-lenis-prevent] {
   overscroll-behavior: contain;
 }
-.body-inner,
-.main-inner {
+.body-inner {
   overflow: hidden;
+}
+/*
+ * The page scrolls inside .main-inner. Lenis smooths wheel input by moving scrollTop, but touch (and keyboard) input
+ * is native, so the box must be a real, hidden-scrollbar scroller. overflow:hidden here froze phones and tablets.
+ */
+.main-inner {
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: none;
+  scrollbar-width: none;
+}
+.main-inner::-webkit-scrollbar {
+  display: none;
 }
 .main {
   clip-path: inset(var(--mask-percent)) !important;

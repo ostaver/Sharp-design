@@ -32,6 +32,7 @@ let uid = 0;
  *  data-variant="circle" : a circle growing from the centre
  */
 export function initInkMasks(root = document) {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return [];
   ensureFilter();
   const triggers = [];
 
@@ -44,6 +45,7 @@ export function initInkMasks(root = document) {
     const id = `ink-mask-${++uid}`;
     const sub = document.createElement('div');
     sub.className = 'ink-mask-img sub ink-filter';
+    sub.setAttribute('aria-hidden', 'true');
     sub.innerHTML = `
       <svg width="100%" height="100%" preserveAspectRatio="none" class="layer" style="position:absolute;inset:0">
         <defs><mask id="${id}" maskContentUnits="userSpaceOnUse"></mask></defs>
@@ -53,6 +55,7 @@ export function initInkMasks(root = document) {
       // the unmasked image stays visible as a faded base while the full-strength copy is revealed over it
       const base = main.cloneNode(true);
       base.className = 'ink-mask-img base';
+      base.setAttribute('aria-hidden', 'true');
       el.insertBefore(base, main);
     }
     const svg = sub.querySelector('svg');

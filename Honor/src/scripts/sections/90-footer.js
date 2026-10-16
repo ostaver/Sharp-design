@@ -1,10 +1,12 @@
-import { gsap, ScrollTrigger } from '../core/gsap.js';
+import { gsap } from '../core/gsap.js';
+import { scroller } from '../core/scroll.js';
 import { revealImage, revealOnScroll } from '../components/reveal.js';
 
 /**
  * Subscribe form, entirely client side (there is no backend):
- * the arrow button lights up once the address is valid, submitting an invalid one flags the field,
- * a valid one swaps the form for the thank-you message.
+ * the arrow button lights up once the address is valid, submitting an invalid one flags the field
+ * (message + shake, announced to assistive tech), a valid one swaps the form for the thank-you message
+ * and moves keyboard focus onto it.
  */
 function initForm() {
   const form = document.getElementById('footer-form');
@@ -12,28 +14,43 @@ function initForm() {
   const submit = form?.querySelector('button[type="submit"]');
   const wrap = form?.querySelector('.input-wrap');
   const success = document.querySelector('.footer-form-success');
-  if (!input || !submit || !wrap) return;
+  if (!input || !submit || !wrap || !success) return;
 
-  form.noValidate = true;
-  const isValid = () => input.validity.valid;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const isValid = () => input.validity.valid && /\S+@\S+\.\S+/.test(input.value);
+
+  const flag = (on) => {
+    wrap.classList.toggle('error', on);
+    form.classList.toggle('has-error', on);
+    if (on) input.setAttribute('aria-invalid', 'true');
+    else input.removeAttribute('aria-invalid');
+  };
 
   input.addEventListener('input', () => {
     submit.classList.toggle('active', isValid());
-    if (isValid() || !input.value) wrap.classList.remove('error');
+    if (isValid() || !input.value) flag(false);
   });
   input.addEventListener('blur', () => {
-    if (input.value) wrap.classList.toggle('error', !isValid());
+    if (input.value) flag(!isValid());
   });
 
   form.addEventListener('submit', (event) => {
     event.preventDefault();
     if (!isValid()) {
-      wrap.classList.add('error');
+      flag(true);
+      input.focus();
+      if (!reduceMotion.matches) {
+        wrap.animate(
+          { transform: ['translateX(0)', 'translateX(-0.6rem)', 'translateX(0.5rem)', 'translateX(-0.3rem)', 'translateX(0)'] },
+          { duration: 420, easing: 'cubic-bezier(0.23, 1, 0.32, 1)' },
+        );
+      }
       return;
     }
-    wrap.classList.remove('error');
+    flag(false);
     form.classList.add('hidden');
-    success?.classList.add('active');
+    success.classList.add('active');
+    success.focus({ preventScroll: true });
   });
 }
 
@@ -112,24 +129,47 @@ function initWordmark() {
   };
   const moveX = gsap.quickTo(ink, 'x', { duration: 0.5, ease: 'power3.out', onUpdate: draw });
   const moveY = gsap.quickTo(ink, 'y', { duration: 0.5, ease: 'power3.out', onUpdate: draw });
-  const toSvg = (event) => {
+  const toSvg = ({ clientX, clientY }) => {
     const box = svg.getBoundingClientRect();
-    return [vx + ((event.clientX - box.left) / box.width) * vw, vy + ((event.clientY - box.top) / box.height) * vh];
+    return [vx + ((clientX - box.left) / box.width) * vw, vy + ((clientY - box.top) / box.height) * vh];
+  };
+
+  // last pointer position while it is over the wordmark, so the blot also follows when the page scrolls beneath it
+  let pointer = null;
+  const follow = () => {
+    if (!pointer) return;
+    const [x, y] = toSvg(pointer);
+    moveX(x);
+    moveY(y);
   };
 
   // pointerenter / pointerleave also fire for a finger pressing and lifting, so touch inks while held
   frame.addEventListener('pointerenter', (event) => {
+    pointer = event;
     const [x, y] = toSvg(event);
     const radius = Math.max(INK_RADIUS, 64 / (svg.getBoundingClientRect().width / vw));
     gsap.set(ink, { x, y });
-    gsap.to(ink, { r: radius, duration: 0.9, ease: 'expo.out', onUpdate: draw });
+    gsap.to(ink, { r: radius, duration: 0.9, ease: 'expo.out', overwrite: 'auto', onUpdate: draw });
   });
   frame.addEventListener('pointermove', (event) => {
-    const [x, y] = toSvg(event);
-    moveX(x);
-    moveY(y);
+    pointer = event;
+    follow();
   });
-  frame.addEventListener('pointerleave', () => gsap.to(ink, { r: 0, duration: 0.8, ease: 'power3.inOut', onUpdate: draw }));
+  // a tap would otherwise vanish instantly, so a lifted finger lets the blot linger a moment
+  const release = (event) => {
+    pointer = null;
+    gsap.to(ink, {
+      r: 0,
+      duration: 0.8,
+      delay: event.pointerType === 'mouse' ? 0 : 0.45,
+      ease: 'power3.inOut',
+      overwrite: 'auto',
+      onUpdate: draw,
+    });
+  };
+  frame.addEventListener('pointerleave', release);
+  frame.addEventListener('pointercancel', release);
+  scroller.addEventListener('scroll', follow, { passive: true });
 }
 
 export function init() {

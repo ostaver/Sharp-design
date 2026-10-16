@@ -28,12 +28,16 @@ function initHeadingScrub(heading) {
   });
 }
 
-/** Client logo strip: looping auto-advancing slider moved by the prev/next controls. */
+/**
+ * Client logo strip: looping slider moved by the prev/next controls. It auto-advances only while it is on screen, and
+ * stays put under the pointer, while anything inside it has keyboard focus, and for visitors who prefer reduced motion.
+ */
 function initLogoSlider(root) {
   const container = root.querySelector('.home-intro-logo-cms');
   if (!container) return;
 
-  new Swiper(container, {
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const swiper = new Swiper(container, {
     modules: [A11y, Autoplay, Navigation],
     wrapperClass: 'home-intro-logo-list',
     slideClass: 'home-intro-logo-item',
@@ -41,13 +45,31 @@ function initLogoSlider(root) {
     loop: true,
     speed: 600,
     slidesPerGroup: 1,
-    breakpoints: { 768: { slidesPerGroup: 3 } },
-    autoplay: { delay: 3000, disableOnInteraction: false },
+    // loop needs (visible slides + group size) <= logo count, and the group must divide the count (no blank fillers)
+    breakpoints: { 992: { slidesPerGroup: 2 } },
+    autoplay: reduceMotion ? false : { delay: 3000, disableOnInteraction: false, pauseOnMouseEnter: true },
     navigation: {
       prevEl: root.querySelector('.home-intro-control.item-prev'),
       nextEl: root.querySelector('.home-intro-control.item-next'),
     },
     a11y: { prevSlideMessage: 'Previous logos', nextSlideMessage: 'Next logos', slideLabelMessage: 'Logo {{index}} of {{slidesLength}}' },
+  });
+  if (reduceMotion) return;
+
+  let visible = false;
+  let focused = false;
+  const sync = () => (visible && !focused ? swiper.autoplay.start() : swiper.autoplay.stop());
+  new IntersectionObserver(([entry]) => {
+    visible = entry.isIntersecting;
+    sync();
+  }).observe(container);
+  container.addEventListener('focusin', (event) => {
+    focused = event.target.matches(':focus-visible');
+    sync();
+  });
+  container.addEventListener('focusout', () => {
+    focused = false;
+    sync();
   });
 }
 
@@ -55,12 +77,15 @@ function initLogoSlider(root) {
 function initPartnerEntrance(root) {
   const strip = root.querySelector('.home-intro-partner-inner');
   if (!strip) return;
-  gsap.from(strip, {
-    y: 32,
-    opacity: 0,
-    duration: 1,
-    ease: 'power3.out',
-    scrollTrigger: { trigger: strip, start: 'top 90%', once: true },
+  gsap.matchMedia().add('(prefers-reduced-motion: no-preference)', () => {
+    gsap.from(strip, {
+      y: 32,
+      opacity: 0,
+      duration: 1,
+      ease: 'power3.out',
+      clearProps: 'transform,opacity',
+      scrollTrigger: { trigger: strip, start: 'top 90%', once: true },
+    });
   });
 }
 

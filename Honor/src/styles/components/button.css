@@ -460,38 +460,27 @@
     max-width: 100%;
   }
 }
-@media screen and (max-width: 991px) {
+/* No wipe below 992px or without a hover-capable pointer (see components/button.js): keep the resting colours so a tap never leaves white-on-paper text behind. */
+@media screen and (max-width: 991px), (hover: none) {
   .btn-fill:hover {
     color: var(--content--terriary);
   }
-}
-@media screen and (max-width: 991px) {
   .btn-fill:hover:where(.v-outline) {
     color: var(--content--primary);
   }
-}
-@media screen and (max-width: 991px) {
   .btn-fill:hover:where(.v-outline-2) {
     color: var(--content--brand);
   }
-}
-@media screen and (max-width: 991px) {
   .btn-fill:hover:where(.v-no-ic) {
     color: var(--content--terriary);
   }
-}
-@media screen and (max-width: 991px) {
   .btn-fill:hover:where(.v-ic-ctl),
   .btn-fill:hover:where(.v-outline-p32) {
     color: var(--content--primary);
   }
-}
-@media screen and (max-width: 991px) {
   .btn-fill:hover:where(.v-no-ic-small) {
     color: var(--content--terriary);
   }
-}
-@media screen and (max-width: 991px) {
   .btn-fill-bg {
     display: none;
   }

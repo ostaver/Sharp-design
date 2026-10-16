@@ -396,7 +396,7 @@
 }
 @media screen and (max-width: 991px) {
   .home-hero-img.bg-global {
-    padding: 3rem 2.4rem;
+    padding: 3.2rem;
   }
 }
 @media screen and (max-width: 991px) {
@@ -456,7 +456,7 @@
 }
 @media screen and (max-width: 767px) {
   .home-hero-img.bg-global {
-    padding: 1.6rem;
+    padding: 2.8rem;
   }
 }
 @media screen and (max-width: 767px) {
@@ -471,6 +471,48 @@
 }
 .home-hero-img-deco-inner .txt:first-child {
   opacity: 0.8;
+}
+
+@media screen and (max-width: 991px) {
+  .home-hero-img-inner .img-basic.img-abs {
+    position: absolute;
+    inset: 0;
+    object-fit: cover;
+    object-position: 50% 50%;
+  }
+  .home-hero-title .heading {
+    text-wrap: balance;
+  }
+}
+
+/* the title is split into masked lines for the intro: keep the line pitch equal to the unsplit text */
+.home-hero-title .heading-mask-line-mask,
+.home-hero-sub .heading-mask-line-mask {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* the ticker dissolves at both edges instead of being cut by the frame line */
+.home-hero-work-wrap {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 3.2rem, #000 calc(100% - 3.2rem), transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 3.2rem, #000 calc(100% - 3.2rem), transparent);
+}
+
+/* short landscape screens (phones turned sideways): the hero grows past the fold instead of squeezing the image */
+@media screen and (max-width: 991px) and (max-height: 520px) and (orientation: landscape) {
+  .home-hero {
+    height: auto;
+    min-height: var(--size--max-screen-height);
+  }
+  .home-hero-img.bg-global {
+    padding: 2.8rem;
+  }
+  .home-hero-img-wrap {
+    min-height: calc(var(--size--max-screen-height) - var(--size--padding-hero) - 7rem);
+  }
+  .home-hero-ruler {
+    display: none;
+  }
 }
 
 /* --- inline custom CSS (from page embeds) --- */

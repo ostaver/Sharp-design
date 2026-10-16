@@ -4,6 +4,30 @@ import { scroller } from '../core/scroll.js';
 import { revealImage, revealOnScroll } from '../components/reveal.js';
 
 /**
+ * The row illustrations are pure CSS loops. Once 45% of a row's image is on screen (the same moment
+ * the photo itself is revealed) `.is-shown` lets its overlays fade in and `.is-live` (see why.css)
+ * starts the loop from its first frame; `.is-live` is dropped when the row has fully left, so nothing
+ * runs off-screen and every row always opens at the beginning. On phones the off-screen slides are
+ * clipped by the slider, so the same observer covers the swipe.
+ */
+function playWhenVisible(images) {
+  const SHOWN = 0.45;
+  const observer = new IntersectionObserver(
+    (entries) =>
+      entries.forEach(({ target, isIntersecting, intersectionRatio }) => {
+        if (!isIntersecting) target.classList.remove('is-live', 'is-shown');
+        else if (intersectionRatio >= SHOWN - 0.01) target.classList.add('is-live', 'is-shown');
+      }),
+    { threshold: [0, SHOWN] },
+  );
+  images.forEach((image) => observer.observe(image));
+  return () => {
+    observer.disconnect();
+    images.forEach((image) => image.classList.remove('is-live', 'is-shown'));
+  };
+}
+
+/**
  * Desktop: the four rows scroll normally while one brand-coloured line (and the row's caption)
  * stays pinned to the middle of the viewport. The row under that line gets `.active`, which
  * fades its caption in (see why.css). Everything inside the images is pure CSS animation.
@@ -14,9 +38,10 @@ function followViewportCentre({ gsap, ScrollTrigger }, main, items) {
   if (!line || !stickies.length) return undefined;
 
   const pin = { y: 0 };
+  let halves = stickies.map(() => 0);
   const place = () => {
     gsap.set(line, { y: pin.y });
-    stickies.forEach((sticky) => gsap.set(sticky, { y: pin.y - sticky.offsetHeight / 2 }));
+    stickies.forEach((sticky, i) => gsap.set(sticky, { y: pin.y - halves[i] }));
   };
   const follow = gsap.quickTo(pin, 'y', { duration: 0.5, ease: 'power3.out', onUpdate: place });
 
@@ -30,6 +55,7 @@ function followViewportCentre({ gsap, ScrollTrigger }, main, items) {
       item.classList.toggle('active', inside);
     });
     if (jump) {
+      halves = stickies.map((sticky) => sticky.offsetHeight / 2);
       pin.y = Math.max(0, rel);
       place();
     } else {
@@ -76,6 +102,7 @@ function slideRows(slider, wrapper, items, pagination) {
 
   return () => {
     swiper.destroy(true, true);
+    slider.classList.remove('swiper-backface-hidden');
     added.forEach(([el, cls]) => el.classList.remove(cls));
   };
 }
@@ -106,6 +133,8 @@ export function init(ctx) {
   });
 
   const mm = gsap.matchMedia();
+  const images = items.map((item) => item.querySelector('.home-why-item-img')).filter(Boolean);
+  mm.add('(prefers-reduced-motion: no-preference)', () => playWhenVisible(images));
   mm.add('(min-width: 992px)', () => followViewportCentre(ctx, main, items));
   mm.add('(max-width: 767px)', () => {
     const slider = document.querySelector('.home-why-main-cms');

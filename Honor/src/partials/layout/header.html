@@ -5,35 +5,35 @@
       <div id="w-node-b68c4391-6e42-0865-831d-b5cb9b2404c7-9b2404bf" class="header-logo">
         <div class="header-logo-inner">
           <a href="#" aria-label="HONOR home" aria-current="page" class="header-logo-item bg-global w-inline-block w--current"
-            ><div class="embed-ic w-embed"><include src="svg/logo-mark"></include></div></a
+            ><div class="embed-ic w-embed" aria-hidden="true"><include src="svg/logo-mark"></include></div></a
           ><a href="#" aria-hidden="true" tabindex="-1" class="header-logo-item item-txt w-inline-block w--current"
-            ><div class="embed-ic w-embed"><include src="svg/logo-wordmark"></include></div
+            ><div class="embed-ic w-embed" aria-hidden="true"><include src="svg/logo-wordmark"></include></div
           ></a>
         </div>
       </div>
       <div id="w-node-b68c4391-6e42-0865-831d-b5cb9b2404ca-9b2404bf" class="header-menu-wrap">
         <div class="header-menu-inner">
-          <a href="#" class="header-menu-btn w-inline-block"
-            ><div class="txt txt-font-mono txt-14">Menu</div>
-            <div class="line line-vertical left top"></div>
-            <div class="header-menu-btn-ic">
-              <div class="header-menu-btn-ic-line"></div>
-              <div class="header-menu-btn-ic-line"></div>
-              <div class="header-menu-btn-ic-line"></div></div
-          ></a>
-          <div class="header-menu bg-global">
+          <button type="button" class="header-menu-btn w-inline-block" aria-expanded="false" aria-controls="header-menu"
+            ><span class="txt txt-font-mono txt-14">Menu</span>
+            <span class="line line-vertical left top"></span>
+            <span class="header-menu-btn-ic" aria-hidden="true">
+              <span class="header-menu-btn-ic-line"></span>
+              <span class="header-menu-btn-ic-line"></span>
+              <span class="header-menu-btn-ic-line"></span></span
+          ></button>
+          <div id="header-menu" class="header-menu bg-global">
             <div class="header-menu-item-wrap">
               <div class="line line-vertical left top"></div>
-              <button class="header-menu-item has-submenu">
+              <button type="button" class="header-menu-item has-submenu" aria-controls="header-submenu-1">
                 <include src="components/button" variant="no-ic" label="Lorem ipsum"></include>
                 <div class="header-menu-item-ic top">
-                  <div class="embed-ic w-embed"><include src="icons/caret-7"></include></div>
+                  <div class="embed-ic w-embed" aria-hidden="true"><include src="icons/caret-7"></include></div>
                 </div>
                 <div class="header-menu-item-ic bot">
-                  <div class="embed-ic w-embed"><include src="icons/caret-6"></include></div>
+                  <div class="embed-ic w-embed" aria-hidden="true"><include src="icons/caret-6"></include></div>
                 </div>
               </button>
-              <div class="header-menu-dropdown">
+              <div id="header-submenu-1" class="header-menu-dropdown">
                 <div class="header-menu-dropdown-inner bg-global">
                   <a class="header-menu-dropdown-item w-inline-block" href="#"
                     ><include src="components/button" variant="no-ic" label="Dolor sit amet"></include></a
@@ -51,16 +51,16 @@
             </div>
             <div class="header-menu-item-wrap">
               <div class="line line-vertical left top"></div>
-              <button class="header-menu-item has-submenu">
+              <button type="button" class="header-menu-item has-submenu" aria-controls="header-submenu-2">
                 <include src="components/button" variant="no-ic" label="Tempor"></include>
                 <div class="header-menu-item-ic bot">
-                  <div class="embed-ic w-embed"><include src="icons/caret-6"></include></div>
+                  <div class="embed-ic w-embed" aria-hidden="true"><include src="icons/caret-6"></include></div>
                 </div>
                 <div class="header-menu-item-ic top">
-                  <div class="embed-ic w-embed"><include src="icons/caret-7"></include></div>
+                  <div class="embed-ic w-embed" aria-hidden="true"><include src="icons/caret-7"></include></div>
                 </div>
               </button>
-              <div class="header-menu-dropdown">
+              <div id="header-submenu-2" class="header-menu-dropdown">
                 <div class="header-menu-dropdown-inner bg-global">
                   <a class="header-menu-dropdown-item w-inline-block" data-sub-link="insights" href="#"
                     ><include src="components/button" variant="no-ic" label="Ut labore"></include></a
