@@ -48,6 +48,6 @@ src/
 - The page scrolls inside `.main-inner` (Lenis wrapper). In dev, `window.__lenis` is exposed for scripted scrolling.
 - Webflow variant hashes were turned into readable `v-<name>` modifier classes; per-element `#w-node-*` grid placement rules live in `styles/base/grid-placement.css`.
 - Only the homepage is cloned; navigation links point to `#`.
-- Patterns referenced from CSS custom properties (`--bg-img`, `--bg-grid`, `--ph-mask-image`) live in `public/patterns/` because Vite does not rebase `url()` inside custom properties.
+- The build uses a relative base (`./`), so `dist/` works from any subfolder (it is published at `/honor/` in the Flare Design showcase). Every pattern, including those referenced from CSS custom properties (`--bg-img`, `--bg-grid`, `--ph-mask-image`), lives in `src/assets/patterns/` and is fingerprinted by Vite.
 - `original/` is reference material only; nothing in `src/` imports from it.
 - The footer wordmark is a hand-built SVG (`src/partials/svg/footer-wordmark.html`): hairline letter outlines with drafting marks, drawn on scroll with GSAP DrawSVG; under a pointer (or a finger) the solid letters are inked in through an `feTurbulence` displaced mask, the same technique as the original.

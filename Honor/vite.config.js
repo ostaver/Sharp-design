@@ -32,6 +32,8 @@ function htmlIncludes() {
 }
 
 export default defineConfig({
+  // Relative asset URLs, so dist/ can be served from any subfolder.
+  base: './',
   plugins: [htmlIncludes()],
   server: { port: 3000, open: false },
 });

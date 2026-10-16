@@ -16,8 +16,7 @@
 }
 :root {
   --loading-logo-dasharray: 0;
-  /* Vite does not rebase url() inside custom properties, so these live in /public */
-  --bg-img: url("/patterns/bg.svg");
-  --bg-grid: url("/patterns/bg-deco.svg");
-  --ph-mask-image: url("/patterns/btn-wipe.svg");
+  --bg-img: url("../../assets/patterns/bg.svg");
+  --bg-grid: url("../../assets/patterns/bg-deco.svg");
+  --ph-mask-image: url("../../assets/patterns/btn-wipe.svg");
 }
