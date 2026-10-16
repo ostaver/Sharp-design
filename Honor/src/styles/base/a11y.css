@@ -1,0 +1,33 @@
+/* Keyboard focus: a brand-coloured ring that only shows for keyboard navigation. */
+:where(a, button, input, [tabindex]):focus {
+  outline: none;
+}
+:where(a, button, input, [tabindex]):focus-visible {
+  outline: max(2px, 0.2rem) solid var(--content--brand);
+  outline-offset: -0.2rem;
+}
+.input:focus-visible {
+  outline-offset: 0;
+}
+
+/* Skip link: first tab stop, hidden until focused. */
+.skip-link {
+  position: fixed;
+  top: 1.2rem;
+  left: 1.2rem;
+  z-index: 2147483647;
+  padding: 1.2rem 1.6rem;
+  background: var(--content--primary);
+  color: var(--content--white);
+  font-family: "Geist Mono", Arial, sans-serif;
+  font-size: 1.4rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  text-decoration: none;
+  transform: translateY(-200%);
+  transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.skip-link:focus-visible {
+  transform: translateY(0);
+  outline-offset: 0.2rem;
+}

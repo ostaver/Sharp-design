@@ -1,0 +1,16 @@
+.cursor {
+  z-index: 2147483000;
+  pointer-events: none;
+  position: fixed;
+  inset: 0%;
+}
+.cursor canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+@media screen and (max-width: 991px) {
+  .cursor {
+    display: none;
+  }
+}

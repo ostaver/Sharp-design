@@ -1,0 +1,84 @@
+@keyframes spin {
+  0% {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes marqueeLeft {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}
+@keyframes marqueeRight {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes fadeLoop {
+  0% {
+    opacity: 0.7;
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0.7;
+    transform: scale(0.95);
+  }
+}
+@keyframes spin {
+  0% {
+    content: "-";
+  }
+
+  25% {
+    content: "\\";
+  }
+
+  50% {
+    content: "|";
+  }
+
+  75% {
+    content: "/";
+  }
+
+  100% {
+    content: "-";
+  }
+}
+@keyframes rotate-icon {
+  0%,
+  40% {
+    transform: rotate(45deg);
+    animation-timing-function: none;
+  }
+  50%,
+  90% {
+    transform: rotate(0deg);
+    animation-timing-function: none;
+  }
+  100% {
+    transform: rotate(45deg);
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "stoicism",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "C:/Users/filip/Documents/OUTPUTS-SHARP-DESIGN/Stoicism", "run", "dev"],
+      "port": 5174
+    },
+    {
+      "name": "stoicism-skill-test",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "C:/Users/filip/AppData/Local/Temp/claude/C--Users-filip-Documents-Sharp-Design/b9a08334-9707-4542-9206-380b3ef3b4dd/scratchpad/build/morel", "run", "dev"],
+      "port": 5176
+    }
+  ]
+}

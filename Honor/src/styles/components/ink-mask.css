@@ -1,0 +1,34 @@
+.ink-mask {
+  grid-template-rows: auto;
+  grid-template-columns: minmax(1px, 1fr);
+  grid-auto-columns: 1fr;
+  width: 100%;
+  height: 100%;
+  display: grid;
+}
+.ink-mask:where(.v-path),
+.ink-mask.path {
+  width: 100%;
+  height: 100%;
+}
+.ink-mask-img {
+  grid-area: 1/1/2/2;
+  display: flex;
+  position: relative;
+}
+.ink-mask-img.main {
+  z-index: 1;
+}
+.ink-mask-img.main.product-how-img-mask {
+  justify-content: center;
+  align-items: center;
+}
+.ink-mask-img.sub {
+  z-index: 2;
+}
+.ink-mask-img.sub.ink-line {
+  display: flex;
+}
+.ink-mask-img.base {
+  opacity: 0.35;
+}

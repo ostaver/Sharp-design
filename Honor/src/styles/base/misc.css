@@ -1,0 +1,52 @@
+.hero-wipe-block {
+  z-index: 2;
+  background-color: var(--content--brand);
+  pointer-events: none;
+  transform-origin: 0;
+  position: absolute;
+  inset: 0;
+  transform: scaleX(0);
+}
+.path-vertical,
+.path-horizital {
+  transform-origin: center center;
+  transition: transform 0.4s ease;
+}
+.marquee-left.anim {
+  animation: marqueeLeft 30s linear infinite;
+}
+.marquee-right.anim {
+  animation: marqueeRight 30s linear infinite;
+}
+.trim-textbox {
+  display: flow-root;
+}
+.trim-textbox .bp-mask-line-mask {
+  display: flow-root !important;
+  --trim-top: calc(-0.5lh + 0.42em);
+  --trim-bot: calc(-0.5lh + 0.58em);
+  margin-top: var(--trim-bot);
+  margin-bottom: var(--trim-top);
+}
+.trim-textbox .bp-mask-line-mask::before {
+  content: "";
+  display: table;
+  margin-bottom: var(--trim-top);
+}
+.trim-textbox .bp-mask-line-mask::after {
+  content: "";
+  display: table;
+  margin-bottom: var(--trim-bot);
+}
+.bp-mask-line-mask {
+  overflow: hidden;
+}
+.clamp-2 {
+  -webkit-line-clamp: 2;
+}
+.clamp-1 {
+  -webkit-line-clamp: 1;
+}
+.layer path {
+  will-change: transform;
+}

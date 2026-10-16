@@ -1,0 +1,644 @@
+/* Stoicism kit — reset, type, chrome and the kit components. No colour or font values live
+   here: every colour is a token from tokens.css (rolled) or a color-mix() of tokens. */
+
+:root {
+  --gutter: clamp(16px, 2.4vw, 40px);
+  --edge: calc(var(--gutter) + 20px);
+  --nav-h: 72px;
+  --ease-stone: cubic-bezier(0.16, 1, 0.3, 1);
+  --noise: none;
+  --dither: none;
+  --mis-x: 0.045em;
+  --mis-y: -0.03em;
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  background: var(--midnight);
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+body {
+  margin: 0;
+  background: var(--peri-soft);
+  color: var(--midnight);
+  font-family: var(--f-serif);
+  font-size: clamp(17px, 1.15vw, 20px);
+  line-height: 1.45;
+  overflow-x: clip;
+}
+body.is-loading {
+  overflow: hidden;
+}
+
+img,
+svg,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+::selection {
+  background: var(--ink-hi);
+  color: var(--midnight);
+}
+
+/* key ink on the light papers, where a pastel drum would vanish; the drum on dark grounds */
+:focus-visible {
+  outline: 2px dashed var(--midnight);
+  outline-offset: 4px;
+}
+[data-dark] :focus-visible {
+  outline-color: var(--ink-hi);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  html.has-cursor,
+  html.has-cursor * {
+    cursor: none !important;
+  }
+}
+
+/* no browser scrollbar: the ink level is the scrollbar */
+html,
+body {
+  scrollbar-width: none;
+}
+::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* ───────────────────────── Type ───────────────────────── */
+.display {
+  font-family: var(--f-display);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  line-height: 0.86;
+}
+
+.mono {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.5;
+}
+
+.italic {
+  font-style: italic;
+}
+
+/* set like a book: headings balanced, paragraphs without widows */
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+p,
+dd,
+figcaption {
+  text-wrap: pretty;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.skiplink {
+  position: fixed;
+  left: var(--gutter);
+  top: 12px;
+  z-index: 300;
+  padding: 10px 16px;
+  background: var(--midnight);
+  color: var(--paper);
+  font-family: var(--f-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transform: translateY(-160%);
+}
+.skiplink:focus-visible {
+  transform: none;
+}
+
+/* Two-drum type: the highlight ink printed slightly out of register under the key ink.
+   Markup: <span class="riso" data-text="Word">Word</span>. Tween --mis-x / --mis-y. */
+.riso {
+  position: relative;
+  isolation: isolate;
+  display: inline-block;
+}
+.riso::before {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  color: var(--ink-hi);
+  transform: translate(var(--mis-x), var(--mis-y));
+  z-index: -1;
+  pointer-events: none;
+  white-space: inherit;
+  transition: transform 0.6s var(--ease-stone);
+}
+
+/* ───────────────────────── Chrome ───────────────────────── */
+.grain {
+  position: fixed;
+  inset: -50%;
+  z-index: 90;
+  pointer-events: none;
+  background-image: var(--noise);
+  background-size: 180px 180px;
+  opacity: 0.22;
+  mix-blend-mode: multiply;
+  animation: drum 0.5s steps(6) infinite;
+}
+@keyframes drum {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-7%, 3%); }
+  40% { transform: translate(4%, -6%); }
+  60% { transform: translate(-3%, 8%); }
+  80% { transform: translate(6%, 2%); }
+  100% { transform: translate(-2%, -4%); }
+}
+
+.riso-gallery {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.regmarks {
+  position: fixed;
+  inset: 12px;
+  z-index: 70;
+  pointer-events: none;
+  color: var(--midnight);
+  mix-blend-mode: multiply;
+  opacity: 0.7;
+}
+.regmarks span {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+}
+.regmarks span::before,
+.regmarks span::after {
+  content: '';
+  position: absolute;
+  background: currentColor;
+}
+.regmarks span::before { left: 50%; top: 0; bottom: 0; width: 1px; }
+.regmarks span::after { top: 50%; left: 0; right: 0; height: 1px; }
+.regmarks i {
+  position: absolute;
+  inset: 4px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+}
+.regmarks span:nth-child(1) { left: 0; top: 50%; }
+.regmarks span:nth-child(2) { right: 0; top: 50%; }
+
+/* the ink level: the page's scrollbar */
+.ink-level {
+  position: fixed;
+  top: 50%;
+  translate: 0 -50%;
+  height: 34vh;
+  width: 34px;
+  z-index: 75;
+  touch-action: none;
+  cursor: grab;
+}
+.ink-level--right { right: 0; }
+.ink-level--left { left: 0; }
+.ink-level__rail {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: color-mix(in srgb, var(--midnight) 18%, transparent);
+  transition: width 0.4s var(--ease-stone), background-color 0.4s;
+}
+.ink-level--right .ink-level__rail { right: 14px; }
+.ink-level--left .ink-level__rail { left: 14px; }
+.ink-level:hover .ink-level__rail,
+.ink-level.is-dragging .ink-level__rail {
+  width: 5px;
+  background: color-mix(in srgb, var(--midnight) 26%, transparent);
+}
+.ink-level__rail b {
+  position: absolute;
+  inset: 0;
+  background: var(--midnight);
+  transform-origin: top;
+  transform: scaleY(0);
+}
+.ink-level__rail b::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--ink-hi);
+  translate: 3px 4px;
+  z-index: -1;
+}
+.ink-level__rail i {
+  position: absolute;
+  width: 11px;
+  height: 1px;
+  background: var(--midnight);
+  pointer-events: none;
+}
+.ink-level--right .ink-level__rail i { right: -3px; }
+.ink-level--left .ink-level__rail i { left: -3px; }
+.ink-level__rail em {
+  position: absolute;
+  top: 50%;
+  font-family: var(--f-mono);
+  font-size: 10px;
+  font-style: normal;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--midnight);
+  background: var(--ink-hi);
+  padding: 2px 6px;
+  opacity: 0;
+  transition: opacity 0.35s, translate 0.5s var(--ease-stone);
+}
+.ink-level--right .ink-level__rail em { right: 20px; translate: 8px -50%; }
+.ink-level--left .ink-level__rail em { left: 20px; translate: -8px -50%; }
+.ink-level:hover .ink-level__rail em,
+.ink-level.is-dragging .ink-level__rail em {
+  opacity: 1;
+  translate: 0 -50%;
+}
+/* App toggles html.mid-dark while a [data-dark] section crosses mid-screen */
+.mid-dark .ink-level__rail { background: color-mix(in srgb, var(--mist) 22%, transparent); }
+.mid-dark .ink-level__rail b,
+.mid-dark .ink-level__rail i { background: var(--mist); }
+
+/* cursor */
+.cursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 200;
+  pointer-events: none;
+  display: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .cursor { display: block; }
+}
+.cursor__dot,
+.cursor__ring,
+.cursor__ghost {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 50%;
+  translate: -50% -50%;
+}
+.cursor__dot {
+  width: 7px;
+  height: 7px;
+  background: var(--midnight);
+}
+.cursor__ghost {
+  width: 7px;
+  height: 7px;
+  background: var(--ink-hi);
+  margin: 2px 0 0 3px;
+  z-index: -1;
+  transition: margin 0.3s var(--ease-stone);
+}
+.cursor__ring {
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--midnight);
+  display: grid;
+  place-items: center;
+  transition: width 0.5s var(--ease-stone), height 0.5s var(--ease-stone), background-color 0.4s, border-color 0.4s;
+}
+.cursor__ring span {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--midnight);
+  opacity: 0;
+  transition: opacity 0.3s;
+  white-space: nowrap;
+}
+.cursor.is-label .cursor__ring {
+  width: 96px;
+  height: 96px;
+  background: var(--ink-hi);
+  border-color: var(--ink-hi);
+}
+.cursor.is-label .cursor__ring span { opacity: 1; }
+.cursor.is-label .cursor__dot { opacity: 0; }
+.cursor.is-link .cursor__ring { width: 64px; height: 64px; border-style: dashed; }
+/* press: shrink by size, never scale: scale would also shrink the position held in transform */
+.cursor.is-down .cursor__ring { width: 34px; height: 34px; transition-duration: 0.25s; }
+.cursor.is-down.is-link .cursor__ring { width: 52px; height: 52px; }
+.cursor.is-down.is-label .cursor__ring { width: 84px; height: 84px; }
+.cursor.is-down .cursor__ghost { margin: 4px 0 0 6px; }
+.cursor.on-dark .cursor__dot { background: var(--ink-hi); }
+.cursor.on-dark .cursor__ring { border-color: var(--ink-hi); }
+.cursor.on-dark .cursor__ghost { background: var(--lavender); }
+
+/* the house mark: its highlight drum slips on hover of any link that holds it */
+.temple-mark { overflow: visible; }
+.temple-mark__hi { transform: translate(2.5px, 1.8px); transition: transform 0.6s var(--ease-stone); }
+a:hover > .temple-mark .temple-mark__hi,
+button:hover > .temple-mark .temple-mark__hi { transform: translate(5px, 3.6px); }
+
+/* section papers, from the chart: <section {...groundProps(section.ground)}> */
+[data-ground] { position: relative; }
+[data-ground='periSoft'] { background-color: var(--peri-soft); }
+[data-ground='mist'] { background-color: var(--mist); }
+[data-ground='lavender'] { background-color: var(--lavender); }
+[data-ground='midnight'] { background-color: var(--midnight); color: var(--mist); }
+
+/* a stochastic hand-over between section papers (pinned to a section's bottom) */
+.dither {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 140px;
+  z-index: 2;
+  pointer-events: none;
+  background: var(--to);
+  -webkit-mask: var(--dither) repeat-x left bottom / 256px 140px;
+  mask: var(--dither) repeat-x left bottom / 256px 140px;
+}
+
+/* ───────────────────────── Images ───────────────────────── */
+.riso-img {
+  position: relative;
+  display: block;
+}
+/* the fallback without WebGL: a two-tone print by CSS alone */
+.riso-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(1) contrast(1.15);
+  mix-blend-mode: multiply;
+}
+.riso-img--arch img { border-radius: 999px 999px 0 0; }
+.riso-img--pill img { border-radius: 999px; }
+.riso-img.is-gl img { opacity: 0; }
+
+/* full-bleed figure plates: the parent sets the side margins it bleeds over (--edge) */
+.plate {
+  position: relative;
+  margin: 14vh calc(var(--edge) * -1) 0;
+}
+.plate__img {
+  width: 100%;
+  height: min(56.25vw, 100vh);
+}
+.plate__caption {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px var(--edge) 0;
+}
+@media (max-width: 900px) {
+  .plate__img { height: 78vw; }
+  .plate__caption { flex-direction: column; gap: 4px; }
+}
+
+/* ───────────────────────── Capitals ───────────────────────── */
+/* Strokes scale with the drawing. Never add vector-effect: non-scaling-stroke: it measures the
+   dash in screen px while pathLength measures it in user units, and the drawing never finishes. */
+.capital {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1 1;
+}
+.capital__key { stroke: var(--midnight); stroke-width: 2; }
+.capital__hi { stroke: var(--ink-hi); stroke-width: 3; transform: translate(4px, 3.5px); }
+
+/* ───────────────────────── Buttons ───────────────────────── */
+.btn {
+  --shadow: 3px;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 15px 26px;
+  border-radius: 999px;
+  border: 1px solid var(--midnight);
+  font-family: var(--f-mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: var(--midnight);
+  color: var(--paper);
+  box-shadow: var(--shadow) calc(var(--shadow) * 0.8) 0 var(--ink-hi);
+  transition: top 0.5s var(--ease-stone), left 0.5s var(--ease-stone), box-shadow 0.5s var(--ease-stone), background-color 0.3s, color 0.3s;
+  white-space: nowrap;
+}
+.btn:hover { --shadow: 7px; top: -3px; left: -3px; }
+.btn:active { --shadow: 0px; top: 2px; left: 2px; }
+.btn--light {
+  background: var(--ink-hi);
+  color: var(--midnight);
+  border-color: var(--ink-hi);
+  box-shadow: var(--shadow) calc(var(--shadow) * 0.8) 0 var(--periwinkle);
+}
+.btn--ghost {
+  background: transparent;
+  color: inherit;
+  border-color: currentColor;
+}
+.btn:disabled { opacity: 0.45; pointer-events: none; }
+
+/* ───────────────────────── Preloader ───────────────────────── */
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  background: var(--peri-soft);
+  color: var(--midnight);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding: calc(var(--gutter) + 8px);
+  overflow: hidden;
+}
+.preloader__bg {
+  position: absolute;
+  inset: 0;
+  background-image: var(--noise);
+  background-size: 160px;
+  opacity: 0.35;
+  mix-blend-mode: multiply;
+}
+.preloader__top,
+.preloader__bottom {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+.preloader__stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+.preloader__plates {
+  position: relative;
+  width: min(62vw, 46vh, 520px);
+  margin-top: -8vh;
+  aspect-ratio: 4 / 5;
+}
+.preloader__plate {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+.preloader__plate svg {
+  fill: currentColor;
+  width: 72%;
+  height: auto;
+  overflow: visible;
+}
+.preloader__plate--hi { color: var(--ink-hi); }
+.preloader__plate--key { color: var(--midnight); mix-blend-mode: multiply; }
+/* ink laydown: solid ink below a stochastic stipple edge that climbs the plate */
+.preloader__plate--hi,
+.preloader__plate--key {
+  -webkit-mask-image: var(--dither), linear-gradient(#000, #000);
+  -webkit-mask-repeat: repeat-x, no-repeat;
+  -webkit-mask-position: 0 var(--band-y, 200%), 0 100%;
+  -webkit-mask-size: 256px 140px, 100% var(--solid-h, 0px);
+  mask-image: var(--dither), linear-gradient(#000, #000);
+  mask-repeat: repeat-x, no-repeat;
+  mask-position: 0 var(--band-y, 200%), 0 100%;
+  mask-size: 256px 140px, 100% var(--solid-h, 0px);
+}
+/* the bare engraved plate, before any ink */
+.preloader__ghost { color: var(--midnight); opacity: 0.55; }
+.preloader__ghost svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+.preloader__ghost svg * { vector-effect: non-scaling-stroke; }
+.preloader__bar {
+  position: relative;
+  height: 1px;
+  background: color-mix(in srgb, var(--midnight) 25%, transparent);
+  margin-bottom: 14px;
+}
+.preloader__bar b {
+  position: absolute;
+  inset: 0;
+  background: var(--midnight);
+  transform-origin: left;
+  transform: scaleX(0);
+}
+
+/* ───────────────────────── Phones ───────────────────────── */
+@media (max-width: 900px) {
+  :root { --nav-h: 60px; }
+  .regmarks,
+  .ink-level { display: none; }
+}
+
+/* ───────────────────────── Preferences ───────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .grain { animation: none; }
+  /* 0s, never 0.01ms: transition-property defaults to 'all', so a tiny duration makes every
+     element transition every property; GSAP then reads a mid-transition opacity of 0 as a
+     reveal's end state and that content never appears */
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
+  }
+}
+
+@media (prefers-contrast: more) {
+  .grain { opacity: 0.08; }
+  .riso::before { opacity: 0.6; }
+  :focus-visible { outline-style: solid; outline-width: 3px; }
+}
+
+@media print {
+  .grain,
+  .riso-gallery,
+  .regmarks,
+  .ink-level,
+  .cursor,
+  .preloader,
+  .dither,
+  .no-print { display: none !important; }
+  html, body { background: #fff !important; color: #000 !important; }
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+    mix-blend-mode: normal !important;
+    box-shadow: none !important;
+  }
+  .riso-img img { opacity: 1 !important; mix-blend-mode: normal; }
+  .riso::before { display: none; }
+  section { break-inside: avoid; }
+}

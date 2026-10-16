@@ -11,7 +11,7 @@
 
 <p align="center">
   <img alt="Version" src="https://img.shields.io/badge/version-1.0.3-2ea44f">
-  <img alt="Skills" src="https://img.shields.io/badge/skills-10-blue">
+  <img alt="Skills" src="https://img.shields.io/badge/skills-11-blue">
   <a href="./LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-lightgrey"></a>
 </p>
 
@@ -40,9 +40,10 @@ Sharp Design is a collection of **agent skills for building professional, award-
 | [**Mirage**](#mirage) | Achromatic op-art, kinetic type | HTML · CSS · Canvas · anime.js | Single `.html` | ~7.5k | 9.4 |
 | [**Pellucid**](#pellucid) | Light, optical, liquid glass | HTML · CSS · TypeScript · Vite · WebGL · GSAP | Repo/folder | ~8.5k | 9.3 |
 | [**Rhumb**](#rhumb) | Nocturnal, green-lit dithered sky, rolled per build | SvelteKit · TypeScript · OGL · GSAP · Lenis | Repo/folder | ~17k | 9.9 |
+| [**Stoicism**](#stoicism) | Lavender riso monumentalism, live WebGL temple, rolled per build | React · TypeScript · Vite · Three.js · OGL · GSAP · Lenis | Repo/folder | ~14k | 9.6 |
 | [**Stackable**](#stackable) | Loud, colorful, poster-style events | HTML · CSS · GSAP | Single `.html` | ~10k | 8.8 |
 
-> **Not sure where to start?** Use **Atelier** for a quick single-file site, **Binary** or **Comfort** for a full repository, **Belfort** when you need a backend, **Pellucid** for an optical product studio, and **Rhumb** for the flagship nocturnal experience.
+> **Not sure where to start?** Use **Atelier** for a quick single-file site, **Binary** or **Comfort** for a full repository, **Belfort** when you need a backend, **Pellucid** for an optical product studio, **Rhumb** for the flagship nocturnal experience, and **Stoicism** for a monumental portfolio or cultural institution.
 
 ---
 
@@ -278,6 +279,26 @@ For products that work while their people sleep: background agents, CI and data 
 | ![Rhumb Hero](Rhumb/preview-hero.png)   | ![Rhumb Scene](Rhumb/preview-scene.png)     | ![Rhumb Landfall](Rhumb/preview-landfall.png)   |
 
 [SKILL.md](Rhumb/rhumb-skill/SKILL.md) · [About](Rhumb/About.md)
+
+---
+
+### Stoicism
+
+> *Build it to stand. Print it by hand.*
+
+Lavender risograph monumentalism for creative developers, studios, architects, museums and cultural institutions. A procedural Doric temple in Three.js is re-printed every frame onto a five-step riso ink ramp with stochastic stipple and a misregistered second drum, eroding into wind-blown grain as you scroll. Every photograph on the page is re-inked by the same shader on one shared OGL canvas. Capitals draw themselves by scrubbed stroke, a print lab hangs your pulls on a drying line, and at the end the temple's dust carves the visitor's name into stone. Each build runs a seeded `roll.mjs` that picks its paper hue, drum inks, fonts, temple, sections and layout variants.
+
+- **Style:** Riso print on lavender stock, blue-violet key ink, pastel second drum, inscriptional capitals
+- **Stack:** React 19 · TypeScript · Vite · Three.js · OGL · GSAP / ScrollTrigger / SplitText · Lenis
+- **External:** Photographs only (fonts self-hosted through Fontsource)
+- **Best for:** Creative developers and studios, architects, museums, archives, festivals, publishers
+- **Output:** Repository/folder (give the agent the whole `stoicism-skill/` folder: it bundles the `kit/` and `roll.mjs`)
+
+| Hero | Orders | Facade |
+| --- | --- | --- |
+| ![Stoicism Hero](Stoicism/preview-hero.png) | ![Stoicism Capitals](Stoicism/preview-capitals.png) | ![Stoicism Facade](Stoicism/preview-facade.png) |
+
+[SKILL.md](Stoicism/stoicism-skill/SKILL.md) · [About](Stoicism/About.md)
 
 ---
 

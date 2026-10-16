@@ -1,0 +1,23 @@
+:root {
+  --content--terriary: #282828b8;
+  --size--padding-hero: calc(4.4rem + 1rem * 2);
+  --size--max-screen-height: calc(100dvh - 1.6rem);
+  --content--border: #b3b3af;
+  --size--border: max(1px, 0.1rem);
+  --content--brand: #fa3600;
+  --content--primary: #282828;
+  --content--white: white;
+  --content--disable: #b4b4b0;
+  --content--surface: #72726f;
+  --content--granite-gray: #626260;
+  --content--secon\<deleted\|variable-e7a8f6b3-897d-acdf-6323-9933b4907bfe\>: #414140;
+  --content--transparent: transparent;
+  --content--secondary: #414140;
+}
+:root {
+  --loading-logo-dasharray: 0;
+  /* Vite does not rebase url() inside custom properties, so these live in /public */
+  --bg-img: url("/patterns/bg.svg");
+  --bg-grid: url("/patterns/bg-deco.svg");
+  --ph-mask-image: url("/patterns/btn-wipe.svg");
+}
